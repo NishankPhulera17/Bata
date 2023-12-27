@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "597234478127",
+    "project_id": "ozo-stars",
+    "storage_bucket": "ozo-stars.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:597234478127:android:bcc022dca685f137b8eada",
+        "android_client_info": {
+          "package_name": "com.ozoneoverseas"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAZOAl_osG_JCanX4o0pg-XGZgGXbNSKds"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
