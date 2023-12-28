@@ -1,4 +1,4 @@
-package com.ozoneoverseas;
+package com.bata;
 
 import android.app.Application;
 import com.facebook.react.PackageList;

@@ -46,7 +46,7 @@ const Splash = ({ navigation }) => {
 
   useEffect(()=>{
     getUsers();
-    getAppTheme("ozone")
+    getAppTheme("Bata")
     const checkToken = async () => {
       const fcmToken = await messaging().getToken();
       if (fcmToken) {
@@ -177,6 +177,7 @@ const Splash = ({ navigation }) => {
   
 
   // fetching data and checking for errors from the API-----------------------
+  
   useEffect(() => {
     if (getAppThemeData) {
       console.log("getAppThemeData", JSON.stringify(getAppThemeData.body))
@@ -223,10 +224,10 @@ const Splash = ({ navigation }) => {
 
 
   return (
-    <View style={{ flex: 1 }}>
-      <ImageBackground resizeMode='stretch' style={{ flex: 1, height: '100%', width: '100%', }} source={require('../../../assets/images/splash2.png')}>
+    <View style={{ flex: 1, alignItems:'center', width:'100%', height:'100%', justifyContent:'center' }}>
+      {/* <ImageBackground resizeMode='stretch' style={{ flex: 1, height: '100%', width: '100%', }} source={require('../../../assets/images/batalogo.png')}> */}
 
-        {/* <Image  style={{ width: 200, height: 200,  }}  source={require('../../../assets/gif/ozonegif.gif')} /> */}
+        <Image  style={{ width: 300, height: 100,}}  source={require('../../../assets/images/batalogo.png')} />
         {/* <FastImage
           style={{ width: 250, height: 250, marginTop:'auto',alignSelf:'center' }}
           source={{
@@ -236,7 +237,7 @@ const Splash = ({ navigation }) => {
           resizeMode={FastImage.resizeMode.contain}
         /> */}
 
-      </ImageBackground>
+      {/* </ImageBackground> */}
 
     </View>
 

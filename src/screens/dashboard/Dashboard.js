@@ -477,9 +477,9 @@ console.log("fetchAllQrScanedListError",fetchAllQrScanedListError)
               <Banner images={bannerArray}></Banner>
             }
 
-            <CampaignVideoModal isVisible={CampainVideoVisible} onClose={()=>{
+            {/* <CampaignVideoModal isVisible={CampainVideoVisible} onClose={()=>{
               setCmpainVideoVisible(false)
-            }} />
+            }} /> */}
           </View>
          {/* Ozone specific change do not show for sales */}
          {
@@ -487,7 +487,9 @@ console.log("fetchAllQrScanedListError",fetchAllQrScanedListError)
             <View style={{ width: "90%", height: 50, backgroundColor: 'white', marginBottom: 20, flexDirection: 'row', alignItems: 'center', borderColor: '#808080', borderWidth: 0.3, borderRadius: 10 }}>
 
             <View style={{ backgroundColor: 'white', width: '42%', marginHorizontal: 20 }}>
-             {userPointData?.body?.point_balance ? <PoppinsText content={`Balance Points ${userPointData?.body?.point_balance ? userPointData?.body?.point_balance : "loading"}`} style={{ color: 'black', fontWeight: 'bold' }}></PoppinsText> : <AnimatedDots color={'black'}/>} 
+             {
+             <PoppinsText content={`Balance Points ${userPointData?.body?.point_balance ? userPointData?.body?.point_balance : ": 0"}`}
+              style={{ color: 'black', fontWeight: 'bold' }}></PoppinsText> } 
             </View>
 
             <View style={{ height: '100%', borderWidth: 0.4, color: "#808080", opacity: 0.3, width: 0.2 }}>
@@ -496,7 +498,7 @@ console.log("fetchAllQrScanedListError",fetchAllQrScanedListError)
             <View style={{ backgroundColor: 'white', paddingLeft: '8%' }}>
               <TouchableOpacity style={{ backgroundColor: ternaryThemeColor, padding: 10, borderRadius: 5, width: 120, alignItems: 'center' }} onPress={() => { navigation.navigate("RedeemedHistory") }}>
                 <PoppinsTextLeftMedium style={{ color: 'white', fontWeight: '800' }} content="Redeem"  ></PoppinsTextLeftMedium>
-              </TouchableOpacity>
+</TouchableOpacity>
             </View>
 
           </View>

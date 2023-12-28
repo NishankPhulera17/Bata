@@ -86,7 +86,7 @@ const VideoGallery = ({ navigation }) => {
         alignItems: 'center',
         justifyContent: 'flex-start',
         width: '100%',
-        backgroundColor: ternaryThemeColor,
+        // backgroundColor: ternaryThemeColor,
         height: '100%',
       }}>
       <View
@@ -95,9 +95,11 @@ const VideoGallery = ({ navigation }) => {
           justifyContent: 'flex-start',
           flexDirection: 'row',
           width: '100%',
-          marginTop: 10,
+          // marginTop: 10,
           height: '10%',
-          marginLeft: 20,
+          backgroundColor:ternaryThemeColor,
+          // marginLeft: 20,
+          borderTopLeftRadius:10
         }}>
         <TouchableOpacity
           onPress={() => {
@@ -121,6 +123,7 @@ const VideoGallery = ({ navigation }) => {
             color: 'white',
           }}></PoppinsTextMedium>
       </View>
+      
       <ScrollView style={{ width: '100%', height: '90%' }}>
 
 
@@ -129,7 +132,7 @@ const VideoGallery = ({ navigation }) => {
             borderTopRightRadius: 30,
             borderTopLeftRadius: 30,
             backgroundColor: 'white',
-            minHeight: 500,
+            minHeight: 500, 
             marginTop: 10,
             alignItems: 'flex-start',
             justifyContent: 'center',

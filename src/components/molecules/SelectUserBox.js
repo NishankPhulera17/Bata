@@ -65,7 +65,7 @@ const SelectUserBox = (props) => {
             props.navigation.navigate('OtpLogin',{needsApproval:needsApproval, userType:props.content, userId:props.id,registrationRequired:registrationRequired})
         }
         else{
-            props.navigation.navigate('PasswordLogin',{needsApproval:needsApproval, userType:props.content, userId:props.id,registrationRequired:registrationRequired})
+            props.navigation.navigate('OtpLogin',{needsApproval:needsApproval, userType:props.content, userId:props.id,registrationRequired:registrationRequired})
         console.log("Password Login",props.content,props.id,registrationRequired,needsApproval)
         }
 

@@ -653,7 +653,7 @@
 					"-lc++",
 					"$(inherited)",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.ozoneoverseas;
+				PRODUCT_BUNDLE_IDENTIFIER = com.bata;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Bata.app/Bata";
 			};
@@ -678,7 +678,7 @@
 					"-lc++",
 					"$(inherited)",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.ozoneoverseas;
+				PRODUCT_BUNDLE_IDENTIFIER = com.bata;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Bata.app/Bata";
 			};
@@ -709,7 +709,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.ozoneoverseas;
+				PRODUCT_BUNDLE_IDENTIFIER = com.bata;
 				PRODUCT_NAME = "Bata";
 				SWIFT_OBJC_BRIDGING_HEADER = "Bata-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -742,7 +742,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.ozoneoverseas;
+				PRODUCT_BUNDLE_IDENTIFIER = com.bata;
 				PRODUCT_NAME = "Bata";
 				SWIFT_OBJC_BRIDGING_HEADER = "Bata-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
