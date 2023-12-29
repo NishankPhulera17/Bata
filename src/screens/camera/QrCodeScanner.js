@@ -379,10 +379,9 @@ const QrCodeScanner = ({ navigation }) => {
       setMessage("Please scan a valid QR")
     }
     else {
-      const qrData = e.data.split('=')[1];
-      console.log("qrData", qrData);
+      
 
-      const requestData = { unique_code: "12345678901234567890123" };
+      const requestData = { unique_code: e.data };
       const verifyQR = async data => {
         // console.log('qrData', data);
         try {
@@ -798,6 +797,19 @@ const QrCodeScanner = ({ navigation }) => {
 
 
   const handleAddBar = () =>{
+    let addedbarcodesId = []
+    // console.log("list of added barcodes",addedQrList)
+    for(var i=0;i<addedQrList.length;i++)
+    {
+      addedbarcodesId.push(addedQrList[i].id)
+    }
+
+    console.log("list of added barcodes",addedbarcodesId)
+    if(addedbarcodesId.length!==0)
+    {
+      dispatch(setQrIdList(addedbarcodesId))
+      dispatch(setQrData(addedQrList))
+    }
     handleWorkflowNavigation()
   }
 
