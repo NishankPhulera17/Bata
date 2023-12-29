@@ -40,7 +40,7 @@ const TextInputAadhar = (props) => {
         isError:verifyAadharIsError
       }]= useVerifyAadharMutation()
 
-    console.log("Aadhar TextInput")
+    // console.log("Aadhar TextInput")
 
     useEffect(()=>{
       if(value)

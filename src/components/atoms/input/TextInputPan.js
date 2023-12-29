@@ -20,7 +20,7 @@ const label = props.label
         isError:verifyPanIsError
       }]= useVerifyPanMutation()
 
-    console.log("Aadhar TextInput")
+    // console.log("Aadhar TextInput")
 
     useEffect(()=>{
        if(value)
@@ -44,6 +44,8 @@ const label = props.label
         }
        }
       },[value])
+
+
       useEffect(()=>{
         if(verifyPanData)
         {

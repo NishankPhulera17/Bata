@@ -17,10 +17,10 @@ const TextInputGST = (props) => {
         isError:verifyGstIsError
       }]= useVerifyGstMutation()
 
-    console.log("Aadhar TextInput")
+    // console.log("Aadhar TextInput")
 
     useEffect(()=>{
-        if(value.length===15)
+        if(value?.length===15)
         {
           const data = {
             "gstin":"29AAICP2912R1ZR",

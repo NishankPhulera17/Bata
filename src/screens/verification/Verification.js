@@ -249,7 +249,7 @@ useEffect(()=>{
   {
     // setName(verifyPanData.body.registered_name)
     // setPan(verifyPanData.body.pan)
-   console.log("SUCCESS PAN")
+  //  console.log("SUCCESS PAN")
    const temp = {"type":"pan","value":verifyPanData.body.pan}
    setVerified([...verified,temp])
    setPanVerified(true)
@@ -261,15 +261,15 @@ useEffect(()=>{
     setError(true)
     // handlePanInput("")
     setMessage(verifyPanError.data.message)
-  console.log("verifyPanError",verifyPanError)
+  // console.log("verifyPanError",verifyPanError)
   }
   },[verifyPanData,verifyPanError])
 
 
-console.log(pan)
+// console.log(pan) 
   const handlePanInput=(text)=>{
     setPan(text)
-    console.log("pan value",text)
+    // console.log("pan value",text)
     if(text.length===10)
     {
      
@@ -291,7 +291,7 @@ console.log(pan)
         "aadhaar_number":text
     }
     sendAadharOtpFunc(data)
-      console.log(data)
+      // console.log(data)
      
     }
    }
@@ -343,16 +343,16 @@ console.log(pan)
 
   
 
-  console.log("verified array status",verified)
+  // console.log("verified array status",verified)
   
   const handleRegistrationFormSubmission=async()=>{
-    console.log("verified array",JSON.stringify(verified))
+    // console.log("verified array",JSON.stringify(verified))
     
     const credentials = await Keychain.getGenericPassword();
   if (credentials) {
-    console.log(
-      'Credentials successfully loaded for user ' + credentials.username
-    );
+    // console.log(
+    //   'Credentials successfully loaded for user ' + credentials.username
+    // );
     const token = credentials.username
     const inputFormData = {}
     // inputFormData["user_type"] = userData.user_type;
@@ -363,7 +363,7 @@ console.log(pan)
   
     for(var i =0;i<verified.length;i++)
     {
-      console.log("verified",verified[i])
+      // console.log("verified",verified[i])
       if(verified[i].type!=="aadhar_details")
       {
       inputFormData[`is_valid_${verified[i].type}`] = true
@@ -385,7 +385,7 @@ else{
 }
     
     
-    console.log("responseArray",body)
+    // console.log("responseArray",body)
   }
     
     

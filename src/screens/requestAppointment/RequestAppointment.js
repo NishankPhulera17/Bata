@@ -245,7 +245,7 @@ const RequestAppointment = ({ navigation,route }) => {
                             // } 
 
                             else if (item.name === 'aadhaar' || item.name === "aadhar") {
-                                console.log("aadhar")
+                                // console.log("aadhar")
                                 return (
                                     <TextInputAadhar
                                         jsonData={item}
@@ -260,7 +260,7 @@ const RequestAppointment = ({ navigation,route }) => {
                                 );
                             }
                             else if (item.name === 'pan') {
-                                console.log("pan")
+                                // console.log("pan")
                                 return (
                                     <TextInputPan
                                         jsonData={item}

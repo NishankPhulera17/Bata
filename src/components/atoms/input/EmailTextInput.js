@@ -17,7 +17,7 @@ const EmailTextInput = (props) => {
 
   Keyboard.addListener("keyboardDidShow", () => {
   
-    console.log("Keyboard Visible")
+    // console.log("Keyboard Visible")
 
   });
   Keyboard.addListener("keyboardDidHide", () => {
@@ -26,7 +26,7 @@ const EmailTextInput = (props) => {
     handlekeyboardHide("text")
 
     }
-    console.log("Keyboard Hidden")
+    // console.log("Keyboard Hidden")
 
   });
   const isValidEmail = (text) => {
@@ -52,7 +52,7 @@ const handlekeyboardHide=(text)=>{
               }
         }
      
-    console.log("keyboard visible",isValidEmail(value),  placeHolder);
+    // console.log("keyboard visible",isValidEmail(value),  placeHolder);
 }
 
 //   useEffect(() => {

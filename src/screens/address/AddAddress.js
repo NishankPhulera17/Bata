@@ -228,7 +228,7 @@ const AddAddress = ({ navigation }) => {
       );
       const token = credentials.username;
     if (responseArray.length !== 0) {
-      console.log("response array",responseArray)
+      // console.log("response array",responseArray)
       let address = "";
       let data = {}
       for (var i = 0; i < responseArray.length; i++) {

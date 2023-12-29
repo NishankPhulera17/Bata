@@ -210,7 +210,7 @@ const ActivateWarranty = ({ navigation, route }) => {
 
   const warrantyForm =  form ?  Object.values(form) : [];
   // console.log(Object.keys(form))
-  console.log(warrantyForm);
+  // console.log(warrantyForm);
 
  
   // const handleDataTextInputMandatory = (data) => {
@@ -260,7 +260,7 @@ const ActivateWarranty = ({ navigation, route }) => {
   const handleWarrantyFormSubmission = () => {
     // setIsLoading(true);
 
-    console.log('Response Array Is', JSON.stringify(responseArray),Object.keys(form)!==responseArray.length);
+    // console.log('Response Array Is', JSON.stringify(responseArray),Object.keys(form)!==responseArray.length);
     if(Object.keys(form).length!==responseArray.length)
     {
       console.log("inside if statement")

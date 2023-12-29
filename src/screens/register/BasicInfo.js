@@ -93,7 +93,9 @@ const BasicInfo = ({ navigation, route }) => {
   const navigatingFrom = route.params.navigatingFrom
   const name = route.params?.name
   const mobile = route.params?.mobile
-  console.log("appUsers", userType, userTypeId, isManuallyApproved, name, mobile)
+  console.log("appUsers", userType, userTypeId, isManuallyApproved, name, mobile, navigatingFrom)
+  console.log("Navigation From", navigatingFrom)
+
   const width = Dimensions.get('window').width
   const height = Dimensions.get('window').height
 
@@ -430,7 +432,7 @@ const BasicInfo = ({ navigation, route }) => {
     });
   };
 
-  console.log("responseArray", responseArray)
+  // console.log("responseArray", responseArray)
   const modalClose = () => {
     setError(false);
   };
@@ -538,7 +540,7 @@ const BasicInfo = ({ navigation, route }) => {
       setError(true)
       setMessage("Otp isn't verified yet")
     }
-    console.log("responseArraybody", body)
+    // console.log("responseArraybody", body)
   }
 
   return (
@@ -625,12 +627,12 @@ const BasicInfo = ({ navigation, route }) => {
 
         <View style={{ width: width, backgroundColor: "white", alignItems: "center", justifyContent: 'flex-start', paddingTop: 20 }}>
           {formFound ? <PoppinsTextMedium style={{ color: 'black', fontWeight: '700', fontSize: 18, marginBottom: 40 }} content="Please Fill The Following Form To Register"></PoppinsTextMedium> : <PoppinsTextMedium style={{ color: 'black', fontWeight: '700', fontSize: 18, marginBottom: 40 }} content="No Form Available !!"></PoppinsTextMedium>}
-
+            
           {/* <RegistrationProgress data={["Basic Info","Business Info","Manage Address","Other Info"]}></RegistrationProgress> */}
           {registrationForm &&
             registrationForm.map((item, index) => {
-              if (item.type === 'text') {
-                console.log("the user name", userName)
+              if (item.type === 'text' || item.type== 'number') {
+                // console.log("the user name", userName)
                 if ((item.name === 'phone' || item.name === "mobile")) {
                   return (
                     <>
@@ -743,7 +745,7 @@ const BasicInfo = ({ navigation, route }) => {
 
                 // } 
                 else if (item.name === 'aadhaar' || item.name === "aadhar") {
-                  console.log("aadhar")
+                  // console.log("aadhar")
                   return (
                     <TextInputAadhar
                       required={item.required}
@@ -758,7 +760,7 @@ const BasicInfo = ({ navigation, route }) => {
                   );
                 }
                 else if (item.name === 'pan') {
-                  console.log("pan")
+                  // console.log("pan")
                   return (
                     <TextInputPan
                       required={item.required}

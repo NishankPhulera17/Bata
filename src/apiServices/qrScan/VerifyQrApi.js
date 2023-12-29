@@ -3,19 +3,18 @@ import { slug } from "../../utils/Slug";
 export const VerifyQrApi = baseApi.injectEndpoints({
     endpoints:(builder) =>({
         verifyQr : builder.mutation({
-            query({token,data}){
+            query(data){
                 console.log("from verifyqr api",data)
                 return {
-                    url:`api/tenant/qr/verify`,
+                    url:`api/app/barCodeScan`,
                     method:'post',
                     headers:{
                         "Content-Type": "application/json",
                         "slug":slug,
-                        "Authorization": `Bearer ${token}`,
+                        "Authorization": `Bearer ${data.token}`,
                     },
-                    body:JSON.stringify(data)
+                    body:JSON.stringify(data.body)
                     
-                   
                 }
             }
         })
