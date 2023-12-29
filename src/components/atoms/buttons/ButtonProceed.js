@@ -21,12 +21,8 @@ const ButtonProceed = props => {
   // prop to display text inside the button
   
   const handleButtonPress=()=>{
-
-    
     props.handleOperation()
-  
   }
-
   
 
   return (

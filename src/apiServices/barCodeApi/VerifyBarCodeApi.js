@@ -1,21 +1,20 @@
 import { baseApi } from "../baseApi";
 import { slug } from "../../utils/Slug";
-export const VerifyQrApi = baseApi.injectEndpoints({
+export const VerifyBarCodeApi = baseApi.injectEndpoints({
     endpoints:(builder) =>({
-        verifyQr : builder.mutation({
-            query({token,data}){
+        verifyBar : builder.mutation({
+            query(data){
                 console.log("from verifyqr api",data)
                 return {
-                    url:`api/tenant/qr/verify`,
+                    url:`api/app/barCodeScan`,
                     method:'post',
                     headers:{
                         "Content-Type": "application/json",
                         "slug":slug,
-                        "Authorization": `Bearer ${token}`,
+                        "Authorization": `Bearer ${data.token}`,
                     },
-                    body:JSON.stringify(data)
+                    body:JSON.stringify(data.body)
                     
-                   
                 }
             }
         })
@@ -23,4 +22,5 @@ export const VerifyQrApi = baseApi.injectEndpoints({
 });
 
 
-export const {useVerifyQrMutation} = VerifyQrApi
+export const {useVerifyBarMutation} = VerifyBarCodeApi
+

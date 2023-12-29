@@ -36,6 +36,7 @@ import  Celebrate  from "react-native-vector-icons/MaterialIcons";
 import Error from "react-native-vector-icons/MaterialIcons"
 import { useGetActiveMembershipMutation } from '../../apiServices/membership/AppMembershipApi';
 import ErrorModal from "../../components/modals/ErrorModal";
+import { useGetAppThemeDataMutation } from "../../apiServices/appTheme/AppThemeApi";
 
 
 const CongratulateOnScan = ({ navigation, route }) => {
@@ -45,6 +46,7 @@ const CongratulateOnScan = ({ navigation, route }) => {
   const [totalPoints, setTotalPoints] = useState(0)
   const [error,setError] = useState(false)
   const [message, setMessage] = useState('')
+  const [PercentMultiplier, setPercentMultiplier] =  useState(null)
   const buttonThemeColor = useSelector(
     (state) => state.apptheme.ternaryThemeColor
   )
@@ -103,6 +105,16 @@ const CongratulateOnScan = ({ navigation, route }) => {
       isError: addBulkPointOnProductIsError,
     },
   ] = useAddBulkPointOnProductMutation();
+
+  const [
+    getAppTheme,
+    {
+      data: getAppThemeData,
+      error: getAppThemeError,
+      isLoading: getAppThemeIsLoading,
+      isError: getAppThemeIsError,
+    }
+  ] = useGetAppThemeDataMutation();
 
   const [
     checkUserPointFunc,
@@ -180,6 +192,22 @@ const CongratulateOnScan = ({ navigation, route }) => {
   useEffect(()=>{
     getMembership()
   },[])
+
+  useEffect(()=>{
+    getAppTheme("Bata")
+  },[])
+
+  useEffect(()=>{
+    if(getAppThemeData){
+      console.log("getAppThemeData",getAppThemeData)
+      setPercentMultiplier(Number(getAppThemeData?.body?.points_sharing?.percentage_points_value))
+    }
+    else{
+      console.log("getAppThemeError",getAppThemeError)
+    }
+  },[getAppThemeData, getAppThemeError])
+
+
   useEffect(() => {
     if (getActiveMembershipData) {
         console.log("getActiveMembershipData", JSON.stringify(getActiveMembershipData))
