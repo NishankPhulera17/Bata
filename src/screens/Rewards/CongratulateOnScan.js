@@ -79,7 +79,7 @@ const CongratulateOnScan = ({ navigation, route }) => {
   const location = useSelector((state) => state.userLocation.location);
   console.log("shouldSharePoints", shouldSharePoints, productData);
   console.log("location", location);
-  // console.log('Location', location, userData, productData, qrData);
+  console.log('Location', location, userData, productData, qrData);
   const height = Dimensions.get("window").height;
   // workflow for the given user
   const workflowProgram = route.params.workflowProgram;

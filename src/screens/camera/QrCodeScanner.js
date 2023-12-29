@@ -307,7 +307,7 @@ const QrCodeScanner = ({ navigation }) => {
 
   useEffect(() => {
     if (fetchAllQrScanedListData) {
-      console.log("fetchAllQrScanedListData", fetchAllQrScanedListData.body.data)
+      // console.log("fetchAllQrScanedListData", fetchAllQrScanedListData.body.data)
       // checkFirstScan(fetchAllQrScanedListData.body.data)
       if (fetchAllQrScanedListData.body.data.length === 0) {
         setIsFirstScan(true)
@@ -805,10 +805,16 @@ const QrCodeScanner = ({ navigation }) => {
     }
 
     console.log("list of added barcodes",addedbarcodesId)
-    if(addedbarcodesId.length!==0)
+    if(addedQrList.length<=1)
     {
+      console.log("qr list is less than 1",addedQrList)
+      dispatch(setQrData(addedQrList[0]))
+    }
+    else if(addedQrList.length>1)
+    {
+      console.log("qr list is greater than 1",addedQrList)
+
       dispatch(setQrIdList(addedbarcodesId))
-      dispatch(setQrData(addedQrList))
     }
     handleWorkflowNavigation()
   }

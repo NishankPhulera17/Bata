@@ -186,7 +186,7 @@ const Dashboard = ({ navigation }) => {
   useEffect(()=>{
     if(fetchAllQrScanedListData)
     {
-      console.log("fetchAllQrScanedListData",JSON.stringify(fetchAllQrScanedListData))
+      // console.log("fetchAllQrScanedListData",JSON.stringify(fetchAllQrScanedListData))
       if(fetchAllQrScanedListData.success)
       {
         if(fetchAllQrScanedListData.body.total!==0)
