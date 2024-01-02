@@ -24,6 +24,8 @@ const Splash = ({ navigation }) => {
   const [isAlreadyIntroduced, setIsAlreadyIntroduced] = useState(null);
   const [gotLoginData, setGotLoginData] = useState()
   const [listUsers, setListUsers] = useState([]);
+  const [isUserLoggedIn, setIsUserLoggedIn] = useState(null)
+  
 
   const registrationRequired = useSelector(state => state.appusers.registrationRequired)
   const manualApproval = useSelector(state => state.appusers.manualApproval)
@@ -51,6 +53,9 @@ const Splash = ({ navigation }) => {
       isError: getUsersDataIsError,
     },
   ] = useGetAppUsersDataMutation();
+
+
+  
 
   useEffect(() => {
     getUsers();
@@ -96,6 +101,10 @@ const Splash = ({ navigation }) => {
     requestLocationPermission()
   }, [])
 
+   // fetching data and checking for errors from the API-----------------------
+
+
+
 
   useEffect(() => {
     if (getUsersData) {
@@ -110,33 +119,83 @@ const Splash = ({ navigation }) => {
         }
       })
       console.log("appUsers", appUsersData)
+
       dispatch(setAppUsers(appUsers))
       dispatch(setAppUsersData(appUsersData))
-      setListUsers(getUsersData.body);
-
-      // if(appUsersData?.length == 1 && user_type_option=="single"){
-      //   checkRegistrationRequired()
-      // } 
+      setTimeout(() => {
+        setListUsers(getUsersData.body);
+      }, 2000)
 
     } else if (getUsersError) {
       console.log("getUsersError", getUsersError);
     }
   }, [getUsersData, getUsersError]);
 
+  useEffect(() => {
+    if (getAppThemeData) {
+      console.log("getAppThemeData", JSON.stringify(getAppThemeData.body))
+      dispatch(setPrimaryThemeColor(getAppThemeData.body.theme.color_shades["600"]))
+      dispatch(setSecondaryThemeColor(getAppThemeData.body.theme.color_shades["400"]))
+      dispatch(setTernaryThemeColor(getAppThemeData.body.theme.color_shades["700"]))
+      dispatch(setIcon(getAppThemeData.body.logo[0]))
+      dispatch(setIconDrawer(getAppThemeData.body.logo[0]))
+      dispatch(setOptLogin(getAppThemeData.body.login_options.Otp.users))
+      dispatch(setPasswordLogin(getAppThemeData.body.login_options.Password.users))
+      dispatch(setButtonThemeColor(getAppThemeData.body.theme.color_shades["700"]))
+      dispatch(setManualApproval(getAppThemeData.body.approval_flow_options.Manual.users))
+      dispatch(setAutoApproval(getAppThemeData.body.approval_flow_options.AutoApproval.users))
+      dispatch(setRegistrationRequired(getAppThemeData.body.registration_options.Registration.users))
+      dispatch(setColorShades(getAppThemeData.body.theme.color_shades))
+      dispatch(setKycOptions(getAppThemeData.body.kyc_options))
+      dispatch(setPointSharing(getAppThemeData.body.points_sharing))
+      dispatch(setSocials(getAppThemeData.body.socials))
+      dispatch(setWebsite(getAppThemeData.body.website))
+      dispatch(setCustomerSupportMail(getAppThemeData.body.customer_support_email))
+      dispatch(setCustomerSupportMobile(getAppThemeData.body.customer_support_mobile))
+      dispatch(setExtraFeatures(getAppThemeData.body.addon_features))
+      if (getAppThemeData.body.addon_features.kyc_online_verification !== undefined) {
+        if (getAppThemeData.body.addon_features.kyc_online_verification) {
+          dispatch(setIsOnlineVeriification())
+        }
+      }
+      console.log("isAlreadyIntro", isAlreadyIntroduced)
 
-
-
-  const checkRegistrationRequired = () => {
-
-    if (registrationRequired.includes(getUsersData.body[0]?.user_type)) {
-      checkApprovalFlow(true)
-      console.log("registration required")
+      getData()
     }
-    else {
-      checkApprovalFlow(false)
-      console.log("registration not required")
+    else if (getAppThemeError) {
 
+
+      console.log("getAppThemeIsError", getAppThemeIsError)
+      console.log("getAppThemeError", getAppThemeError)
     }
+
+  }, [getAppThemeData, getAppThemeError])
+
+
+  useEffect(() => {
+    console.log("list user ki ==========>",  isUserLoggedIn)
+    setTimeout(() => {
+   isUserLoggedIn!==null && !isUserLoggedIn &&  checkRegistrationRequired(listUsers)
+    }, 2000);
+  }, [listUsers?.[0]?.user_type, isUserLoggedIn])
+
+
+
+
+  const checkRegistrationRequired = (listUsers) => {
+    console.log("yaha pe list user---------------->", listUsers[0])
+    setTimeout(() => {
+      if (registrationRequired.includes(listUsers?.[0]?.user_type)) {
+        checkApprovalFlow(true)
+        console.log("registration required")
+      }
+      else {
+        checkApprovalFlow(false)
+        console.log("registration not required")
+
+      }
+    }, 3000)
+
 
   }
 
@@ -153,25 +212,19 @@ const Splash = ({ navigation }) => {
     console.log("Needs Approval", needsApproval)
     if (otpLogin.includes(getUsersData?.body?.[0].user_type)
     ) {
+      setTimeout(() => {
+        listUsers && navigation.navigate('OtpLogin', { needsApproval: needsApproval, userType: listUsers[0]?.user_type, userId: listUsers[0]?.user_type_id, registrationRequired: registrationRequired })
 
-      navigation.navigate('OtpLogin', { needsApproval: needsApproval, userType: listUsers[0]?.user_type, userId: listUsers[0]?.user_type_id, registrationRequired: registrationRequired })
+      }, 3000);
     }
     else {
-      navigation.navigate('OtpLogin', { needsApproval: needsApproval, userType: listUsers[0]?.user_type, userId: listUsers[0]?.user_type_id, registrationRequired: registrationRequired })
+      setTimeout(() => {
+        listUsers && navigation.navigate('OtpLogin', { needsApproval: needsApproval, userType: listUsers[0]?.user_type, userId: listUsers[0]?.user_type_id, registrationRequired: registrationRequired })
+
+      }, 3000)
       // console.log("Password Login", props.content, props.id, registrationRequired, needsApproval)
     }
   }
-
-
-useEffect(()=>{
-
-  setTimeout(()=>{
-    navigation.navigate('OtpLogin', { needsApproval: needsApproval, userType: listUsers[0]?.user_type, userId: listUsers[0]?.user_type_id, registrationRequired: registrationRequired })
-
-  },5000)
-
-},[listUsers])
-
 
 
   const getData = async () => {
@@ -191,17 +244,21 @@ useEffect(()=>{
           dispatch(setUserData(parsedJsonValue))
           dispatch(setId(parsedJsonValue.id))
 
+          setIsUserLoggedIn(true)
+          
           navigation.navigate('Dashboard');
 
 
         }
         catch (e) {
           console.log("Error in dispatch", e)
+          setIsUserLoggedIn(false)
         }
 
         // console.log("isAlreadyIntroduced",isAlreadyIntroduced)
       }
       else {
+        setIsUserLoggedIn(false)
         if (value === "Yes") {
           if (user_type_option == "single") {
             checkRegistrationRequired()
@@ -238,46 +295,7 @@ useEffect(()=>{
   // calling API to fetch themes for the app
 
 
-  // fetching data and checking for errors from the API-----------------------
-
-  useEffect(() => {
-    if (getAppThemeData) {
-      console.log("getAppThemeData", JSON.stringify(getAppThemeData.body))
-      dispatch(setPrimaryThemeColor(getAppThemeData.body.theme.color_shades["600"]))
-      dispatch(setSecondaryThemeColor(getAppThemeData.body.theme.color_shades["400"]))
-      dispatch(setTernaryThemeColor(getAppThemeData.body.theme.color_shades["700"]))
-      dispatch(setIcon(getAppThemeData.body.logo[0]))
-      dispatch(setIconDrawer(getAppThemeData.body.logo[0]))
-      dispatch(setOptLogin(getAppThemeData.body.login_options.Otp.users))
-      dispatch(setPasswordLogin(getAppThemeData.body.login_options.Password.users))
-      dispatch(setButtonThemeColor(getAppThemeData.body.theme.color_shades["700"]))
-      dispatch(setManualApproval(getAppThemeData.body.approval_flow_options.Manual.users))
-      dispatch(setAutoApproval(getAppThemeData.body.approval_flow_options.AutoApproval.users))
-      dispatch(setRegistrationRequired(getAppThemeData.body.registration_options.Registration.users))
-      dispatch(setColorShades(getAppThemeData.body.theme.color_shades))
-      dispatch(setKycOptions(getAppThemeData.body.kyc_options))
-      dispatch(setPointSharing(getAppThemeData.body.points_sharing))
-      dispatch(setSocials(getAppThemeData.body.socials))
-      dispatch(setWebsite(getAppThemeData.body.website))
-      dispatch(setCustomerSupportMail(getAppThemeData.body.customer_support_email))
-      dispatch(setCustomerSupportMobile(getAppThemeData.body.customer_support_mobile))
-      dispatch(setExtraFeatures(getAppThemeData.body.addon_features))
-      if (getAppThemeData.body.addon_features.kyc_online_verification !== undefined) {
-        if (getAppThemeData.body.addon_features.kyc_online_verification) {
-          dispatch(setIsOnlineVeriification())
-        }
-      }
-      console.log("isAlreadyIntro", isAlreadyIntroduced)
-      getData()
-    }
-    else if (getAppThemeError) {
-
-
-      console.log("getAppThemeIsError", getAppThemeIsError)
-      console.log("getAppThemeError", getAppThemeError)
-    }
-
-  }, [getAppThemeData, getAppThemeError])
+ 
 
 
 

@@ -42,11 +42,12 @@ import { useVerifyOtpForNormalUseMutation } from '../../apiServices/otp/VerifyOt
 import DropDownRegistration from '../../components/atoms/dropdown/DropDownRegistration';
 import EmailTextInput from '../../components/atoms/input/EmailTextInput';
 import { validatePathConfig } from '@react-navigation/native';
+import { user_type_option } from '../../utils/usertTypeOption';
 
 
 const BasicInfo = ({ navigation, route }) => {
-  const [userName, setUserName] = useState(route.params.name)
-  const [userMobile, setUserMobile] = useState(route.params.mobile)
+  const [userName, setUserName] = useState("")
+  const [userMobile, setUserMobile] = useState("")
   const [message, setMessage] = useState();
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState(false);
@@ -394,6 +395,9 @@ const BasicInfo = ({ navigation, route }) => {
     if (data.name === "name") {
       setUserName(data.value)
     }
+    if(data.name=="mobile"){
+      setUserMobile(data.value)
+    }
     // console.log("isValidEmail", isValidEmail(data.value))
 
     if (data.name === "email") {
@@ -648,7 +652,7 @@ const BasicInfo = ({ navigation, route }) => {
                             placeHolder={item.name}
                             value={userMobile}
                             label={item.label}
-                            isEditable={false}
+                            isEditable={user_type_option=="single"}
                           >
                             {' '}
                           </TextInputNumericRectangle>}
@@ -723,7 +727,7 @@ const BasicInfo = ({ navigation, route }) => {
                       placeHolder={item.name}
                       value={userName}
                       label={item.label}
-                      isEditable={false}
+                      isEditable={user_type_option=="single"}
                     ></PrefilledTextInput>
                   )
                 }
@@ -870,6 +874,7 @@ const BasicInfo = ({ navigation, route }) => {
                       key={index}
                       handleData={handleChildComponentData}
                       placeHolder={item.name}
+                      required={item.required}
                       label={item.label}>
                       {' '}
                     </TextInputRectangle>
