@@ -1,26 +1,34 @@
 import React, { useEffect, useState } from 'react';
-import { View, StyleSheet, Text, Image, ImageBackground,PermissionsAndroid, Platform } from 'react-native';
+import { View, StyleSheet, Text, Image, ImageBackground, PermissionsAndroid, Platform } from 'react-native';
 import DotHorizontalList from '../../components/molecules/DotHorizontalList';
 import { useGetAppThemeDataMutation } from '../../apiServices/appTheme/AppThemeApi';
 import { useSelector, useDispatch } from 'react-redux'
-import { setPrimaryThemeColor, setSecondaryThemeColor, setIcon, setIconDrawer, setTernaryThemeColor, setOptLogin, setPasswordLogin, setButtonThemeColor, setColorShades, setKycOptions,setIsOnlineVeriification,setSocials, setWebsite, setCustomerSupportMail, setCustomerSupportMobile, setExtraFeatures } from '../../../redux/slices/appThemeSlice';
+import { setPrimaryThemeColor, setSecondaryThemeColor, setIcon, setIconDrawer, setTernaryThemeColor, setOptLogin, setPasswordLogin, setButtonThemeColor, setColorShades, setKycOptions, setIsOnlineVeriification, setSocials, setWebsite, setCustomerSupportMail, setCustomerSupportMobile, setExtraFeatures } from '../../../redux/slices/appThemeSlice';
 import { setManualApproval, setAutoApproval, setRegistrationRequired } from '../../../redux/slices/appUserSlice';
 import { setPointSharing } from '../../../redux/slices/pointSharingSlice';
 import { useIsFocused } from '@react-navigation/native';
 import FastImage from 'react-native-fast-image';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { setAppUserType, setAppUserName, setAppUserId, setUserData, setId} from '../../../redux/slices/appUserDataSlice';
-import messaging from '@react-native-firebase/messaging';    
+import { setAppUserType, setAppUserName, setAppUserId, setUserData, setId } from '../../../redux/slices/appUserDataSlice';
+import messaging from '@react-native-firebase/messaging';
 import { setFcmToken } from '../../../redux/slices/fcmTokenSlice';
-import { setAppUsers,setAppUsersData } from '../../../redux/slices/appUserSlice';
+import { setAppUsers, setAppUsersData } from '../../../redux/slices/appUserSlice';
 import { useGetAppUsersDataMutation } from '../../apiServices/appUsers/AppUsersApi';
 import Geolocation from '@react-native-community/geolocation';
+import { user_type_option } from '../../utils/usertTypeOption';
+
 const Splash = ({ navigation }) => {
   const dispatch = useDispatch()
   const focused = useIsFocused()
 
   const [isAlreadyIntroduced, setIsAlreadyIntroduced] = useState(null);
   const [gotLoginData, setGotLoginData] = useState()
+  const [listUsers, setListUsers] = useState([]);
+
+  const registrationRequired = useSelector(state => state.appusers.registrationRequired)
+  const manualApproval = useSelector(state => state.appusers.manualApproval)
+  const otpLogin = useSelector(state => state.apptheme.otpLogin)
+
 
 
   const gifUri = Image.resolveAssetSource(require('../../../assets/gif/ozoStars.gif')).uri;
@@ -44,21 +52,20 @@ const Splash = ({ navigation }) => {
     },
   ] = useGetAppUsersDataMutation();
 
-  useEffect(()=>{
+  useEffect(() => {
     getUsers();
     getAppTheme("Bata")
     const checkToken = async () => {
       const fcmToken = await messaging().getToken();
       if (fcmToken) {
-         console.log("fcmToken",fcmToken);
-         dispatch(setFcmToken(fcmToken))
-      } 
-     }
-     checkToken()
+        console.log("fcmToken", fcmToken);
+        dispatch(setFcmToken(fcmToken))
+      }
+    }
+    checkToken()
     const requestLocationPermission = async () => {
       try {
-        if(Platform.OS==="android")
-        {
+        if (Platform.OS === "android") {
           const granted = await PermissionsAndroid.request(
             PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
             {
@@ -78,106 +85,161 @@ const Splash = ({ navigation }) => {
             return false;
           }
         }
-        else{
+        else {
           Geolocation.requestAuthorization()
         }
-        
+
       } catch (err) {
         return false;
       }
     };
     requestLocationPermission()
-  },[])
+  }, [])
 
-  
+
   useEffect(() => {
     if (getUsersData) {
-      console.log("type of users",getUsersData.body);
-      const appUsers = getUsersData.body.map((item,index)=>{
+      console.log("type of users", getUsersData.body);
+      const appUsers = getUsersData.body.map((item, index) => {
         return item.name
       })
-      const appUsersData = getUsersData.body.map((item,index)=>{
-        return {"name":item.name,
-      "id":item.user_type_id
-      }
+      const appUsersData = getUsersData.body.map((item, index) => {
+        return {
+          "name": item.name,
+          "id": item.user_type_id
+        }
       })
-      console.log("appUsers",appUsers)
+      console.log("appUsers", appUsersData)
       dispatch(setAppUsers(appUsers))
       dispatch(setAppUsersData(appUsersData))
-    } else if(getUsersError) {
-      console.log("getUsersError",getUsersError);
+      setListUsers(getUsersData.body);
+
+      // if(appUsersData?.length == 1 && user_type_option=="single"){
+      //   checkRegistrationRequired()
+      // } 
+
+    } else if (getUsersError) {
+      console.log("getUsersError", getUsersError);
     }
   }, [getUsersData, getUsersError]);
 
- 
-  
- 
-    const getData = async () => {
-      try {
-        const jsonValue = await AsyncStorage.getItem('loginData');
-        console.log("loginData",JSON.parse(jsonValue))
-        const parsedJsonValue = JSON.parse(jsonValue)
-        const value = await AsyncStorage.getItem('isAlreadyIntroduced');
-      if (value !== null && jsonValue!==null ) {
+
+
+
+  const checkRegistrationRequired = () => {
+
+    if (registrationRequired.includes(getUsersData.body[0]?.user_type)) {
+      checkApprovalFlow(true)
+      console.log("registration required")
+    }
+    else {
+      checkApprovalFlow(false)
+      console.log("registration not required")
+
+    }
+
+  }
+
+  const checkApprovalFlow = (registrationRequired) => {
+    if (manualApproval.includes(getUsersData?.body?.[0].user_type)) {
+      handleNavigationBaseddOnUser(true, registrationRequired)
+    }
+    else {
+      handleNavigationBaseddOnUser(false, registrationRequired)
+    }
+  }
+
+  const handleNavigationBaseddOnUser = (needsApproval, registrationRequired) => {
+    console.log("Needs Approval", needsApproval)
+    if (otpLogin.includes(getUsersData?.body?.[0].user_type)
+    ) {
+
+      navigation.navigate('OtpLogin', { needsApproval: needsApproval, userType: listUsers[0]?.user_type, userId: listUsers[0]?.user_type_id, registrationRequired: registrationRequired })
+    }
+    else {
+      navigation.navigate('OtpLogin', { needsApproval: needsApproval, userType: listUsers[0]?.user_type, userId: listUsers[0]?.user_type_id, registrationRequired: registrationRequired })
+      // console.log("Password Login", props.content, props.id, registrationRequired, needsApproval)
+    }
+  }
+
+
+useEffect(()=>{
+
+  setTimeout(()=>{
+    navigation.navigate('OtpLogin', { needsApproval: needsApproval, userType: listUsers[0]?.user_type, userId: listUsers[0]?.user_type_id, registrationRequired: registrationRequired })
+
+  },5000)
+
+},[listUsers])
+
+
+
+  const getData = async () => {
+    try {
+      const jsonValue = await AsyncStorage.getItem('loginData');
+      console.log("loginData", JSON.parse(jsonValue))
+      const parsedJsonValue = JSON.parse(jsonValue)
+      const value = await AsyncStorage.getItem('isAlreadyIntroduced');
+      if (value !== null && jsonValue !== null) {
         // value previously stored
-        console.log("asynch value",value,jsonValue)
-        try{
-          console.log("Trying to dispatch",parsedJsonValue.user_type_id)
+        console.log("asynch value", value, jsonValue)
+        try {
+          console.log("Trying to dispatch", parsedJsonValue.user_type_id)
           dispatch(setAppUserId(parsedJsonValue.user_type_id))
           dispatch(setAppUserName(parsedJsonValue.name))
           dispatch(setAppUserType(parsedJsonValue.user_type))
           dispatch(setUserData(parsedJsonValue))
           dispatch(setId(parsedJsonValue.id))
-          
+
           navigation.navigate('Dashboard');
 
-         
+
         }
-        catch(e)
-        {
+        catch (e) {
           console.log("Error in dispatch", e)
         }
 
-          // console.log("isAlreadyIntroduced",isAlreadyIntroduced)
-        }
-        else 
-        {
-          if(value==="Yes")
-          {
+        // console.log("isAlreadyIntroduced",isAlreadyIntroduced)
+      }
+      else {
+        if (value === "Yes") {
+          if (user_type_option == "single") {
+            checkRegistrationRequired()
+          }
+          else {
             navigation.navigate('SelectUser');
+          }
 
-          }
-          else{
-            navigation.navigate('Introduction')
-          }
-          // console.log("isAlreadyIntroduced",isAlreadyIntroduced,gotLoginData)
-    
-          
-           
-       
-    
         }
+        else {
+          navigation.navigate('Introduction')
+        }
+        // console.log("isAlreadyIntroduced",isAlreadyIntroduced,gotLoginData)
+
+
 
       }
-        
-       
-        
-        
-       catch (e) {
-        console.log("Error is reading loginData",e)
-      }
-    };
-   
-  
-  
 
-  
-  
+    }
+
+
+
+
+    catch (e) {
+      console.log("Error is reading loginData", e)
+    }
+  };
+
+
+
+
+
+
   // calling API to fetch themes for the app
-  
+
 
   // fetching data and checking for errors from the API-----------------------
-  
+
   useEffect(() => {
     if (getAppThemeData) {
       console.log("getAppThemeData", JSON.stringify(getAppThemeData.body))
@@ -200,35 +262,33 @@ const Splash = ({ navigation }) => {
       dispatch(setCustomerSupportMail(getAppThemeData.body.customer_support_email))
       dispatch(setCustomerSupportMobile(getAppThemeData.body.customer_support_mobile))
       dispatch(setExtraFeatures(getAppThemeData.body.addon_features))
-      if(getAppThemeData.body.addon_features.kyc_online_verification!==undefined)
-      {
-        if(getAppThemeData.body.addon_features.kyc_online_verification)
-        {
+      if (getAppThemeData.body.addon_features.kyc_online_verification !== undefined) {
+        if (getAppThemeData.body.addon_features.kyc_online_verification) {
           dispatch(setIsOnlineVeriification())
         }
       }
       console.log("isAlreadyIntro", isAlreadyIntroduced)
       getData()
     }
-    else if(getAppThemeError){
-      
+    else if (getAppThemeError) {
+
 
       console.log("getAppThemeIsError", getAppThemeIsError)
       console.log("getAppThemeError", getAppThemeError)
     }
-   
-  }, [getAppThemeData,getAppThemeError])
+
+  }, [getAppThemeData, getAppThemeError])
 
 
-  
+
 
 
   return (
-    <View style={{ flex: 1, alignItems:'center', width:'100%', height:'100%', justifyContent:'center' }}>
+    <View style={{ flex: 1, alignItems: 'center', width: '100%', height: '100%', justifyContent: 'center' }}>
       {/* <ImageBackground resizeMode='stretch' style={{ flex: 1, height: '100%', width: '100%', }} source={require('../../../assets/images/batalogo.png')}> */}
 
-        <Image  style={{ width: 300, height: 100,}}  source={require('../../../assets/images/batalogo.png')} />
-        {/* <FastImage
+      <Image style={{ width: 300, height: 100, }} source={require('../../../assets/images/batalogo.png')} />
+      {/* <FastImage
           style={{ width: 250, height: 250, marginTop:'auto',alignSelf:'center' }}
           source={{
             uri: gifUri, // Update the path to your GIF

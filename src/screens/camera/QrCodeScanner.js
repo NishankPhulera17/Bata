@@ -397,7 +397,7 @@ const QrCodeScanner = ({ navigation }) => {
 
             const obj ={
               body:{
-                unique_code:"12345678901234567890123",
+                unique_code:e?.data,
                 platform_id:1,
                 scanned_by_name:userData.name
               },

@@ -81,8 +81,6 @@ const OtpLogin = ({ navigation, route }) => {
     isError: termsIsError
   }] = useFetchLegalsMutation()
 
-
-
   const [
     getNameFunc,
     {
@@ -97,7 +95,8 @@ const OtpLogin = ({ navigation, route }) => {
   const user_type_id = route.params.userId;
   const user_type = route.params.userType;
   const registrationRequired = route.params.registrationRequired
-  console.log("registrationRequired", registrationRequired)
+
+  console.log("registrationRequired", registrationRequired, user_type)
   const width = Dimensions.get('window').width;
   const navigationParams = { "needsApproval": needsApproval, "user_type_id": user_type_id, "user_type": user_type, "mobile": mobile, "name": name }
 
@@ -205,12 +204,16 @@ const OtpLogin = ({ navigation, route }) => {
         if (getNameData.message === "Not Found") {
           console.log("registrationRequired", registrationRequired)
           if (mobile?.length == 10) {
-            registrationRequired ? navigation.navigate('BasicInfo', { needsApproval: needsApproval, userType: user_type, userId: user_type_id, name: name, mobile: mobile, navigatingFrom: "OtpLogin" }) : navigateToOtp()
+            // registrationRequired ? navigation.navigate('BasicInfo', { needsApproval: needsApproval, userType: user_type, userId: user_type_id, name: name, mobile: mobile, navigatingFrom: "OtpLogin" }) : navigateToOtp()
+            setError(true)
+            setMessage("Please register before login")
           }
-          else {
+          else{
             setError(true)
             setMessage("Please enter your 10 digit mobile number")
           }
+      
+          
           // setName('')
           // setMobile('')
         }
@@ -301,6 +304,18 @@ const OtpLogin = ({ navigation, route }) => {
             content="Tell us your mobile number"></PoppinsText>
 
         </View>
+        {<View style={{alignItems: 'center', justifyContent: "center", position: 'absolute', right: 0, top:15 ,width:'40%' }}>
+            {/* <PoppinsTextMedium style={{fontSize:14,color:'white'}} content ="Don't have an account ?"></PoppinsTextMedium> */}
+            <ButtonNavigate
+              handleOperation={()=>{navigation.navigate("BasicInfo",{needsApproval: needsApproval, userType: user_type, userId: user_type_id, name: name, mobile: mobile, navigatingFrom: "OtpLogin" })}}
+              backgroundColor="#353535"
+              style={{ color: 'white', fontSize: 16 }}
+              content="Register"
+              navigateTo="BasicInfo"
+              properties = {{needsApproval: needsApproval, userType: user_type, userId: user_type_id, name: name, mobile: mobile, navigatingFrom: "OtpLogin" }}
+            >
+            </ButtonNavigate>
+          </View>}
       </View>
 
 
@@ -329,7 +344,10 @@ const OtpLogin = ({ navigation, route }) => {
               specialCharValidation={true}
             ></TextInputRectangularWithPlaceholder>
           </View>
+          
         </KeyboardAvoidingView>
+
+        
 
         <View
           style={{
@@ -359,6 +377,8 @@ const OtpLogin = ({ navigation, route }) => {
             mobileLength={mobile}
             isChecked={isChecked && mobile?.length == 10 && name != ""}
           ></ButtonNavigateArrow>}
+
+          
 
 
         </View>

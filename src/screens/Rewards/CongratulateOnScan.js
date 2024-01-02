@@ -300,9 +300,10 @@ const getMembership = async () => {
               };
               extraPointEntryFunc(body);
             } else if (!shouldSharePoints) {
-              alert("Points can't be shared for this tenant");
+              // alert("Points can't be shared for this tenant");
             }
           } else if (pointSharingData.percentage_points === true) {
+            console.log("percentage_points_value", productData, pointSharingData)
             const point =
               productData["mrp"] *
               (pointSharingData["percentage_points_value"] / 100);
@@ -350,7 +351,7 @@ const getMembership = async () => {
               };
               extraPointEntryFunc(body);
             } else if (!shouldSharePoints) {
-              alert("Points can't be shared for this tenant");
+              // alert("Points can't be shared for this tenant");
             }
           }
 
