@@ -174,9 +174,9 @@ const Splash = ({ navigation }) => {
 
   useEffect(() => {
     console.log("list user ki ==========>",  isUserLoggedIn)
-    setTimeout(() => {
+    
    isUserLoggedIn!==null && !isUserLoggedIn &&  checkRegistrationRequired(listUsers)
-    }, 2000);
+  
   }, [listUsers?.[0]?.user_type, isUserLoggedIn])
 
 
@@ -184,7 +184,7 @@ const Splash = ({ navigation }) => {
 
   const checkRegistrationRequired = (listUsers) => {
     console.log("yaha pe list user---------------->", listUsers[0])
-    setTimeout(() => {
+    
       if (registrationRequired.includes(listUsers?.[0]?.user_type)) {
         checkApprovalFlow(true)
         console.log("registration required")
@@ -194,7 +194,7 @@ const Splash = ({ navigation }) => {
         console.log("registration not required")
 
       }
-    }, 3000)
+  
 
 
   }
@@ -302,7 +302,7 @@ const Splash = ({ navigation }) => {
 
 
   return (
-    <View style={{ flex: 1, alignItems: 'center', width: '100%', height: '100%', justifyContent: 'center' }}>
+    <View style={{ flex: 1, alignItems: 'center', width: '100%', height: '100%', justifyContent: 'center',backgroundColor:'white' }}>
       {/* <ImageBackground resizeMode='stretch' style={{ flex: 1, height: '100%', width: '100%', }} source={require('../../../assets/images/batalogo.png')}> */}
 
       <Image style={{ width: 300, height: 100, }} source={require('../../../assets/images/batalogo.png')} />
