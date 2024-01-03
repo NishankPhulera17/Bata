@@ -280,7 +280,7 @@ const BasicInfo = ({ navigation, route }) => {
 
 
         }
-        console.log("getLocationFormPincodeDataLocationJson",locationJson)
+        console.log("getLocationFormPincodeDataLocationJson", locationJson)
         setLocation(locationJson)
       }
     }
@@ -291,7 +291,7 @@ const BasicInfo = ({ navigation, route }) => {
     }
   }, [getLocationFormPincodeData, getLocationFormPincodeError])
 
-  
+
   useEffect(() => {
     if (getFormData) {
       if (getFormData.message !== "Not Found") {
@@ -362,19 +362,27 @@ const BasicInfo = ({ navigation, route }) => {
 
   const handleTimer = () => {
 
-    if(timer===60)
-    {
+    if (timer === 60) {
       getOTPfunc()
       setOtpVisible(true)
     }
-    if (timer===0 || timer===-1) {
+    if (timer === 0 || timer === -1) {
       setTimer(60);
       getOTPfunc()
       setOtpVisible(true)
 
-     
+
     }
   }
+
+  const isthisValid = (text) => {
+    if (text != "" && text != undefined && text != null) {
+      return true
+    }
+    else {
+      return false
+    }
+  };
 
 
   const isValidEmail = (text) => {
@@ -395,7 +403,7 @@ const BasicInfo = ({ navigation, route }) => {
     if (data.name === "name") {
       setUserName(data.value)
     }
-    if(data.name=="mobile"){
+    if (data.name == "mobile") {
       setUserMobile(data.value)
     }
     // console.log("isValidEmail", isValidEmail(data.value))
@@ -407,7 +415,7 @@ const BasicInfo = ({ navigation, route }) => {
 
     }
 
-   
+
 
 
 
@@ -441,31 +449,30 @@ const BasicInfo = ({ navigation, route }) => {
     setError(false);
   };
 
-  const getLocationFromPinCode =  (pin) => {
-    console.log("getting location from pincode",pin)
+  const getLocationFromPinCode = (pin) => {
+    console.log("getting location from pincode", pin)
     var url = `http://postalpincode.in/api/pincode/${pin}`
 
-  fetch(url).then(response => response.json()).then(json => {
-    console.log("location address=>", JSON.stringify(json));
-    if(json.PostOffice===null)
-    {
-      setError(true)
-      setMessage("Pincode data cannot be retrieved.")
-    }
-    else{
-      const locationJson = {
-        "postcode":pin,
-        "district":json.PostOffice[0].District,
-        "state":json.PostOffice[0].State,
-        "country":json.PostOffice[0].Country,
-        "city":json.PostOffice[0].Region
+    fetch(url).then(response => response.json()).then(json => {
+      console.log("location address=>", JSON.stringify(json));
+      if (json.PostOffice === null) {
+        setError(true)
+        setMessage("Pincode data cannot be retrieved.")
       }
-      setLocation(locationJson)
-    }
-    
+      else {
+        const locationJson = {
+          "postcode": pin,
+          "district": json.PostOffice[0].District,
+          "state": json.PostOffice[0].State,
+          "country": json.PostOffice[0].Country,
+          "city": json.PostOffice[0].Region
+        }
+        setLocation(locationJson)
+      }
 
-  })
-}
+
+    })
+  }
 
   const getOtpFromComponent = value => {
     if (value.length === 6) {
@@ -505,11 +512,10 @@ const BasicInfo = ({ navigation, route }) => {
       inputFormData[responseArray[i].name] = responseArray[i].value
     }
     const body = inputFormData
+    const keys = Object.keys(body)
+    const values = Object.values(body)
 
     if (otpVerified) {
-      const keys = Object.keys(body)
-      const values = Object.values(body)
-
       if (keys.includes('email')) {
         const index = keys.indexOf('email')
         if (isValidEmail(values[index])) {
@@ -521,7 +527,28 @@ const BasicInfo = ({ navigation, route }) => {
         }
       }
       else {
-        registerUserFunc(body)
+        if (keys.includes("firm_name")) {
+          const index = keys.indexOf('firm_name')
+          if (isthisValid(values[index])) {
+
+            const index2 = keys.indexOf('firm_id')
+            if (isthisValid(values[index2])) {
+              registerUserFunc(body)
+            }
+            else {
+              setError(true)
+              setMessage("Firm id required")
+            }
+
+
+          }
+          else {
+            setError(true)
+            setMessage("Firm name required")
+          }
+        }
+
+        // registerUserFunc(body)
       }
 
       // make request according to the login type of user-----------------------
@@ -631,11 +658,11 @@ const BasicInfo = ({ navigation, route }) => {
 
         <View style={{ width: width, backgroundColor: "white", alignItems: "center", justifyContent: 'flex-start', paddingTop: 20 }}>
           {formFound ? <PoppinsTextMedium style={{ color: 'black', fontWeight: '700', fontSize: 18, marginBottom: 40 }} content="Please Fill The Following Form To Register"></PoppinsTextMedium> : <PoppinsTextMedium style={{ color: 'black', fontWeight: '700', fontSize: 18, marginBottom: 40 }} content="No Form Available !!"></PoppinsTextMedium>}
-            
+
           {/* <RegistrationProgress data={["Basic Info","Business Info","Manage Address","Other Info"]}></RegistrationProgress> */}
           {registrationForm &&
             registrationForm.map((item, index) => {
-              if (item.type === 'text' || item.type== 'number') {
+              if (item.type === 'text' || item.type == 'number') {
                 // console.log("the user name", userName)
                 if ((item.name === 'phone' || item.name === "mobile")) {
                   return (
@@ -652,7 +679,7 @@ const BasicInfo = ({ navigation, route }) => {
                             placeHolder={item.name}
                             value={userMobile}
                             label={item.label}
-                            isEditable={user_type_option=="single"}
+                            isEditable={user_type_option == "single"}
                           >
                             {' '}
                           </TextInputNumericRectangle>}
@@ -671,7 +698,7 @@ const BasicInfo = ({ navigation, route }) => {
 
                         {otpVerified ? <View style={{ alignItems: 'center', justifyContent: 'center' }}>
                           <Image style={{ height: 30, width: 30, resizeMode: 'contain' }} source={require('../../../assets/images/greenTick.png')}></Image>
-                        </View> : <TouchableOpacity style={{ flex: 0.15, marginTop: 6, backgroundColor: ternaryThemeColor, alignItems: 'center', justifyContent: 'center', height: 50, borderRadius: 5 }} onPress={()=>{
+                        </View> : <TouchableOpacity style={{ flex: 0.15, marginTop: 6, backgroundColor: ternaryThemeColor, alignItems: 'center', justifyContent: 'center', height: 50, borderRadius: 5 }} onPress={() => {
                           handleTimer()
                         }}>
                           <PoppinsTextLeftMedium style={{ color: 'white', fontWeight: '800', padding: 5 }} content="Get OTP"></PoppinsTextLeftMedium>
@@ -705,7 +732,7 @@ const BasicInfo = ({ navigation, route }) => {
                             <View style={{ alignItems: 'center', justifyContent: 'center' }}>
                               <Text style={{ color: ternaryThemeColor, marginTop: 10 }}>Didn't recieve any Code?</Text>
 
-                              <Text onPress={()=>{handleTimer()}} style={{ color: ternaryThemeColor, marginTop: 6, fontWeight: '600', fontSize: 16 }}>Resend Code</Text>
+                              <Text onPress={() => { handleTimer() }} style={{ color: ternaryThemeColor, marginTop: 6, fontWeight: '600', fontSize: 16 }}>Resend Code</Text>
 
                             </View>
                           </View>
@@ -727,7 +754,7 @@ const BasicInfo = ({ navigation, route }) => {
                       placeHolder={item.name}
                       value={userName}
                       label={item.label}
-                      isEditable={user_type_option=="single"}
+                      isEditable={user_type_option == "single"}
                     ></PrefilledTextInput>
                   )
                 }
@@ -791,7 +818,7 @@ const BasicInfo = ({ navigation, route }) => {
                     </TextInputGST>
                   );
                 }
-                else if ((item.name).trim().toLowerCase() === "city" ) {
+                else if ((item.name).trim().toLowerCase() === "city") {
 
                   return (
                     <PrefilledTextInput
@@ -807,39 +834,39 @@ const BasicInfo = ({ navigation, route }) => {
 
 
                 }
-                else if ((item.name).trim().toLowerCase() === "pincode"   ) {
-                 
-                    return (
-                      <PincodeTextInput
-                        jsonData={item}
-                        key={index}
-                        handleData={handleChildComponentData}
-                        handleFetchPincode={handleFetchPincode}
-                        placeHolder={item.name}
-                        value={location?.postcode}
-                        label={item.label}
-                        maxLength={6}
-                      ></PincodeTextInput>
-                    )
-                  }
-                
-                  // else if ((item.name).trim().toLowerCase() === "pincode" ) {
-                 
-                  //   return (
-                  //     <PincodeTextInput
-                  //       jsonData={item}
-                  //       key={index}
-                  //       handleData={handleChildComponentData}
-                  //       handleFetchPincode={handleFetchPincode}
-                  //       placeHolder={item.name}
+                else if ((item.name).trim().toLowerCase() === "pincode") {
 
-                  //       label={item.label}
-                  //       maxLength={6}
-                  //     ></PincodeTextInput>
-                  //   )
-                  // }
-                
-                else if ((item.name).trim().toLowerCase() === "state"  ) {
+                  return (
+                    <PincodeTextInput
+                      jsonData={item}
+                      key={index}
+                      handleData={handleChildComponentData}
+                      handleFetchPincode={handleFetchPincode}
+                      placeHolder={item.name}
+                      value={location?.postcode}
+                      label={item.label}
+                      maxLength={6}
+                    ></PincodeTextInput>
+                  )
+                }
+
+                // else if ((item.name).trim().toLowerCase() === "pincode" ) {
+
+                //   return (
+                //     <PincodeTextInput
+                //       jsonData={item}
+                //       key={index}
+                //       handleData={handleChildComponentData}
+                //       handleFetchPincode={handleFetchPincode}
+                //       placeHolder={item.name}
+
+                //       label={item.label}
+                //       maxLength={6}
+                //     ></PincodeTextInput>
+                //   )
+                // }
+
+                else if ((item.name).trim().toLowerCase() === "state") {
                   return (
                     <PrefilledTextInput
                       jsonData={item}
@@ -851,7 +878,7 @@ const BasicInfo = ({ navigation, route }) => {
                     ></PrefilledTextInput>
                   )
                 }
-                else if ((item.name).trim().toLowerCase() === "district"  ) {
+                else if ((item.name).trim().toLowerCase() === "district") {
 
                   return (
                     <PrefilledTextInput

@@ -29,6 +29,7 @@ import { useFetchLegalsMutation } from '../../apiServices/fetchLegal/FetchLegalA
 import * as Keychain from 'react-native-keychain';
 
 
+
 const OtpLogin = ({ navigation, route }) => {
   const [mobile, setMobile] = useState("")
   const [name, setName] = useState("")
@@ -151,6 +152,11 @@ const OtpLogin = ({ navigation, route }) => {
   useEffect(() => {
     console.log("Name in use effect--------->>>>>>>>>>>>>>>",name)
   }, [name])
+
+  useEffect(()=>{
+    setName("")
+    setMobile("")
+  },[focused])
 
   const getMobile = data => {
     // console.log(data)

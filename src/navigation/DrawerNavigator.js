@@ -23,6 +23,7 @@ import PoppinsTextMedium from '../components/electrons/customFonts/PoppinsTextMe
 import PoppinsTextLeftMedium from '../components/electrons/customFonts/PoppinsTextLeftMedium';
 import { useFetchLegalsMutation } from '../apiServices/fetchLegal/FetchLegalApi';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { user_type_option } from '../utils/usertTypeOption';
 
 const Drawer = createDrawerNavigator();
 const CustomDrawer = () => {
@@ -155,8 +156,16 @@ const CustomDrawer = () => {
   const handleLogout=async()=>{
     
       try {
+     
         await AsyncStorage.removeItem('loginData')
-        navigation.reset({ index: '0', routes: [{ name: 'SelectUser' }] })
+        if(user_type_option=="single"){
+          navigation.reset({ index: '0', routes: [{ name: 'Splash' }] })
+          
+        }
+        else{
+          navigation.reset({ index: '0', routes: [{ name: 'SelectUser' }] })
+
+        }
       } catch(e) {
         console.log("error deleting loginData",e)
       }

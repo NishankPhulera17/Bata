@@ -13,7 +13,7 @@ const ScannedDetailsBox = (props) => {
       
     return (
         <View style={{height:60,width:'90%',alignItems:'center',justifyContent:'center',flexDirection:'row',backgroundColor:ternaryThemeColor,borderRadius:10}}>
-        <View style={{width:'50%',alignItems:'center',justifyContent:'center',borderRightWidth:1,borderColor:'#DDDDDD'}}>
+        {/* <View style={{width:'50%',alignItems:'center',justifyContent:'center',borderRightWidth:1,borderColor:'#DDDDDD'}}>
         <PoppinsTextMedium style={{color:'white',fontSize:16}} content="Last Scanned Date"></PoppinsTextMedium>
         <PoppinsTextMedium style={{color:'white',fontSize:16}} content={lastScannedDate}></PoppinsTextMedium>
 
@@ -21,7 +21,7 @@ const ScannedDetailsBox = (props) => {
         <View style={{width:'50%',alignItems:'center',justifyContent:'center'}}>
         <PoppinsTextMedium style={{color:'white',fontSize:16}} content="Scan Count"></PoppinsTextMedium>
         <PoppinsTextMedium style={{color:'white',fontSize:16}} content={scanCount}></PoppinsTextMedium>
-        </View>
+        </View> */}
         </View>
     );
 }

@@ -84,7 +84,7 @@ const TextInputGST = (props) => {
         </View>
       </Modal>
             <View style={{alignItems:"center",justifyContent:'center',backgroundColor:'white',position:"absolute",top:-15,left:16}}>
-                <PoppinsTextMedium style={{color:"#919191",padding:4,fontSize:18}} content = {label}></PoppinsTextMedium>
+                <PoppinsTextMedium style={{color:"#919191",padding:4,fontSize:18,}} content = {label}></PoppinsTextMedium>
             </View>
             <TextInput maxLength={12} onSubmitEditing={(text)=>{handleInputEnd()}} onEndEditing={(text)=>{handleInputEnd()}} style={{height:50,width:'100%',alignItems:"center",justifyContent:"flex-start",fontWeight:'500',marginLeft:24,color:'black',fontSize:16}} placeholderTextColor="grey" onChangeText={(text)=>{handleInput(text)}} value={value} placeholder={required ? `${placeHolder} *`: `${placeHolder}`}></TextInput>
         </View>

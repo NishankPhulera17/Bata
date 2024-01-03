@@ -503,7 +503,8 @@ console.log("fetchAllQrScanedListError",fetchAllQrScanedListError)
 
           </View>
           }
-         {userData.user_type_id !== 13 && scanningDetails && scanningDetails?.data?.length &&  <ScannedDetailsBox lastScannedDate={moment(scanningDetails?.data[0]?.scanned_at).format("DD MMM YYYY")} scanCount={scanningDetails.total}></ScannedDetailsBox>}
+          {/* temporary */}
+         {/* {userData.user_type_id !== 13 && scanningDetails && scanningDetails?.data?.length &&  <ScannedDetailsBox lastScannedDate={moment(scanningDetails?.data[0]?.scanned_at).format("DD MMM YYYY")} scanCount={scanningDetails.total}></ScannedDetailsBox>} */}
           <ScrollView showsHorizontalScrollIndicator={false} horizontal={true} style={{ paddingLeft: 10, paddingRight: 10, paddingBottom: 4 }}>
             {/* <DashboardDataBox header="Total Points"  data="5000" image={require('../../../assets/images/coin.png')} ></DashboardDataBox>
           <DashboardDataBox header="Total Points"  data="5000" image={require('../../../assets/images/coin.png')} ></DashboardDataBox> */}

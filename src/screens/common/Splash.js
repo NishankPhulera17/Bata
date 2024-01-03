@@ -174,8 +174,9 @@ const Splash = ({ navigation }) => {
 
   useEffect(() => {
     console.log("list user ki ==========>",  isUserLoggedIn)
-    
-   isUserLoggedIn!==null && !isUserLoggedIn &&  checkRegistrationRequired(listUsers)
+    if(user_type_option=="single"){
+      isUserLoggedIn!==null && !isUserLoggedIn &&  checkRegistrationRequired(listUsers)
+    }
   
   }, [listUsers?.[0]?.user_type, isUserLoggedIn])
 
@@ -195,7 +196,6 @@ const Splash = ({ navigation }) => {
 
       }
   
-
 
   }
 
