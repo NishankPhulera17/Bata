@@ -297,7 +297,7 @@ const OtpLogin = ({ navigation, route }) => {
 
 
             }}
-            source={require('../../../assets/images/batalogo.png')}></Image>
+            source={require('../../../assets/images/batawhitelogo.png')}></Image>
         </View>
         <View
           style={{

@@ -338,10 +338,8 @@ const Passbook = ({ navigation }) => {
                         <NavigateTO title="Redeemed History" discription=" list of products redeemed by you" image={require('../../../assets/images/redeemed_icon.png')}></NavigateTO>
                         <NavigateTO title="Cashback History" discription=" list of cashback claimed by you" image={require('../../../assets/images/cashbackBlack.png')}></NavigateTO>
 
-                        {/* {
-                warrantyOptionEnabled &&  */}
-                        <NavigateTO title="Warranty History" discription=" list of warranty claimed by you" image={require('../../../assets/images/warranty_icon.png')}></NavigateTO>
-                        {/* } */}
+                        {warrantyOptionEnabled &&  <NavigateTO title="Warranty History" discription=" list of warranty claimed by you" image={require('../../../assets/images/warranty_icon.png')}></NavigateTO>}
+                  
                         {
                             couponOptionEnabled &&
                             <NavigateTO title="Coupon History" discription=" list of coupons redeemed by you" image={require('../../../assets/images/scannedHistory.png')}></NavigateTO>

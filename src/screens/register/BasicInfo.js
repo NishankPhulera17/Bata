@@ -362,17 +362,25 @@ const BasicInfo = ({ navigation, route }) => {
 
   const handleTimer = () => {
 
-    if (timer === 60) {
-      getOTPfunc()
-      setOtpVisible(true)
+    if(userName != "" && userName!=undefined && userName!= null){
+      if (timer === 60) {
+        getOTPfunc()
+        setOtpVisible(true)
+      }
+      if (timer === 0 || timer === -1) {
+        setTimer(60);
+        getOTPfunc()
+        setOtpVisible(true)
+  
+  
+      }
     }
-    if (timer === 0 || timer === -1) {
-      setTimer(60);
-      getOTPfunc()
-      setOtpVisible(true)
-
-
+    else{
+      setError(true)
+      setMessage("Please Enter Owner Name")
     }
+
+ 
   }
 
   const isthisValid = (text) => {
@@ -679,7 +687,7 @@ const BasicInfo = ({ navigation, route }) => {
                             placeHolder={item.name}
                             value={userMobile}
                             label={item.label}
-                            isEditable={user_type_option == "single"}
+                            isEditable={user_type_option == "single" && !otpVerified}
                           >
                             {' '}
                           </TextInputNumericRectangle>}
@@ -754,7 +762,7 @@ const BasicInfo = ({ navigation, route }) => {
                       placeHolder={item.name}
                       value={userName}
                       label={item.label}
-                      isEditable={user_type_option == "single"}
+                      isEditable={user_type_option == "single" && !otpVerified}
                     ></PrefilledTextInput>
                   )
                 }

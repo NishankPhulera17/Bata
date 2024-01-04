@@ -32,7 +32,7 @@ import { slug } from "../../utils/Slug";
 import { useExtraPointEnteriesMutation } from "../../apiServices/pointSharing/pointSharingApi";
 import { useAddBulkPointOnProductMutation } from "../../apiServices/bulkScan/BulkScanApi";
 import { setQrIdList } from "../../../redux/slices/qrCodeDataSlice";
-import  Celebrate  from "react-native-vector-icons/MaterialIcons";
+import Celebrate from "react-native-vector-icons/MaterialIcons";
 import Error from "react-native-vector-icons/MaterialIcons"
 import { useGetActiveMembershipMutation } from '../../apiServices/membership/AppMembershipApi';
 import ErrorModal from "../../components/modals/ErrorModal";
@@ -44,9 +44,9 @@ const CongratulateOnScan = ({ navigation, route }) => {
   const [showBulkScanPoints, setShowBulkScanPoints] = useState();
   const [membershipPercent, setMembershipPercent] = useState(0)
   const [totalPoints, setTotalPoints] = useState(0)
-  const [error,setError] = useState(false)
+  const [error, setError] = useState(false)
   const [message, setMessage] = useState('')
-  const [PercentMultiplier, setPercentMultiplier] =  useState(null)
+  const [PercentMultiplier, setPercentMultiplier] = useState(null)
   const buttonThemeColor = useSelector(
     (state) => state.apptheme.ternaryThemeColor
   )
@@ -169,7 +169,7 @@ const CongratulateOnScan = ({ navigation, route }) => {
     error: getActiveMembershipError,
     isLoading: getActiveMembershipIsLoading,
     isError: getActiveMembershipIsError
-}] = useGetActiveMembershipMutation();
+  }] = useGetActiveMembershipMutation();
   const [
     checkQrCodeAlreadyRedeemedFunc,
     {
@@ -189,50 +189,49 @@ const CongratulateOnScan = ({ navigation, route }) => {
       isError: addCashbackEnteriesIsError,
     },
   ] = useAddCashbackEnteriesMutation();
-  useEffect(()=>{
+  useEffect(() => {
     getMembership()
-  },[])
+  }, [])
 
-  useEffect(()=>{
+  useEffect(() => {
     getAppTheme("Bata")
-  },[])
+  }, [])
 
-  useEffect(()=>{
-    if(getAppThemeData){
-      console.log("getAppThemeData",getAppThemeData)
+  useEffect(() => {
+    if (getAppThemeData) {
+      console.log("getAppThemeData", getAppThemeData)
       setPercentMultiplier(Number(getAppThemeData?.body?.points_sharing?.percentage_points_value))
     }
-    else{
-      console.log("getAppThemeError",getAppThemeError)
+    else {
+      console.log("getAppThemeError", getAppThemeError)
     }
-  },[getAppThemeData, getAppThemeError])
+  }, [getAppThemeData, getAppThemeError])
 
 
   useEffect(() => {
     if (getActiveMembershipData) {
-        console.log("getActiveMembershipData", JSON.stringify(getActiveMembershipData))
-        if(getActiveMembershipData.success)
-        {
-          
-          console.log("getActiveMembershipData.body.points",getActiveMembershipData.body.points)
-        }
+      console.log("getActiveMembershipData", JSON.stringify(getActiveMembershipData))
+      if (getActiveMembershipData.success) {
+
+        console.log("getActiveMembershipData.body.points", getActiveMembershipData.body.points)
+      }
     }
     else if (getActiveMembershipError) {
-        console.log("getActiveMembershipError", getActiveMembershipError)
+      console.log("getActiveMembershipError", getActiveMembershipError)
     }
-}, [getActiveMembershipData, getActiveMembershipError])
+  }, [getActiveMembershipData, getActiveMembershipError])
 
 
-const getMembership = async () => {
-  const credentials = await Keychain.getGenericPassword();
-  if (credentials) {
+  const getMembership = async () => {
+    const credentials = await Keychain.getGenericPassword();
+    if (credentials) {
       console.log(
-          'Credentials successfully loaded for user ' + credentials.username
+        'Credentials successfully loaded for user ' + credentials.username
       );
       const token = credentials.username
       getActiveMembershipFunc(token)
+    }
   }
-}
   const fetchRewardsAccToWorkflow = async () => {
     const credentials = await Keychain.getGenericPassword();
     if (credentials) {
@@ -250,6 +249,7 @@ const getMembership = async () => {
         };
         getCouponOnCategoryFunc(params);
       } else if (rewardType === "Points On Product") {
+        console.log("QRIDLIST==========>", qrIdList)
         if (qrIdList.length === 0) {
           const params = {
             token: token,
@@ -261,10 +261,10 @@ const getMembership = async () => {
             if (shouldSharePoints) {
               const points =
                 Number(productData[`${userData.user_type}_points`]) *
-                (Number(pointPercentage) / 100) 
+                (Number(pointPercentage) / 100)
 
-               
-              console.log("extra flat points", points,pointPercentage);
+
+              console.log("extra flat points", points, pointPercentage);
               const body = {
                 data: {
                   // app_user_id: userData.id.toString(),
@@ -307,13 +307,13 @@ const getMembership = async () => {
             const point =
               productData["mrp"] *
               (pointSharingData["percentage_points_value"] / 100);
-              const memberShipBonus = (points * Number(getActiveMembershipData?.body.points !==undefined ? getActiveMembershipData?.body.points : 0))/100
-          
-          const totalPoints = point + memberShipBonus
+            const memberShipBonus = (points * Number(getActiveMembershipData?.body.points !== undefined ? getActiveMembershipData?.body.points : 0)) / 100
+
+            const totalPoints = point + memberShipBonus
             const points =
               totalPoints *
               (Number(pointPercentage) / 100);
-              
+
             console.log("mrp points", points);
             if (shouldSharePoints) {
               const body = {
@@ -356,7 +356,8 @@ const getMembership = async () => {
           }
 
           checkUserPointFunc(params);
-        } else {
+        } 
+        else {
           const params = {
             data: {
               qrs: qrIdList,
@@ -379,7 +380,7 @@ const getMembership = async () => {
             },
             token: token,
           };
-          console.log("addBulkPointOnProductFunc",JSON.stringify(params))
+          console.log("addBulkPointOnProductFunc", JSON.stringify(params))
           addBulkPointOnProductFunc(params);
         }
       } else if (rewardType === "Wheel") {
@@ -411,13 +412,13 @@ const getMembership = async () => {
         JSON.stringify(addBulkPointOnProductData)
       );
       if (addBulkPointOnProductData.success) {
-        let tp =0
+        let tp = 0
         dispatch(setQrIdList([]));
         const bulkPoints = addBulkPointOnProductData.body.body.map((item, index) => {
           return item["points_on_product"];
 
         });
-       
+
         setTotalPoints(addBulkPointOnProductData.body.total_points)
         setShowBulkScanPoints(bulkPoints);
         setTimeout(() => {
@@ -570,9 +571,9 @@ const getMembership = async () => {
       if (!checkUserPointData.body) {
         if (pointSharingData.flat_points) {
           const points = productData[`${userData.user_type}_points`]
-          
-          const memberShipBonus = (points * Number(getActiveMembershipData?.body.points !==undefined ? getActiveMembershipData?.body.points : 0))/100
-          
+
+          const memberShipBonus = (points * Number(getActiveMembershipData?.body.points !== undefined ? getActiveMembershipData?.body.points : 0)) / 100
+
           const totalPoints = points + memberShipBonus
           setShowPoints(totalPoints);
           const submitPoints = async () => {
@@ -618,11 +619,11 @@ const getMembership = async () => {
             const points =
               productData["mrp"] *
               (pointSharingData["percentage_points_value"] / 100);
-              const memberShipBonus = (points * Number(getActiveMembershipData?.body.points !==undefined ? getActiveMembershipData?.body.points : 0))/100
-          
-          const totalPoints = points + memberShipBonus
-          setShowPoints(totalPoints);
-           
+            const memberShipBonus = (points * Number(getActiveMembershipData?.body.points !== undefined ? getActiveMembershipData?.body.points : 0)) / 100
+
+            const totalPoints = points + memberShipBonus
+            setShowPoints(totalPoints);
+
             const body = {
               data: {
                 app_user_id: userData.id.toString(),
@@ -677,8 +678,7 @@ const getMembership = async () => {
           handleWorkflowNavigation();
         }, 5000);
       }
-      else if(userPointEntryError.status === 400)
-      {
+      else if (userPointEntryError.status === 400) {
         setError(true)
         setMessage(userPointEntryError.data.message)
       }
@@ -892,11 +892,11 @@ const getMembership = async () => {
             </View>
             {/* -------------------------------------------------------- */}
             {/* rewards container---------------------------------------------- */}
-           {error &&  <ErrorModal
-          modalClose={modalClose}
+            {error && <ErrorModal
+              modalClose={modalClose}
 
-          message={message}
-          openModal={error}></ErrorModal>}
+              message={message}
+              openModal={error}></ErrorModal>}
             <View
               style={{
                 padding: 10,
@@ -988,7 +988,7 @@ const getMembership = async () => {
                 //               }}
                 //             >
                 //               <Error name="error" size={40} color={ternaryThemeColor}></Error>
-                               
+
                 //             <PoppinsTextMedium
                 //               content="There was some problem with this scanned QR"
                 //               style={{ color: "black", fontSize: 16,marginTop:20 }}
@@ -1009,7 +1009,7 @@ const getMembership = async () => {
                 ></Win>
               )}
               {userPointEntryData && (
-                <Win data="Points Earned" title={String(showPoints).substring(0,5)}></Win>
+                <Win data="Points Earned" title={String(showPoints).substring(0, 5)}></Win>
               )}
               {createWheelHistoryData && (
                 <Win data="Wheel" title="You have got a spin wheel"></Win>

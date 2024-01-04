@@ -4,10 +4,12 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Dashboard from '../screens/dashboard/Dashboard';
 import Home from 'react-native-vector-icons/AntDesign'
 import Qrcode from 'react-native-vector-icons/AntDesign'
+import Barcode from 'react-native-vector-icons/AntDesign'
 import Book from 'react-native-vector-icons/AntDesign'
 import {useSelector, useDispatch} from 'react-redux';
 import Wave from '../../assets/svg/bottomDrawer.svg'
 import PoppinsTextMedium from '../components/electrons/customFonts/PoppinsTextMedium';
+
 
 
 const Tab = createBottomTabNavigator();
@@ -38,12 +40,12 @@ function BottomNavigator({navigation}) {
     </TouchableOpacity>
     {/* ozone change */}
     { ((userData.user_type).toLowerCase()!=="dealer"  && (userData.user_type).toLowerCase()!=="sales") ? <TouchableOpacity onPress={()=>{navigation.navigate('QrCodeScanner')}} style={{alignItems:"center",justifyContent:"center",}}>
-    <Qrcode name="qrcode" size={24} color={ternaryThemeColor}></Qrcode>
-    <PoppinsTextMedium style={{marginTop:4,fontSize:12,fontWeight:platformFontWeight,color:'black'}} content="Scan QR Code"></PoppinsTextMedium>
+    <Barcode name="barcode" size={24} color={ternaryThemeColor}></Barcode>
+    <PoppinsTextMedium style={{marginTop:4,fontSize:12,fontWeight:platformFontWeight,color:'black'}} content="Scan Bar Code"></PoppinsTextMedium>
     </TouchableOpacity>
     :
     workflow?.includes("Genuinity") && <TouchableOpacity onPress={()=>{navigation.navigate('ScanAndRedirectToGenuinity')}} style={{alignItems:"center",justifyContent:"center",}}>
-    <Qrcode name="qrcode" size={24} color={ternaryThemeColor}></Qrcode>
+    <Barcode name="barcode" size={24} color={ternaryThemeColor}></Barcode>
     <PoppinsTextMedium style={{marginTop:4,fontSize:12,fontWeight:platformFontWeight,color:'black'}} content="Check Genuinity"></PoppinsTextMedium>
     </TouchableOpacity>
     }

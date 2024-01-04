@@ -1070,9 +1070,9 @@ const QrCodeScanner = ({ navigation }) => {
                   <Image
                     style={{ height: 300, width: 300, resizeMode: 'contain' }}
                     source={require('../../../assets/images/qrHowTo.png')}></Image>
-                  <PoppinsTextMedium
+                  {/* <PoppinsTextMedium
                     style={{ color: 'grey', fontWeight: '700', fontSize: 20 }}
-                    content="Please start scanning by pointing the camera towards the QR Code"></PoppinsTextMedium>
+                    content="Please start scanning by pointing the camera towards the Bar Code"></PoppinsTextMedium> */}
                 </ScrollView>
               </View>
             ) : (
@@ -1316,7 +1316,7 @@ const QrCodeScanner = ({ navigation }) => {
                     source={require('../../../assets/images/qrHowTo.png')}></Image>
                   <PoppinsTextMedium
                     style={{ color: 'grey', fontWeight: '700', fontSize: 20 }}
-                    content="Please start scanning by pointing the camera towards the QR Code"></PoppinsTextMedium>
+                    content="Please start scanning by pointing the camera towards the Bar Code"></PoppinsTextMedium>
                 </ScrollView>
               </View>
             ) : (
