@@ -253,7 +253,7 @@ const CongratulateOnScan = ({ navigation, route }) => {
         if (qrIdList.length === 0) {
           const params = {
             token: token,
-            qr_code: qrData.id,
+            qr_code: qrData.qr_id,
           };
 
           console.log("shouldSharePoints", shouldSharePoints);
@@ -294,7 +294,7 @@ const CongratulateOnScan = ({ navigation, route }) => {
                   type: "points_sharing",
                   point_earned_through_type: "points_sharing",
                 },
-                qrId: Number(qrData.id),
+                qrId: Number(qrData.qr_id),
                 tenant_id: slug,
                 token: token,
               };
@@ -345,7 +345,7 @@ const CongratulateOnScan = ({ navigation, route }) => {
                   type: "points_sharing",
                   point_earned_through_type: "points_sharing",
                 },
-                qrId: Number(qrData.id),
+                qrId: Number(qrData.qr_id),
                 tenant_id: slug,
                 token: token,
               };
@@ -356,6 +356,7 @@ const CongratulateOnScan = ({ navigation, route }) => {
           }
 
           checkUserPointFunc(params);
+          console.log("checkuserpointfuncparams",params)
         } 
         else {
           const params = {
@@ -392,7 +393,7 @@ const CongratulateOnScan = ({ navigation, route }) => {
       } else if (rewardType === "Cashback") {
         const params = {
           token: token,
-          qrId: qrData.id,
+          qrId: qrData.qr_id,
         };
         checkQrCodeAlreadyRedeemedFunc(params);
       }
@@ -470,7 +471,7 @@ const CongratulateOnScan = ({ navigation, route }) => {
       body: {
         wc_id: data[0].wc_id,
         w_id: data[0].id,
-        qr_id: qrData.id,
+        qr_id: qrData.qr_id,
       },
     };
     createWheelHistoryFunc(params);
@@ -536,7 +537,7 @@ const CongratulateOnScan = ({ navigation, route }) => {
       },
 
       token: token,
-      qrId: qrData.id,
+      qrId: qrData.qr_id,
     };
     addCashbackEnteriesFunc(params);
   };
@@ -604,7 +605,7 @@ const CongratulateOnScan = ({ navigation, route }) => {
                 points: totalPoints,
                 type: "point on product",
               },
-              qrId: Number(qrData.id),
+              qrId: Number(qrData.qr_id),
               tenant_id: slug,
               token: token,
             };
@@ -649,7 +650,7 @@ const CongratulateOnScan = ({ navigation, route }) => {
                 points: totalPoints,
                 type: "point on product",
               },
-              qrId: Number(qrData.id),
+              qrId: Number(qrData.qr_id),
               tenant_id: slug,
               token: token,
             };

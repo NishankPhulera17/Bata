@@ -462,6 +462,7 @@ const QrCodeScanner = ({ navigation }) => {
   // add qr to the list of qr--------------------------------------
 
   const addQrDataToList = data => {
+    console.log("addQrDataToList", data)
     const qrId = data.id;
     setQr_id(qrId);
     const token = savedToken;

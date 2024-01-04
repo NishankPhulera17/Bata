@@ -4,9 +4,10 @@ export const GetForms = baseApi.injectEndpoints({
   endpoints: builder => ({
     checkUserPoint: builder.mutation({
       query: params => {
+        console.log("check user point params", params)
         return {
           method: 'GET',
-          url: `/api/app/userPointsEnteries/check?qr_id=${params.qrId}`,
+          url: `/api/app/userPointsEnteries/check?qr_id=${params.qr_code}`,
           headers: {
             'Content-Type': 'application/json',
             Authorization: 'Bearer ' + params.token,
