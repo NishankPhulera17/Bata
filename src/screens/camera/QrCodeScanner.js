@@ -626,7 +626,7 @@ const QrCodeScanner = ({ navigation }) => {
       }
       else {
         setError(true)
-        setMessage(verifyBarError.data?.message);
+        setMessage("ye hi hai vo message");
 
       }
       console.log('Verify qr error', verifyBarError);
@@ -1160,7 +1160,7 @@ const QrCodeScanner = ({ navigation }) => {
                   right: 0,
                   top: 0,
                 }}
-                content="Scan Product QR Code"></PoppinsText>
+                content="Scan Product Bar Code"></PoppinsText>
               <View
                 style={{
                   backgroundColor: 'transparent',
@@ -1314,10 +1314,10 @@ const QrCodeScanner = ({ navigation }) => {
                 <ScrollView contentContainerStyle={{ alignItems: "center", justifyContent: 'center', width: '80%', marginTop: 60 }}>
                   <Image
                     style={{ height: 300, width: 300, resizeMode: 'contain' }}
-                    source={require('../../../assets/images/qrHowTo.png')}></Image>
-                  <PoppinsTextMedium
+                    source={require('../../../assets/images/barHowTo.png')}></Image>
+                  {/* <PoppinsTextMedium
                     style={{ color: 'grey', fontWeight: '700', fontSize: 20 }}
-                    content="Please start scanning by pointing the camera towards the Bar Code"></PoppinsTextMedium>
+                    content="Please start scanning by pointing the camera towards the Bar Code"></PoppinsTextMedium> */}
                 </ScrollView>
               </View>
             ) : (

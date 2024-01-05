@@ -107,10 +107,13 @@ const Passbook = ({ navigation }) => {
 
 
     const checkForPointSharing = () => {
+       if(pointSharingData)
+       {
         if (pointSharingData.is_point_sharing_bw_user) {
             setPointSharing(Object.keys(pointSharingData.point_sharing_bw_user.user).includes(userData.user_type))
             console.log("pointSharingData list", pointSharingData.point_sharing_bw_user.user)
         }
+       }
     }
     const getMembership = async () => {
         const credentials = await Keychain.getGenericPassword();

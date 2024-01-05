@@ -317,26 +317,30 @@ console.log("fetchAllQrScanedListError",fetchAllQrScanedListError)
 
   }, [])
   useEffect(() => {
-    const keys = Object.keys(pointSharingData.point_sharing_bw_user.user)
-    const values = Object.values(pointSharingData.point_sharing_bw_user.user)
-    const percentageKeys = Object.keys(pointSharingData.point_sharing_bw_user.percentage)
-    const percentageValues = Object.values(pointSharingData.point_sharing_bw_user.percentage)
-
-    let eligibleUser = ''
-    let percentage;
-    let index;
-    for (var i = 0; i < values.length; i++) {
-      if (values[i].includes(userData.user_type)) {
-        eligibleUser = keys[i]
-        index = percentageKeys.includes(eligibleUser) ? percentageKeys.indexOf(eligibleUser) : undefined
-        const pointSharingPercent = percentageValues[index]
-        // console.log(pointSharingPercent)
-        console.log("On", userData.user_type, "scan", pointSharingPercent, "% Points would be shared with", eligibleUser)
-        dispatch(setPercentagePoints(pointSharingPercent))
-        dispatch(setShouldSharePoints())
-
+    if(pointSharingData)
+    {
+      const keys = Object.keys(pointSharingData.point_sharing_bw_user.user)
+      const values = Object.values(pointSharingData.point_sharing_bw_user.user)
+      const percentageKeys = Object.keys(pointSharingData.point_sharing_bw_user.percentage)
+      const percentageValues = Object.values(pointSharingData.point_sharing_bw_user.percentage)
+  
+      let eligibleUser = ''
+      let percentage;
+      let index;
+      for (var i = 0; i < values.length; i++) {
+        if (values[i].includes(userData.user_type)) {
+          eligibleUser = keys[i]
+          index = percentageKeys.includes(eligibleUser) ? percentageKeys.indexOf(eligibleUser) : undefined
+          const pointSharingPercent = percentageValues[index]
+          // console.log(pointSharingPercent)
+          console.log("On", userData.user_type, "scan", pointSharingPercent, "% Points would be shared with", eligibleUser)
+          dispatch(setPercentagePoints(pointSharingPercent))
+          dispatch(setShouldSharePoints())
+  
+        }
       }
     }
+   
 
 
   }, [])

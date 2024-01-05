@@ -70,10 +70,9 @@ const dispatch = useDispatch()
   }, [])
 
   useEffect(()=>{
-    const userType = userData?.user_type;
 
-    let options = ["influencer", "dealer", "consumer", "sales"];
-  
+  if(pointSharingData)
+  {
     const keys = Object.keys(pointSharingData?.point_sharing_bw_user?.user)
   
     const values = Object.values(pointSharingData?.point_sharing_bw_user?.user)
@@ -88,6 +87,8 @@ const dispatch = useDispatch()
         setSelectedOption(tempuser)
         dispatch(setCanMapUsers(tempuser))
     }
+  }
+   
   },[])
 
   
