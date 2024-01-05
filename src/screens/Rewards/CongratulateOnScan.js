@@ -257,7 +257,9 @@ const CongratulateOnScan = ({ navigation, route }) => {
           };
 
           console.log("shouldSharePoints", shouldSharePoints);
-          if (pointSharingData.flat_points === true) {
+          if(pointSharingData)
+          {
+          if (pointSharingData?.flat_points === true) {
             if (shouldSharePoints) {
               const points =
                 Number(productData[`${userData.user_type}_points`]) *
@@ -302,7 +304,7 @@ const CongratulateOnScan = ({ navigation, route }) => {
             } else if (!shouldSharePoints) {
               // alert("Points can't be shared for this tenant");
             }
-          } else if (pointSharingData.percentage_points === true) {
+          } else if (pointSharingData?.percentage_points === true) {
             console.log("percentage_points_value", productData, pointSharingData)
             const point =
               productData["mrp"] *
@@ -354,7 +356,7 @@ const CongratulateOnScan = ({ navigation, route }) => {
               // alert("Points can't be shared for this tenant");
             }
           }
-
+        }
           checkUserPointFunc(params);
           console.log("checkuserpointfuncparams",params)
         } 
@@ -570,7 +572,7 @@ const CongratulateOnScan = ({ navigation, route }) => {
     if (checkUserPointData) {
       console.log("checkUserPointData", checkUserPointData);
       if (!checkUserPointData.body) {
-        if (pointSharingData.flat_points) {
+        if (pointSharingData?.flat_points) {
           const points = productData[`${userData.user_type}_points`]
 
           const memberShipBonus = (points * Number(getActiveMembershipData?.body.points !== undefined ? getActiveMembershipData?.body.points : 0)) / 100
@@ -613,7 +615,7 @@ const CongratulateOnScan = ({ navigation, route }) => {
             userPointEntryFunc(body);
           };
           submitPoints();
-        } else if (pointSharingData.percentage_points) {
+        } else if (pointSharingData?.percentage_points) {
           const submitPoints = async () => {
             const credentials = await Keychain.getGenericPassword();
             const token = credentials.username;
@@ -659,6 +661,10 @@ const CongratulateOnScan = ({ navigation, route }) => {
           };
           submitPoints();
         }
+      }
+      else{
+        setError(true)
+        setMessage(checkUserPointData.message)
       }
     } else if (checkUserPointError) {
       console.log("checkUserPointError", checkUserPointError);

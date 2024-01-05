@@ -370,6 +370,9 @@ const CustomDrawer = () => {
               else if (props.title.toLowerCase() === "add user") {
                 navigation.navigate('ListUsers')
               }
+              else if (props.title.toLowerCase() === "feedback") {
+                navigation.navigate('Feedback')
+              }
               else if (props.title.toLowerCase() === "query list") {
                 navigation.navigate('QueryList')
               }
