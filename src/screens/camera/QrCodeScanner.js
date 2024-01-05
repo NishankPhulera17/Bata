@@ -626,7 +626,7 @@ const QrCodeScanner = ({ navigation }) => {
       }
       else {
         setError(true)
-        setMessage("ye hi hai vo message");
+        setMessage("Already Scanned");
 
       }
       console.log('Verify qr error', verifyBarError);
