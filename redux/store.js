@@ -37,6 +37,8 @@ export const store = configureStore({
     userMapping:userMappingSlice
   },
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(baseApi.middleware),
+    getDefaultMiddleware({
+      serializableCheck: false,
+    }).concat(baseApi.middleware),
 })
 setupListeners(store.dispatch)

@@ -92,9 +92,9 @@ console.log("Point conversion and cash conversion data",pointsConversion,cashCon
       const params = {
         token: token,
         body: {
-          platform_id: 1,
+          platform_id: "1",
           platform: "mobile",
-          cash: cashConversion,
+          cash: String(cashConversion),
           remarks: "demo",
           state: location.state===undefined ? "N/A" : location.state,
           district: location.district===undefined ? "N/A" : location.district,
@@ -331,13 +331,13 @@ console.log("Point conversion and cash conversion data",pointsConversion,cashCon
     }
     else if(type==="Cashback"){
       const params = {
-        data :{ user_type_id: userData.user_type_id,
+        data :{ 
+        user_type_id: String(userData.user_type_id),
          user_type: userData.user_type,
-         platform_id: 1,
+         platform_id: "1",
          platform: 'mobile',
-         points: Number(pointsConversion),
-         approved_by_id: 1,
-         app_user_id: userData.id,
+         points: String(pointsConversion),
+         app_user_id: String(userData.id),
          remarks: 'demo'},
          token:token
        };

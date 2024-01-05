@@ -263,7 +263,7 @@ const OtpLogin = ({ navigation, route }) => {
       <View style={{
         width: '100%', alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: ternaryThemeColor,
+        backgroundColor: "white",
       }}>
         <View
           style={{
@@ -271,8 +271,9 @@ const OtpLogin = ({ navigation, route }) => {
             width: '100%',
             alignItems: 'center',
             justifyContent: 'center',
-            backgroundColor: ternaryThemeColor,
+            backgroundColor: "ternaryThemeColor",
             flexDirection: 'row',
+           
 
           }}>
 
@@ -297,22 +298,9 @@ const OtpLogin = ({ navigation, route }) => {
 
 
             }}
-            source={require('../../../assets/images/batawhitelogo.png')}></Image>
-        </View>
-        <View
-          style={{
-            alignItems: 'flex-start',
-            justifyContent: 'center',
-            marginTop: 10,
-            width: '90%'
-          }}>
-          <PoppinsText
-            style={{ color: 'white', fontSize: 28 }}
-            content="Tell us your mobile number"></PoppinsText>
-
-        </View>
-        {<View style={{alignItems: 'center', justifyContent: "center", position: 'absolute', right: 0, top:15 ,width:'40%' }}>
+            source={require('../../../assets/images/batalogo.png')}></Image>
             {/* <PoppinsTextMedium style={{fontSize:14,color:'white'}} content ="Don't have an account ?"></PoppinsTextMedium> */}
+            <View style={{position:"absolute",right:20,top:10}}>
             <ButtonNavigate
               handleOperation={()=>{navigation.navigate("BasicInfo",{needsApproval: needsApproval, userType: user_type, userId: user_type_id, name: name, mobile: mobile, navigatingFrom: "OtpLogin" })}}
               backgroundColor="#353535"
@@ -322,7 +310,24 @@ const OtpLogin = ({ navigation, route }) => {
               properties = {{needsApproval: needsApproval, userType: user_type, userId: user_type_id, name: name, mobile: mobile, navigatingFrom: "OtpLogin" }}
             >
             </ButtonNavigate>
-          </View>}
+            </View>
+            
+        </View>
+        <View
+          style={{
+            alignItems: 'flex-start',
+            justifyContent: 'center',
+            marginTop: 10,
+            width: '90%'
+          }}>
+          <PoppinsText
+            style={{ color: 'black', fontSize: 28 }}
+            content="Tell us your mobile number"></PoppinsText>
+
+        </View>
+        
+            
+          
       </View>
 
 
@@ -384,7 +389,7 @@ const OtpLogin = ({ navigation, route }) => {
             mobileLength={mobile}
             isChecked={isChecked && mobile?.length == 10 && name != ""}
           ></ButtonNavigateArrow>}
-
+  
           
 
 

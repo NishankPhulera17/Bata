@@ -56,7 +56,7 @@ const QrCodeScanner = ({ navigation }) => {
   const [helpModal, setHelpModal] = useState(false);
   const [isFirstScan, setIsFirstScan] = useState(false)
   const [isReportable, setIsReportable] = useState(false)
-
+  const [barcodeRead, setBarcodeRead] = useState(false)
   const cameraRef = useRef(null);
 
   const userId = useSelector(state => state.appusersdata.userId);
@@ -625,8 +625,12 @@ const QrCodeScanner = ({ navigation }) => {
         setMessage("This QR is not activated yet")
       }
       else {
-        setError(true)
-        setMessage("ye hi hai vo message");
+        if(verifyBarError.status!==409)
+        {
+          setError(true)
+          setMessage(JSON.stringify(verifyBarError));
+        }
+       
 
       }
       console.log('Verify qr error', verifyBarError);
@@ -1133,6 +1137,17 @@ const QrCodeScanner = ({ navigation }) => {
       <View style={{ flex: 1, }}>
         <RNCamera
           onBarCodeRead={onSuccessBar}
+      //     onBarCodeRead={(e)=>{
+      //            if (!barcodeRead) {
+      //      setBarcodeRead(true) 
+      //       // Do your work
+      //       onSuccessBar(e)
+      //       console.log("barcode scan,",e)
+      //  }
+       
+           
+      //     }}
+     
           flashMode={
             flash
               ? RNCamera.Constants.FlashMode.torch
@@ -1357,7 +1372,7 @@ const QrCodeScanner = ({ navigation }) => {
             {
               productDataData && productDataData.body.products.length !== 0 &&
               <ButtonProceed
-                handleOperation={scannerType == "QR"  ? handleAddQr : handleAddBar}
+                handleOperation={handleAddBar}
                 style={{ color: 'white' }}
                 content="Proceed"
                 navigateTo={'QrCodeScanner'}></ButtonProceed>

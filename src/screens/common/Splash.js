@@ -33,7 +33,7 @@ const Splash = ({ navigation }) => {
 
 
 
-  const gifUri = Image.resolveAssetSource(require('../../../assets/gif/ozoStars.gif')).uri;
+  const gifUri = Image.resolveAssetSource(require('../../../assets/gif/splash.gif')).uri;
   // generating functions and constants for API use cases---------------------
   const [
     getAppTheme,
@@ -245,8 +245,10 @@ const Splash = ({ navigation }) => {
           dispatch(setId(parsedJsonValue.id))
 
           setIsUserLoggedIn(true)
-          
+          setTimeout(() => {
           navigation.navigate('Dashboard');
+            
+          }, 3000);
 
 
         }
@@ -305,15 +307,15 @@ const Splash = ({ navigation }) => {
     <View style={{ flex: 1, alignItems: 'center', width: '100%', height: '100%', justifyContent: 'center',backgroundColor:'white' }}>
       {/* <ImageBackground resizeMode='stretch' style={{ flex: 1, height: '100%', width: '100%', }} source={require('../../../assets/images/batalogo.png')}> */}
 
-      <Image style={{ width: 300, height: 100, }} source={require('../../../assets/images/batalogo.png')} />
-      {/* <FastImage
+      {/* <Image style={{ width: 300, height: 100, }} source={require('../../../assets/images/batalogo.png')} /> */}
+      <FastImage
           style={{ width: 250, height: 250, marginTop:'auto',alignSelf:'center' }}
           source={{
             uri: gifUri, // Update the path to your GIF
             priority: FastImage.priority.normal,
           }}
           resizeMode={FastImage.resizeMode.contain}
-        /> */}
+        />
 
       {/* </ImageBackground> */}
 
