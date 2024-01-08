@@ -270,7 +270,7 @@ const RedeemGifts = ({navigation,route}) => {
    
 
     return (
-      <TouchableOpacity
+      <View
         onPress={()=>{console.log("Pressed")}}
         style={{
           height: 120,
@@ -381,7 +381,7 @@ const RedeemGifts = ({navigation,route}) => {
             style={{color: '#919191', fontSize: 13, width: '90%'}}
             content={category}></PoppinsTextMedium>
         </View>
-      </TouchableOpacity>
+      </View>
     );
   };
 

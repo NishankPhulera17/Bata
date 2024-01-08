@@ -665,6 +665,9 @@ const CongratulateOnScan = ({ navigation, route }) => {
       else{
         setError(true)
         setMessage(checkUserPointData.message)
+        setTimeout(()=>{
+          navigation.pop(2)
+        },2000)
       }
     } else if (checkUserPointError) {
       console.log("checkUserPointError", checkUserPointError);

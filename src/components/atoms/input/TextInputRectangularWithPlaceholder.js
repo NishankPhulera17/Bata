@@ -11,6 +11,7 @@ const TextInputRectangularWithPlaceholder = (props) => {
     const placeHolder = props.placeHolder
     const required = props.required
     const specialChar = props.specialCharValidation
+    const validationType = props.validationType
     const title  = props.title
 
     useEffect(() => {
@@ -33,20 +34,37 @@ const TextInputRectangularWithPlaceholder = (props) => {
 
     const handleInput = (text, placeHolder) => {
         if (specialChar) {
-            const nameRegex = /^[a-zA-Z\s-]+$/;
-            if (nameRegex.test(text)) {
-                setValue(text)
-                props.handleData(text, props.title)
-                setError(false)
-            }
-            else {
-                setValue("")
-                if (text != "") {
-                    setError(true)
-                }else{
+            if(validationType!="numeric"){
+                const nameRegex = /^[a-zA-Z\s-]+$/;
+                if (nameRegex.test(text)) {
+                    setValue(text)
+                    props.handleData(text, props.title)
                     setError(false)
                 }
+                else {
+                    setValue("")
+                    if (text != "") {
+                        setError(true)
+                    }else{
+                        setError(false)
+                    }
+                }
             }
+            else{
+             
+                // var numberRegex = /^((\(){1}(\+?\d{3}(\)){1})|(\+)?\d{3})(\d){2,17}$/g;
+                // const numberRegex = /^(?:(?:\(?(?:00|\+)([1-4]\d\d|[1-9]\d?)\)?)?[\-\.\ \\\/]?)?((?:\(?\d{1,}\)?[\-\.\ \\\/]?){0,})(?:[\-\.\ \\\/]?(?:#|ext\.?|extension|x)[\-\.\ \\\/]?(\d+))?$/i;
+            
+                    if(!text.includes(".") && !text.includes("-") && !text.includes(",") && !text.includes(" ")){
+                        setValue(text)
+                        props.handleData(text, props.title)
+                        setError(false)
+                    }
+                 
+                
+               
+            }
+          
 
         }
         else {

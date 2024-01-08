@@ -347,6 +347,8 @@ const OtpLogin = ({ navigation, route }) => {
               handleData={getMobile}
               maxLength={10}
               KeyboardType="numeric"
+              specialCharValidation={true}
+              validationType = "numeric"
             ></TextInputRectangularWithPlaceholder>
 
             <TextInputRectangularWithPlaceholder

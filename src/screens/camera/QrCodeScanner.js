@@ -1264,10 +1264,10 @@ const QrCodeScanner = ({ navigation }) => {
                 }}
                 style={{ height: 44, width: 44, margin: 20 }}>
                 <Image
-                  style={{ height: 44, width: 44, resizeMode: 'contain' }}
+                  style={{ height: 44, width: 44, resizeMode: 'contain', marginTop:40 }}
                   source={require('../../../assets/images/qrTorch.png')}></Image>
               </TouchableOpacity>
-              <TouchableOpacity
+              {/* <TouchableOpacity
                 onPress={() => {
                   handleOpenImageGallery();
                 }}
@@ -1275,7 +1275,7 @@ const QrCodeScanner = ({ navigation }) => {
                 <Image
                   style={{ height: 44, width: 44, resizeMode: 'contain' }}
                   source={require('../../../assets/images/qrGallery.png')}></Image>
-              </TouchableOpacity>
+              </TouchableOpacity> */}
             </View>
           </View>
 

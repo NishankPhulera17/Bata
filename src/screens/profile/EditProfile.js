@@ -168,15 +168,23 @@ const EditProfile = ({ navigation, route }) => {
       const token = credentials.username
       const params = { token: token, data: tempData }
       console.log("params from submitProfile", params)
-      if(isValidEmail){
-        setTimeout(() => {
-          updateProfileFunc(params)
-        }, 2000);
+
+
+      if(params.data?.email !==null){
+        if(isValidEmail){
+          setTimeout(() => {
+            updateProfileFunc(params)
+          }, 2000);
+        }
+        else{
+          setError(true)
+          setMessage("Please enter a valid email")
+        }
       }
       else{
-        setError(true)
-        setMessage("Please enter a valid email")
+        updateProfileFunc(params)
       }
+     
     
     }
   }

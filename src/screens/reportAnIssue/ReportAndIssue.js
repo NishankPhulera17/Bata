@@ -59,7 +59,7 @@ const ReportAndIssue = ({ navigation, route }) => {
   useEffect(() => {
     if (addIssueData) {
       console.log("addIssueData", addIssueData)
-      if (addIssueData.success) {
+      if (addIssueData?.success) {
         setMessage(addIssueData.message);
         setSuccessModal(true)
       }

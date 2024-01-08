@@ -214,7 +214,7 @@ const SupportQueries = ({ navigation }) => {
         </TouchableOpacity>
         <View style={{ alignItems: 'center', justifyContent: 'center', position: "absolute", top: 20, left: 50 }}>
           <PoppinsTextMedium
-            content="Support Queries"
+            content="Report Issue"
             style={{
               marginLeft: 10,
               fontSize: 16,

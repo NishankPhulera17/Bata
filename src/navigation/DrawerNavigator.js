@@ -376,6 +376,9 @@ const CustomDrawer = () => {
               else if (props.title.toLowerCase() === "query list") {
                 navigation.navigate('QueryList')
               }
+              else if(props.title.toLowerCase() === "media"){
+                navigation.navigate("WhatsNew")
+              }
               else if (props.title.toLowerCase() === "share app") {
                 const options = {
                   title: "Share APP",
@@ -544,8 +547,8 @@ const CustomDrawer = () => {
           }
         </View>
       </View>
-      <ScrollView contentContainerStyle={{}} style={{ width: '100%',height:'100%'}} >
 
+      <ScrollView contentContainerStyle={{}} style={{ width: '100%',height:'100%'}} >
         {
           drawerData !== undefined && drawerData.app_menu.map((item, index) => {
             return (

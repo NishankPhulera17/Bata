@@ -21,7 +21,12 @@ const TextInputNumericRectangle = props => {
   },[props.value])
 
   const handleInput = text => {
-    setValue(text);
+    if(!text.includes(".") && !text.includes("-") && !text.includes(",") && !text.includes(" ")){
+      setValue(text)
+      props.handleData(text, props.title)
+    
+  }
+
   };
   const handleInputEnd = () => {
     let tempJsonData = {...props.jsonData, value: value};
