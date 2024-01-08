@@ -3,10 +3,17 @@ import { View, StyleSheet, TextInput, Modal, Pressable, Text, Image } from 'reac
 import PoppinsTextMedium from '../../electrons/customFonts/PoppinsTextMedium';
 import { useVerifyGstMutation } from '../../../apiServices/verification/GstinVerificationApi';
 import ZoomImageAnimation from '../../animations/ZoomImageAnimation';
+import FastImage from 'react-native-fast-image';
+import ErrorModal from '../../modals/ErrorModal';
 
 const TextInputGST = (props) => {
   const [value, setValue] = useState()
   const [modalVisible, setModalVisible] = useState(false);
+  const [gstVerified, setGSTVerified] = useState(false)
+  const [error, setError] = useState(false)
+  const [message, setMessage] = useState("")
+  const [errorModal, setErrorModal] = useState(false)
+
   const placeHolder = props.placeHolder
   const required = props.required
   const label = props.label
@@ -18,11 +25,16 @@ const TextInputGST = (props) => {
   }] = useVerifyGstMutation()
 
   // console.log("Aadhar TextInput")
+  const gifUri = Image.resolveAssetSource(require('../../../../assets/gif/loader.gif')).uri;
+
 
   useEffect(() => {
+
+    console.log("gstin value", value);
+
     if (value?.length === 15) {
       const data = {
-        "gstin": "29AAICP2912R1ZR",
+        "gstin": value,
         "business_name": "TEst"
       }
       verifyGstFunc(data)
@@ -34,13 +46,14 @@ const TextInputGST = (props) => {
     if (verifyGstData) {
       console.log("verifyGstData", verifyGstData)
       if (verifyGstData.success) {
-
+        setGSTVerified(true)
         setModalVisible(true)
       }
-
     }
     else if (verifyGstError) {
       console.log("verifyGstError", verifyGstError)
+      setErrorModal(true)
+      setMessage(verifyGstError.data.message)
     }
   }, [verifyGstData, verifyGstError])
 
@@ -48,6 +61,9 @@ const TextInputGST = (props) => {
     setValue(text)
     // props.handleData(value)
 
+  }
+  const modalClose = () =>{
+    setErrorModal(false)
   }
 
   const handleInputEnd = () => {
@@ -68,7 +84,7 @@ const TextInputGST = (props) => {
         }}>
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
-            <Text style={styles.modalText}>Pan Verified Succesfully</Text>
+            <Text style={styles.modalText}>GST Verified Succesfully</Text>
             <ZoomImageAnimation style={{ marginBottom: 20 }} zoom={100} duration={1000} image={require('../../../../assets/images/greenTick.png')}></ZoomImageAnimation>
 
             <Pressable
@@ -82,7 +98,27 @@ const TextInputGST = (props) => {
       <View style={{ alignItems: "center", justifyContent: 'center', backgroundColor: 'white', position: "absolute", top: -15, left: 16 }}>
         <PoppinsTextMedium style={{ color: "#919191", padding: 4, fontSize: 18, }} content={label}></PoppinsTextMedium>
       </View>
-      <TextInput maxLength={12} onSubmitEditing={(text) => { handleInputEnd() }} onEndEditing={(text) => { handleInputEnd() }} style={{ height: 50, width: '100%', alignItems: "center", justifyContent: "flex-start", fontWeight: '500', marginLeft: 24, color: 'black', fontSize: 16 }} placeholderTextColor="grey" onChangeText={(text) => { handleInput(text) }} value={value} placeholder={required ? `${placeHolder} *` : `${placeHolder}`}></TextInput>
+
+      <TextInput editable={!gstVerified} maxLength={15} onSubmitEditing={(text) => { handleInputEnd() }} onEndEditing={(text) => { handleInputEnd() }} style={{ height: 50, width: '100%', alignItems: "center", justifyContent: "flex-start", fontWeight: '500', marginLeft: 24, color: 'black', fontSize: 16 }} placeholderTextColor="grey" onChangeText={(text) => { handleInput(text) }} value={value} placeholder={required ? `${placeHolder} *` : `${placeHolder}`}></TextInput>
+      {gstVerified && <View style={{ alignItems: 'center', justifyContent: 'center', width: '20%', position: 'absolute', right: 0 }}>
+        <Image style={{ height: 30, width: 30, resizeMode: 'contain' }} source={require('../../../../assets/images/greenTick.png')}></Image>
+      </View>}
+
+      {verifyGstIsLoading && <FastImage
+        style={{ width: 30, height: 30, alignSelf: 'center', position: 'absolute', right: 10 }}
+        source={{
+          uri: gifUri, // Update the path to your GIF
+          priority: FastImage.priority.normal,
+        }}
+        resizeMode={FastImage.resizeMode.contain}
+      />}
+
+      {errorModal && (
+        <ErrorModal
+          modalClose={modalClose}
+          message={message}
+          openModal={error}></ErrorModal>
+      )}
     </View>
   );
 }
