@@ -240,9 +240,9 @@ const RedeemedHistory = ({ navigation }) => {
         setError(true)
         setMessage("Sorry you don't have enough points.")
       }
-      else if(cashPerPointData?.body?.min_point_redeem>userPointData?.body?.point_balance){
+      else if(Number(cashPerPointData?.body?.min_point_redeem)>Number(userPointData?.body?.point_balance)){
         setError(true)
-        setMessage("Minimum points required to redeem is: ",cashPerPointData?.body?.min_point_redeem)
+        setMessage("Minimum points required to redeem is: "+cashPerPointData?.body?.min_point_redeem)
       }
       else {
         
