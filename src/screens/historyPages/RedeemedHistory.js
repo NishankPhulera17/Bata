@@ -236,9 +236,13 @@ const RedeemedHistory = ({ navigation }) => {
     const [modalVisible, setModalVisible] = useState(false);
 
     const handleRedeemButtonPress = () => {
-      if (Number(userPointData.body.point_balance) <= 0 ) {
+      if (Number(userPointData?.body?.point_balance) <= 0 ) {
         setError(true)
         setMessage("Sorry you don't have enough points.")
+      }
+      else if(cashPerPointData?.body?.min_point_redeem>userPointData?.body?.point_balance){
+        setError(true)
+        setMessage("Minimum points required to redeem is: ",cashPerPointData?.body?.min_point_redeem)
       }
       else {
         
