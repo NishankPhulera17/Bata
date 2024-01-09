@@ -22,7 +22,7 @@ const MenuItems = (props) => {
             
                 <View style={{alignItems:"center",justifyContent:"center",width:100,margin:6}}>
            
-            <TouchableOpacity onPress={()=>{handlePress()}} style={{height:69,width:69,backgroundColor:colorShades[100],alignItems:"center",justifyContent:"center",borderRadius:34.5,opacity:0.6}}>
+            <TouchableOpacity onPress={()=>{handlePress()}} style={{height:69,width:69,backgroundColor:colorShades[200],alignItems:"center",justifyContent:"center",borderRadius:34.5,opacity:0.6}}>
             {/* <SvgUri width={69} height={69} uri={image}></SvgUri> */}
             <Image style={{height:69,width:69}} source={{uri:image}}></Image>
             </TouchableOpacity>
