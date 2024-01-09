@@ -246,7 +246,7 @@ const RedeemedHistory = ({ navigation }) => {
       }
       else {
         
-        if(Number(new Date(redemptionStartData).getTime()) < Number(new Date().getTime()) < Number(new Date(redemptionEndDate).getTime()) )
+        if((Number(new Date(redemptionStartData).getTime()) < Number(new Date().getTime()))&& (Number(new Date().getTime())< Number(new Date(redemptionEndDate).getTime())) )
         {
           
           console.log("correct redemption date",new Date().getTime(),new Date(redemptionStartData).getTime(),new Date(redemptionEndDate).getTime())
