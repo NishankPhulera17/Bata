@@ -3,6 +3,7 @@ import { View, Text, Image, TouchableOpacity, ScrollView, Dimensions } from 'rea
 import { useSelector } from "react-redux";
 import { useFetchAllPushNotificationDumpListByAppUserIdMutation } from "../../apiServices/pushNotification/fetchAllPushNotificationDumpListByAppUserId";
 import PoppinsTextLeftMedium from "../../components/electrons/customFonts/PoppinsTextLeftMedium";
+import FastImage from "react-native-fast-image";
 
 
 const Notification = ({ route, navigation }) => {
@@ -15,6 +16,8 @@ const Notification = ({ route, navigation }) => {
     }] = useFetchAllPushNotificationDumpListByAppUserIdMutation()
 
     const userData = useSelector(state => state.appusersdata.userData)
+
+    const noData = Image.resolveAssetSource(require('../../../assets/gif/noData.gif')).uri;
 
     console.log("userData", userData)
 
@@ -54,15 +57,15 @@ const Notification = ({ route, navigation }) => {
                 <View style={{ width: '80%', margin: 20 }}>
                     <Text style={{ fontWeight: '600', color: 'black' }}>{props.notification}</Text>
                     {/* <Text style={{ color: 'black' }}>{props?.subtitle}</Text> */}
-                    <PoppinsTextLeftMedium style={{color:'black', }} content={props?.body}></PoppinsTextLeftMedium>
+                    <PoppinsTextLeftMedium style={{ color: 'black', }} content={props?.body}></PoppinsTextLeftMedium>
                 </View>
             </View>
         )
     }
 
     return (
-       <View style={{width:'100%',alignItems:'flex-start',justifyContent:'center',backgroundColor: buttonThemeColor }}>
-        <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10, marginLeft: 10,height:'10%' }}>
+        <View style={{ width: '100%', alignItems: 'flex-start', justifyContent: 'center', backgroundColor: buttonThemeColor }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10, marginLeft: 10, height: '10%' }}>
                 <TouchableOpacity onPress={() => {
                     console.log("hello")
                     navigation.goBack()
@@ -71,18 +74,31 @@ const Notification = ({ route, navigation }) => {
                 </TouchableOpacity>
                 <Text style={{ color: 'white', marginLeft: 10, fontWeight: '500' }}>Notification</Text>
             </View>
-         <ScrollView style={{ height: '90%', backgroundColor: buttonThemeColor }}>
-            
-            <View style={{ paddingBottom: 120, height: height, backgroundColor: 'white', width: '100%', borderTopLeftRadius: 30, borderTopRightRadius: 30, marginTop: 20 }}>
-                {
-                    notifData?.body?.data?.map((item, index) => {
-                        return <Notificationbar notification={item?.title} body={item?.body} key={item?.id} ></Notificationbar>
+            <ScrollView style={{ height: '90%', backgroundColor: buttonThemeColor }}>
 
-                    })
-                }
-            </View>
-        </ScrollView>
-       </View>
+                <View style={{ paddingBottom: 120, height: height, backgroundColor: 'white', width: '100%', borderTopLeftRadius: 30, borderTopRightRadius: 30, marginTop: 20 }}>
+                    {notifData?.body?.data.length !== 0 ?
+                        notifData?.body?.data?.map((item, index) => {
+                            return <Notificationbar notification={item?.title} body={item?.body} key={item?.id} ></Notificationbar>
+
+                        })
+                        :
+                        <View style={{width:'100%', height:'100%', justifyContent:'center'}}>
+                            <FastImage
+                                style={{ width:400, height:200}}
+                                source={{
+                                    uri: noData, // Update the path to your GIF
+                                    priority: FastImage.priority.normal,
+                                }}
+                                resizeMode={FastImage.resizeMode.contain}
+                            />
+                            <Text style={{alignSelf:'center'}}>No Data</Text>
+                        </View>
+
+                    }
+                </View>
+            </ScrollView>
+        </View>
 
 
     )

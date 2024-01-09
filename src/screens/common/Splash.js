@@ -309,7 +309,7 @@ const Splash = ({ navigation }) => {
 
       {/* <Image style={{ width: 300, height: 100, }} source={require('../../../assets/images/batalogo.png')} /> */}
       <FastImage
-          style={{ width: 250, height: 250, marginTop:'auto',alignSelf:'center' }}
+          style={{ width: 250, height: "100%", marginTop:'auto',alignSelf:'center',  }}
           source={{
             uri: gifUri, // Update the path to your GIF
             priority: FastImage.priority.normal,

@@ -351,7 +351,7 @@ const VerifyOtp = ({ navigation, route }) => {
           <Image
             style={{
               height: 50,
-              width: 100,
+              width: 130,
               resizeMode: 'contain',
               top: 20,
               position: "absolute",

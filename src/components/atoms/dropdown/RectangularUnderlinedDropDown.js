@@ -113,7 +113,7 @@ const RectangularUnderlinedDropDown = (props) => {
             {data && (
               <FlatList
               initialNumToRender={20}
-              contentContainerStyle={{alignItems:"center",justifyContent:"center"}}
+              contentContainerStyle={{marginLeft:15}}
               style={{width:'100%'}}
                 data={data}
                 renderItem={({ item, index }) => (

@@ -277,26 +277,23 @@ const OtpLogin = ({ navigation, route }) => {
 
           }}>
 
-          <TouchableOpacity
+          {/* <TouchableOpacity
             style={{ height: 50, alignItems: "center", justifyContent: 'center', position: "absolute", left: 10, top: 20 }}
             onPress={() => {
               navigation.goBack();
             }}>
             <Image
-              style={{ height: 20, width: 20, resizeMode: 'contain' }}
+              style={{ height: 30, width: 25, resizeMode: 'contain' }}
               source={require('../../../assets/images/blackBack.png')}></Image>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
           <Image
             style={{
               height: 50,
-              width: 100,
+              width: 150,
               resizeMode: 'contain',
               top: 20,
               position: "absolute",
-              left: 50,
-
-
-
+              left: 10,
             }}
             source={require('../../../assets/images/batalogo.png')}></Image>
             {/* <PoppinsTextMedium style={{fontSize:14,color:'white'}} content ="Don't have an account ?"></PoppinsTextMedium> */}

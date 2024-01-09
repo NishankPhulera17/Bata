@@ -485,7 +485,7 @@ const QrCodeScanner = ({ navigation }) => {
       } else {
 
         setError(true);
-        setMessage('Sorry This QR is already added to the list');
+        setMessage('Sorry This Barcode is already added to the list');
       }
     }
   };
@@ -875,7 +875,12 @@ const QrCodeScanner = ({ navigation }) => {
   const helpModalComp = () => {
     return (
       <View style={{ width: 340, height: 320, alignItems: "center", justifyContent: "center" }}>
+      {scannerType == "QR" ? 
         <Image style={{ height: 370, width: 390, }} source={(require('../../../assets/images/howToScan.png'))}></Image>
+        :
+        <Image style={{ height: 370, width: 390, }} source={(require('../../../assets/images/howtobar.png'))}></Image>
+
+    }  
         <TouchableOpacity style={[{
           backgroundColor: ternaryThemeColor, padding: 6, borderRadius: 5, position: 'absolute', top: -10, right: -10,
         }]} onPress={() => setHelpModal(false)} >
@@ -1209,7 +1214,7 @@ const QrCodeScanner = ({ navigation }) => {
                       width: 34,
                       borderRadius: 17,
                       position: 'absolute',
-                      left: 5,
+                      left: 25,
                       top: 3,
                       alignItems: 'center',
                       justifyContent: 'center',
@@ -1218,7 +1223,7 @@ const QrCodeScanner = ({ navigation }) => {
                       style={{ height: 16, width: 16, resizeMode: 'contain' }}
                       source={require('../../../assets/images/qrQuestionMark.png')}></Image>
                   </TouchableOpacity>
-                  <TouchableOpacity
+                  {/* <TouchableOpacity
                     onPress={() => {
                       handleZoom();
                     }}
@@ -1236,7 +1241,7 @@ const QrCodeScanner = ({ navigation }) => {
                     <Text style={{ fontSize: 14, color: '#FB774F' }}>
                       {zoomText}X
                     </Text>
-                  </TouchableOpacity>
+                  </TouchableOpacity> */}
                 </View>
               </View>
             </View>
