@@ -482,7 +482,6 @@ const Profile = ({ navigation }) => {
                       data={formValues[index] === null || formValues[index] === undefined   ? 'No data available' : formValues[index]}
                       title={item.label}
                       photo={require('../../../assets/images/eye.png')}>
-
                     </DisplayOnlyTextInput>
                   );
                 }
