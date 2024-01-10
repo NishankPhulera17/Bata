@@ -444,13 +444,13 @@ const PasswordLogin = ({ navigation, route }) => {
             <PoppinsTextLeftMedium content={"I agree to the Terms & Conditions"} style={{ color: '#808080', marginHorizontal: 30, marginBottom: 20, fontSize: 15, marginLeft: 8, marginTop: 16 }}></PoppinsTextLeftMedium>
           </TouchableOpacity>
         </View>
-
+{/* 
         <View style={{ flexDirection: "row", alignItems: "center", justifyContent: 'center', width: '90%' }}>
           <PoppinsTextMedium style={{ color: "#727272", fontSize: 14 }} content="Not remembering password? "></PoppinsTextMedium>
           <TouchableOpacity >
             <PoppinsTextMedium style={{ color: ternaryThemeColor, fontSize: 14 }} content="Forget Password"></PoppinsTextMedium>
           </TouchableOpacity>
-        </View>
+        </View> */}
 
         <View style={{ width: "100%", flex: 1 }}>
           <View style={{ marginBottom: 27, marginLeft: 20, marginTop: 'auto' }}>

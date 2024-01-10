@@ -9,7 +9,10 @@ const ScannedListItem = props => {
   const productCode = props.productCode;
   const batchCode = props.batchCode;
   const unique_code = props.unique_code
+  const bar_code_no = props.barcode
+  const mrp = props.mrp
   
+  console.log("Piropssss============>", props)
 
   return (
     <View style={styles.container}>
@@ -29,7 +32,7 @@ const ScannedListItem = props => {
       <View style={{width: '76%'}}>
         <PoppinsTextMedium
         style={{color:'black',fontSize:14,fontWeight:'600'}}
-          content={`Serial No : ${serialNo}, Product Name : ${productName}, Product Code : ${productCode}`}></PoppinsTextMedium>
+          content={`Serial No : ${serialNo}, Artical Name : ${productName}, Artical No : ${productCode}, Bar Code No :${bar_code_no},  MRP :Rs${mrp} `}></PoppinsTextMedium>
       </View>
       <View style={{width: '10%',marginLeft:4}}>
         <TouchableOpacity

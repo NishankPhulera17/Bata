@@ -647,7 +647,6 @@ const QrCodeScanner = ({ navigation }) => {
         console.log("check Genuinity and warranty", checkGenuinityData, checkWarrantyData)
 
         if (checkGenuinityData) {
-
           if (checkGenuinityData.body) {
             console.log("check warranty data", checkWarrantyData)
             if (checkWarrantyError) {
@@ -1102,6 +1101,7 @@ const QrCodeScanner = ({ navigation }) => {
                         alignItems: 'center',
                         justifyContent: 'center',
                       }}>
+                        {console.log("the Item =================>", item)}
                       {!error && (
                         <ScannedListItem
                           handleDelete={deleteQrFromList}
@@ -1110,6 +1110,8 @@ const QrCodeScanner = ({ navigation }) => {
                           serialNo={item.batch_running_code}
                           productName={item.created_by_name}
                           productCode={item.product_code}
+                          barcode={item.barcode}
+                          mrp = {item.mrp}
                           batchCode={item.batch_code}></ScannedListItem>
                       )}
                     </View>
@@ -1358,6 +1360,7 @@ const QrCodeScanner = ({ navigation }) => {
                         alignItems: 'center',
                         justifyContent: 'center',
                       }}>
+                        {console.log("The Item", item)}
                       {!error && (
                         <ScannedListItem
                           handleDelete={deleteQrFromList}
@@ -1366,6 +1369,8 @@ const QrCodeScanner = ({ navigation }) => {
                           serialNo={item.batch_code}
                           productName={item.product_name}
                           productCode={item.product_code}
+                          mrp={item.mrp}
+                          barcode={item.barcode}
                           batchCode={item.batch_code}></ScannedListItem>
                       )}
                     </View>

@@ -424,7 +424,7 @@ const RedeemRewardHistory = ({navigation}) => {
 
             {showPoints && userPointData &&  <RedeemRewardDataBox navigation = {navigation} header="Redeem Points"  data={userPointData.body.point_redeemed} image={require('../../../assets/images/points.png')} ></RedeemRewardDataBox>}
 
-            {showPoints && userPointData &&  <RedeemRewardDataBox navigation = {navigation} header="Reserved Points"  data={userPointData.body.point_reserved} image={require('../../../assets/images/points.png')} ></RedeemRewardDataBox>}
+            {/* {showPoints && userPointData &&  <RedeemRewardDataBox navigation = {navigation} header="Reserved Points"  data={userPointData.body.point_reserved} image={require('../../../assets/images/points.png')} ></RedeemRewardDataBox>} */}
 
 
             </ScrollView>

@@ -312,6 +312,8 @@ const PointHistory = ({ navigation }) => {
         const type = props.type
         const points = props?.points
         const is_reverted = props.is_reverted
+        const mrp = props.mrp
+
         console.log("point props", props, type, image)
         return (
             <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center", margin: 8, borderBottomWidth: 1, borderColor: '#DDDDDD', paddingBottom: 10, width: '100%', height: 100, backgroundColor: 'white' }}>
@@ -322,7 +324,9 @@ const PointHistory = ({ navigation }) => {
                     {type !== "registration_bonus" && <PoppinsTextMedium style={{ fontWeight: '700', fontSize: 14, color: 'black' }} content={description}></PoppinsTextMedium>}
                     {type === "registration_bonus" && <PoppinsTextMedium style={{ fontWeight: '400', fontSize: 14, color: 'black', fontWeight: '700' }} content={`Registration Bonus`}></PoppinsTextMedium>}
 
-                    {type !== "registration_bonus" && <PoppinsTextMedium style={{ fontWeight: '400', fontSize: 12, color: 'black' }} content={`Product Code : ${productCode}`}></PoppinsTextMedium>}
+                    {type !== "registration_bonus" && <PoppinsTextMedium style={{ fontWeight: '400', fontSize: 12, color: 'black' }} content={`Artical No : ${productCode}`}></PoppinsTextMedium>}
+                    {type !== "registration_bonus" && <PoppinsTextMedium style={{ fontWeight: '400', fontSize: 12, color: 'black' }} content={`MRP : ${mrp}`}></PoppinsTextMedium>}
+
                     {/* {visibleCode && type !== "registration_bonus" && <PoppinsTextMedium style={{ fontWeight: '400', fontSize: 12, color: 'black' }} content={`Visible Code : ${visibleCode}`}></PoppinsTextMedium>} */}
                     <PoppinsTextMedium style={{ fontWeight: '200', fontSize: 12, color: 'black' }} content={date}></PoppinsTextMedium>
 
@@ -402,7 +406,7 @@ const PointHistory = ({ navigation }) => {
                 renderItem={({ item, index }) => {
                     console.log("item of displaylist",index + 1, item)
                     return (
-                        <ListItem  type={item?.cause?.type} image={item?.images === undefined ? undefined : item?.images?.[0]} description={item?.product_name} productCode={item?.product_code} amount={item?.points} status={item?.status} points={item?.points} is_reverted={item?.is_reverted} date={moment(item?.created_at).format("DD-MMM-YYYY")} time={moment(item?.created_at).format("HH:mm a")} />
+                        <ListItem  type={item?.cause?.type} image={item?.images === undefined ? undefined : item?.images?.[0]} description={item?.product_name} productCode={item?.product_code} amount={item?.points} status={item?.status} points={item?.points} is_reverted={item?.is_reverted}mrp={item.mrp} date={moment(item?.created_at).format("DD-MMM-YYYY")} time={moment(item?.created_at).format("HH:mm a")} />
                     )
                 }}
                 keyExtractor={(item, index) => index}

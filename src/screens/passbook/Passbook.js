@@ -339,7 +339,7 @@ const Passbook = ({ navigation }) => {
                         {/* ozone change */}
                         {/* {userData.user_type !== "dealer" && <NavigateTO title="Scanned History" discription=" list of products scanned by you" image={require('../../../assets/images/scannedHistory.png')}></NavigateTO>} */}
                         <NavigateTO title="Redeemed History" discription=" list of products redeemed by you" image={require('../../../assets/images/redeemed_icon.png')}></NavigateTO>
-                        <NavigateTO title="Cashback History" discription=" list of cashback claimed by you" image={require('../../../assets/images/cashbackBlack.png')}></NavigateTO>
+                        {/* <NavigateTO title="Cashback History" discription=" list of cashback claimed by you" image={require('../../../assets/images/cashbackBlack.png')}></NavigateTO> */}
 
                         {warrantyOptionEnabled &&  <NavigateTO title="Warranty History" discription=" list of warranty claimed by you" image={require('../../../assets/images/warranty_icon.png')}></NavigateTO>}
                         {
@@ -403,7 +403,7 @@ const Passbook = ({ navigation }) => {
 
                             {/* {userData.user_type !== "dealer" && <GridVIew title="Scanned History" discription=" list of products scanned by you" image={require('../../../assets/images/scannedHistory.png')}></GridVIew>} */}
                             <GridVIew title="Redeemed History" discription=" list of products redeemed by you" image={require('../../../assets/images/redeemed_icon.png')}></GridVIew>
-                            <GridVIew title="Cashback History" discription=" list of cashback redeemed by you" image={require('../../../assets/images/cashbackBlack.png')}></GridVIew>
+                            {/* <GridVIew title="Cashback History" discription=" list of cashback redeemed by you" image={require('../../../assets/images/cashbackBlack.png')}></GridVIew> */}
 
                             {/* {
                 warrantyOptionEnabled &&  */}

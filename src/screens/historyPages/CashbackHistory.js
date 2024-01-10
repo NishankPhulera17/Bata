@@ -285,8 +285,8 @@ const CashbackHistory = ({ navigation }) => {
         
       </View>
       <Header></Header>
-
-      {getCashTransactionsData?.body?.length!==0 && <FlatList
+        
+      {getCashTransactionsData?.body?.count!==0 && getCashTransactionsData?.body != undefined && getCashTransactionsData?.body != null  ? <FlatList
         initialNumToRender={20}
         contentContainerStyle={{
           alignItems: "flex-start",
@@ -298,7 +298,13 @@ const CashbackHistory = ({ navigation }) => {
           <CashbackListItem items={item}></CashbackListItem>
         )}
         keyExtractor={(item, index) => index}
-      />}
+      />
+      :
+      <View style={{width:'100%', height:'100%',marginBottom:-200}}>
+      <DataNotFound/>
+
+      </View>
+      }
       {
         getCashTransactionsData?.body?.length===0 && <View style={{marginBottom:300,width:'100%'}}>
             <DataNotFound></DataNotFound>

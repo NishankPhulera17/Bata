@@ -6,7 +6,7 @@ import BottomNavigator from './BottomNavigator';
 import RedeemRewardHistory from '../screens/historyPages/RedeemRewardHistory';
 import AddBankAccountAndUpi from '../screens/payments/AddBankAccountAndUpi';
 import Profile from '../screens/profile/Profile';
-import { useNavigation } from '@react-navigation/native';
+import { useIsFocused, useNavigation } from '@react-navigation/native';
 import { useSelector } from 'react-redux';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { useGetAppDashboardDataMutation } from '../apiServices/dashboard/AppUserDashboardApi';
@@ -50,6 +50,7 @@ const CustomDrawer = () => {
     : '#FF9B00';
   const userData = useSelector(state => state.appusersdata.userData)
   const kycData = useSelector(state => state.kycDataSlice.kycData)
+  const focused = useIsFocused()
 
 
   const [getTermsAndCondition, {
@@ -125,6 +126,26 @@ const CustomDrawer = () => {
     fetchPolicies()
     fetchFaq()
   }, [])
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const credentials = await Keychain.getGenericPassword();
+      if (credentials) {
+        console.log(
+          'Credentials successfully loaded for user ' + credentials.username,
+        );
+        const token = credentials.username;
+        fetchProfileFunc(token);
+      }
+    };
+    if(profileImage)
+    fetchData()},[focused])
+
+
+
+    useEffect(()=>{
+      setProfileImage(fetchProfileData?.body?.profile_pic)
+    },[fetchProfileData?.body?.profile_pic])
 
   useEffect(()=>{
     if(getTermsData){
@@ -394,7 +415,7 @@ const CustomDrawer = () => {
               }
             }}>
               {console.log("props.title", props.title)}
-            <Text style={{ color: primaryThemeColor, fontSize: 15 }}>{props.title == "Passbook" ? "My Loyalty" : props.title == "Profile" ? "My Profile" : props.title == "Rewards" ? "My Rewards" : props.title}</Text>
+            <Text style={{ color: primaryThemeColor, fontSize: 15 }}>{props.title == "Passbook" ? "My Passbook" : props.title == "Profile" ? "My Profile" : props.title == "Rewards" ? "My Rewards" : props.title}</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -462,6 +483,7 @@ const CustomDrawer = () => {
           alignItems: 'center',
           justifyContent: 'center',
         }}>
+          {console.log("profileimage in code", profileImage)}
       {profileImage ?
           <Image
             style={{
