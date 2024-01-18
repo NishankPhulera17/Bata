@@ -48,7 +48,7 @@ const ImageInputWithUpload = (props) => {
 
     console.log("imaggg", image)
     return (
-        <View style={{ width: '100%', alignItems: "center", justifyContent: "center", backgroundColor: '#EBF3FA',paddingVertical:40, borderWidth: 1, borderColor: '#85BFF1', borderStyle:'dotted' }}>
+        <View style={{ width: '100%', alignItems: "center", justifyContent: "center", backgroundColor: '#EBF3FA',paddingVertical: !image ? 40 : 0, borderWidth: 1, borderColor: !image ?'#85BFF1':"white", borderStyle:'dotted' }}>
             <View style={{ alignItems: 'center' }}>
                 {!memoizedImage && <Image style={{ height: 33, width: 35, }} source={require('../../../../assets/images/uploadIcon.png')} />}
             </View>
