@@ -10,7 +10,7 @@ import PoppinsText from "../../components/electrons/customFonts/PoppinsText";
 import PoppinsTextMedium from "../../components/electrons/customFonts/PoppinsTextMedium";
 import { useSelector } from "react-redux";
 import * as Keychain from "react-native-keychain";
-import { useFetchCashbackEnteriesOfUserMutation } from "../../apiServices/workflow/rewards/GetCashbackApi";
+import { useFetchCashbackEnteriesOfUserMutation, useFetchUserCashbackByAppUserIdMutation } from "../../apiServices/workflow/rewards/GetCashbackApi";
 import DataNotFound from "../data not found/DataNotFound";
 import AnimatedDots from "../../components/animations/AnimatedDots";
 import { useGetCashTransactionsMutation } from "../../apiServices/cashback/CashbackRedeemApi";
@@ -19,7 +19,7 @@ import moment from "moment";
 const CashbackHistory = ({ navigation }) => {
   const [showNoDataFound, setShowNoDataFound] = useState(false);
   const [totalCashbackEarned, setTotalCashbackEarned] = useState(0)
-  
+
   const userId = useSelector((state) => state.appusersdata.userId);
   const userData = useSelector((state) => state.appusersdata.userData);
 
@@ -46,7 +46,14 @@ const CashbackHistory = ({ navigation }) => {
       isLoading: getCashTransactionsIsLoading,
       isError: getCashTransactionsIsError,
     },
-  ] = useGetCashTransactionsMutation();
+  ] = useFetchCashbackEnteriesOfUserMutation();
+
+  const [fetchCashbackEnteriesFunc, {
+    data: fetchCashbackEnteriesData,
+    error: fetchCashbackEnteriesError,
+    isLoading: fetchCashbackEnteriesIsLoading,
+    isError: fetchCashbackEnteriesIsError
+  }] = useGetCashTransactionsMutation()
 
   useEffect(() => {
     const getData = async () => {
@@ -56,37 +63,37 @@ const CashbackHistory = ({ navigation }) => {
           "Credentials successfully loaded for user " + credentials.username
         );
         const token = credentials.username;
+        // const params = { token: token, appUserId: userData.id };
         const params = { token: token, appUserId: userData.id };
-        getCashTransactionsFunc(params);
+
+        // getCashTransactionsFunc(params);
+        fetchCashbackEnteriesFunc(params)
       }
     };
     getData();
   }, []);
   useEffect(() => {
-    if (getCashTransactionsData) {
-        let cashback = 0
+    if (fetchCashbackEnteriesData) {
+      let cashback = 0
       console.log(
-        "getCashTransactionsData",
-        JSON.stringify(getCashTransactionsData)
+        "fetchCashbackEnteriesData",
+        JSON.stringify(fetchCashbackEnteriesData)
       );
-      if(getCashTransactionsData.body)
-      {
-        for(var i=0;i<getCashTransactionsData.body?.data?.length;i++)
-        {
-            
-          if(getCashTransactionsData.body.data[i].approval_status==="1")
-          {           
-            cashback = cashback+ Number(getCashTransactionsData.body.data[i].cash)
-            console.log("getCashTransactionsData",getCashTransactionsData.body.data[i].cash,cashback)
+      if (fetchCashbackEnteriesData.body) {
+        for (var i = 0; i < fetchCashbackEnteriesData.body?.data?.length; i++) {
+
+          if (fetchCashbackEnteriesData.body.data[i].status === "1") {
+            cashback = cashback + Number(fetchCashbackEnteriesData.body.data[i].cash)
+            console.log("fetchCashbackEnteriesData", fetchCashbackEnteriesData.body.data[i].cash)
           }
         }
         setTotalCashbackEarned(cashback)
       }
-   
-    } else if (getCashTransactionsError) {
-      console.log("getCashTransactionsError", getCashTransactionsError);
+
+    } else if (fetchCashbackEnteriesError) {
+      console.log("fetchCashbackEnteriesError", fetchCashbackEnteriesError);
     }
-  }, [getCashTransactionsData, getCashTransactionsError]);
+  }, [fetchCashbackEnteriesData, fetchCashbackEnteriesError]);
 
   const Header = () => {
     return (
@@ -123,11 +130,11 @@ const CashbackHistory = ({ navigation }) => {
   };
   const CashbackListItem = (props) => {
     const amount = props.items.cash;
-    console.log("amount details", amount);
+    console.log("amount details", props);
     return (
       <TouchableOpacity
         onPress={() => {
-          navigation.navigate("CashbackDetails",{"data":props.items});
+          navigation.navigate("CashbackDetails", { "data": props.items });
         }}
         style={{
           alignItems: "flex-start",
@@ -136,8 +143,8 @@ const CashbackHistory = ({ navigation }) => {
           borderBottomWidth: 1,
           borderColor: "#DDDDDD",
           padding: 4,
-          height: 100,
-          flexDirection:'row'
+          height: 130,
+          flexDirection: 'row'
         }}
       >
         <View
@@ -145,13 +152,13 @@ const CashbackHistory = ({ navigation }) => {
             width: "80%",
             alignItems: "flex-start",
             justifyContent: "center",
-            padding:8
+            padding: 8
           }}
         >
           <PoppinsTextMedium
-            style={{ color: props.items.approval_status === "1" ? "green" : "red", fontWeight: "600", fontSize: 18 }}
+            style={{ color: props.items.status === "1" ? "green" : "red", fontWeight: "600", fontSize: 18 }}
             content={
-              props.items.approval_status === "1"
+              props.items.status === "1"
                 ? "Credited to cash balance"
                 : "Declined from the panel"
             }
@@ -178,14 +185,28 @@ const CashbackHistory = ({ navigation }) => {
             >
               <PoppinsTextMedium
                 style={{ color: "black", fontWeight: "600", fontSize: 14 }}
-                content={`Beneficiary Details : ${props.items?.bene_details?.bene_name} `}
+                content={`To :  ${props.items?.bene_details?.bene_name} `}
               ></PoppinsTextMedium>
               <PoppinsTextMedium
                 style={{ color: "black", fontWeight: "600", fontSize: 14 }}
-                content={`Beneficiary Account : ${props.items?.bene_details?.upi_id} `}
+                content={`Transfer mode : ${props.items?.transfer_mode} `}
               ></PoppinsTextMedium>
               <PoppinsTextMedium
-                style={{ color: "#91B406", fontWeight: "600", fontSize: 14 }}
+                style={{ color: "black", fontWeight: "600", fontSize: 14 }}
+                content={` ${props.items?.transfer_mode} :  ${props.items?.transfer_mode == "upi" ? props.items?.bene_details?.upi_id : props.items?.bene_details?.account_no}  `}
+              ></PoppinsTextMedium>
+
+                {
+                   props.items?.bene_details?.ifsc &&
+                   <PoppinsTextMedium
+                   style={{ color: "black", fontWeight: "600", fontSize: 14 }}
+                   content={`IFSC :  ${props.items?.transfer_mode !== "upi" &&  props.items?.bene_details?.ifsc}  `}
+                 ></PoppinsTextMedium>
+   
+                }
+           
+              <PoppinsTextMedium
+                style={{ color: "black", fontWeight: "600", fontSize: 14 }}
                 content={
                   moment(props.items.transaction_on).format("DD-MMM-YYYY") +
                   " " +
@@ -195,8 +216,8 @@ const CashbackHistory = ({ navigation }) => {
             </View>
           </View>
         </View>
-        <View style={{width:'20%',alignItems:'center',justifyContent:'center',height:'100%'}}>
-            <PoppinsTextMedium style={{color:'black'}} content={"₹ "+props.items.cash}></PoppinsTextMedium>
+        <View style={{ width: '20%', alignItems: 'center', justifyContent: 'center', height: '100%' }}>
+          <PoppinsTextMedium style={{ color: 'black' }} content={"₹ " + props.items.cash}></PoppinsTextMedium>
         </View>
       </TouchableOpacity>
     );
@@ -250,25 +271,25 @@ const CashbackHistory = ({ navigation }) => {
           width: "100%",
         }}
       >
-        <View style={{ flexDirection: "row",alignItems:'center',justifyContent:'center' }}>
+        <View style={{ flexDirection: "row", alignItems: 'center', justifyContent: 'center' }}>
           <Image
             style={{
               height: 30,
               width: 30,
               resizeMode: "contain",
-             
+
             }}
             source={require("../../../assets/images/wallet.png")}
           ></Image>
-    <PoppinsTextMedium
-          style={{
-            marginLeft: 10,
-            fontSize: 15,
-            fontWeight: "700",
-            color: "#6E6E6E",
-          }}
-          content={"Total cashback earned till date ₹ " + totalCashbackEarned }
-        ></PoppinsTextMedium>
+          <PoppinsTextMedium
+            style={{
+              marginLeft: 10,
+              fontSize: 15,
+              fontWeight: "700",
+              color: "#6E6E6E",
+            }}
+            content={"Total cashback earned till date ₹ " + totalCashbackEarned}
+          ></PoppinsTextMedium>
           {/* <PoppinsText style={{ marginLeft: 10, fontSize: 34, fontWeight: '600', color: 'black' }} content={fetchCashbackEnteriesData?.body?.total != undefined ?  `${fetchCashbackEnteriesData?.body?.total}` : <AnimatedDots color={'black'}/>}></PoppinsText> */}
         </View>
 
@@ -282,26 +303,26 @@ const CashbackHistory = ({ navigation }) => {
           }}
           content="Cashbacks are now instantly credited"
         ></PoppinsTextMedium> */}
-        
+
       </View>
       <Header></Header>
 
-      {getCashTransactionsData?.body?.length!==0 && <FlatList
+      {fetchCashbackEnteriesData && <FlatList
         initialNumToRender={20}
         contentContainerStyle={{
           alignItems: "flex-start",
           justifyContent: "center",
         }}
         style={{ width: "100%" }}
-        data={getCashTransactionsData?.body?.data}
+        data={fetchCashbackEnteriesData?.body?.data}
         renderItem={({ item, index }) => (
           <CashbackListItem items={item}></CashbackListItem>
         )}
         keyExtractor={(item, index) => index}
       />}
       {
-        getCashTransactionsData?.body?.length===0 && <View style={{marginBottom:300,width:'100%'}}>
-            <DataNotFound></DataNotFound>
+        fetchCashbackEnteriesData?.body?.length === 0 && <View style={{ marginBottom: 300, width: '100%' }}>
+          <DataNotFound></DataNotFound>
         </View>
       }
 

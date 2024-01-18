@@ -37,7 +37,7 @@ import ModalWithBorder from '../../components/modals/ModalWithBorder';
 import Close from 'react-native-vector-icons/Ionicons';
 import RNQRGenerator from 'rn-qr-generator';
 import { useCashPerPointMutation } from '../../apiServices/workflow/rewards/GetPointsApi';
-import { useVerifyBarMutation } from '../../apiServices/barCodeApi/VerifyBarCodeApi';
+import { useVerifyBarDistributorMutation, useVerifyBarMutation } from '../../apiServices/barCodeApi/VerifyBarCodeApi';
 import { scannerType } from '../../utils/ScannerType';
 import { useCameraDevice } from 'react-native-vision-camera';
 // import {useScanBarcodes, BarcodeFormat} from 'vision-camera-code-scanner';
@@ -62,6 +62,7 @@ const QrCodeScanner = ({ navigation }) => {
   const [isFirstScan, setIsFirstScan] = useState(false)
   const [isReportable, setIsReportable] = useState(false)
   const [barcodeRead, setBarcodeRead] = useState(false)
+
   const [barcode, setBarcode] = React.useState('');
   const camera = useRef<Camera>(null)
   const userId = useSelector(state => state.appusersdata.userId);
@@ -79,6 +80,8 @@ const QrCodeScanner = ({ navigation }) => {
     : 'grey';
   const dispatch = useDispatch();
   console.log('Workflow Program is ', workflowProgram, shouldSharePoints, location, userData);
+
+  const isDistributor = userData?.user_type_id == 3
   // console.log("Selector state",useSelector((state)=>state.appusersdata.userId))
 
   // mutations ----------------------------------------
@@ -91,6 +94,16 @@ const QrCodeScanner = ({ navigation }) => {
       isError: verifyQrIsError,
     },
   ] = useVerifyQrMutation();
+
+  const [
+    verifyQrDistributorFunc,
+    {
+      data: verifyQrDistributorData,
+      error: verifyQDistributorrError,
+      isLoading: verifyQrDistributorIsLoading,
+      isError: verifyQrDistributorIsError,
+    },
+  ] = useVerifyBarDistributorMutation();
 
   const [verifyBarScannerFunc,
     {
@@ -173,6 +186,7 @@ const QrCodeScanner = ({ navigation }) => {
 
   
 
+
   useEffect(() => {
     if (addBulkQrData) {
       console.log("addBulkQrData", addBulkQrData)
@@ -225,6 +239,40 @@ const QrCodeScanner = ({ navigation }) => {
     }
 
   }, [addQrData]);
+
+  useEffect(() => {
+    if (verifyQrDistributorData) {
+      //reverse logic as retailer
+      console.log('verifyQrDistributorData', verifyQrDistributorData);
+      if (verifyQrDistributorData.body?.qr_status === "2") {
+        addQrDataToListDistributor(verifyQrDistributorData.body);
+      }
+      if (verifyQrDistributorData.body?.qr_status === "1" && verifyQrDistributorData.status === 201) {
+
+        setError(true);
+        setMessage(verifyQrDistributorData.message);
+      }
+      if (verifyQrDistributorData.body?.qr_status === "2" && verifyQrDistributorData.status === 202) {
+        setIsReportable(true)
+        setError(true);
+        setMessage(verifyQrDistributorData.message);
+      }
+    }
+    else if (verifyQDistributorrError) {
+      if (verifyQDistributorrError === undefined) {
+
+        setError(true)
+        setMessage("This QR is not activated yet")
+      }
+      else {
+        setError(true)
+        setMessage(verifyQDistributorrError?.data?.message);
+
+      }
+      console.log('Verify qr error', verifyQDistributorrError);
+
+    }
+  }, [verifyQrDistributorData, verifyQDistributorrError]);
 
   useEffect(() => {
 
@@ -394,8 +442,7 @@ const QrCodeScanner = ({ navigation }) => {
       setMessage("Please scan a valid QR")
     }
     else {
-      
-
+      Vibration.vibrate([1000, 500, 1000]);
       const requestData = { unique_code: e.data };
       const verifyQR = async data => {
         // console.log('qrData', data);
@@ -434,6 +481,55 @@ const QrCodeScanner = ({ navigation }) => {
 
   };
  
+
+  const OnReturedCheck = e => {
+    
+    console.log("eee", e)
+    if (e.data === undefined) {
+      setError(true)
+      setMessage("Please scan a valid QR")
+    }
+    else {
+      Vibration.vibrate([1000, 500, 1000]);
+      const requestData = { unique_code: e.data };
+      const verifyQrDistributor = async data => {
+        // console.log('qrData', data);
+        try {
+          // Retrieve the credentials
+
+          const credentials = await Keychain.getGenericPassword();
+          if (credentials) {
+            console.log(
+              'Credentials successfully loaded for user ' + credentials.username, data
+            );
+            setSavedToken(credentials.username);
+            const token = credentials.username;
+
+            const obj = {
+              body: {
+                unique_code: e?.data,
+                platform_id: 1,
+                scanned_by_name: userData.name
+              },
+              token: token
+            }
+            console.log("token from file", token)
+            data && verifyQrDistributorFunc(obj);
+
+          } else {
+            console.log('No credentials stored');
+          }
+        } catch (error) {
+          console.log("Keychain couldn't be accessed!", error);
+        }
+      };
+
+      verifyQrDistributor(requestData);
+    }
+
+
+  }
+
 
   // function called on successfull scan --------------------------------------
   const onSuccess = e => {
@@ -1120,6 +1216,7 @@ const QrCodeScanner = ({ navigation }) => {
                         alignItems: 'center',
                         justifyContent: 'center',
                       }}>
+                      {console.log("the Item =================>", item)}
                       {!error && (
                         <ScannedListItem
                           handleDelete={deleteQrFromList}
@@ -1128,6 +1225,8 @@ const QrCodeScanner = ({ navigation }) => {
                           serialNo={item.batch_running_code}
                           productName={item.created_by_name}
                           productCode={item.product_code}
+                          barcode={item.barcode}
+                          mrp={item.mrp}
                           batchCode={item.batch_code}></ScannedListItem>
                       )}
                     </View>
@@ -1141,7 +1240,7 @@ const QrCodeScanner = ({ navigation }) => {
               <ButtonProceed
                 handleOperation={handleAddQr}
                 style={{ color: 'white' }}
-                content="Proceed"
+                content={isDistributor ? "Revert Points" : "Proceed"} 
                 navigateTo={'QrCodeScanner'}></ButtonProceed>
             }
 
@@ -1172,6 +1271,20 @@ const QrCodeScanner = ({ navigation }) => {
            
       //     }}
      
+      <View style={{ flex: 1, }}>
+        <RNCamera
+          //     onBarCodeRead={(e)=>{
+          onBarCodeRead={!isDistributor ? onSuccessBar : OnReturedCheck}
+          //            if (!barcodeRead) {
+          //      setBarcodeRead(true) 
+          //       // Do your work
+          //       onSuccessBar(e)
+          //       console.log("barcode scan,",e)
+          //  }
+
+
+          //     }}
+
           flashMode={
             flash
               ? RNCamera.Constants.FlashMode.torch

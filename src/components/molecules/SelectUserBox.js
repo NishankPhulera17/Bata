@@ -4,12 +4,9 @@ import PoppinsTextMedium from '../electrons/customFonts/PoppinsTextMedium';
 import { BaseUrlImages } from '../../utils/BaseUrlImages';
 import { SvgUri } from 'react-native-svg';
 import { useIsFocused } from '@react-navigation/native';
-import Dashboard from '../../screens/dashboard/Dashboard';
-
 const SelectUserBox = (props) => {
     const [boxColor, setBoxColor] = useState('white')
     const focused = useIsFocused()
-   
     const image = BaseUrlImages+props.image
     // const image = 'https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/atom.svg'
     // console.log(image)
@@ -23,13 +20,7 @@ const SelectUserBox = (props) => {
 
     useEffect(()=>{
         setBoxColor("white")
-        
     },[focused])
-   
-        
-          
-          
-   
     const checkRegistrationRequired=()=>{
         setBoxColor(color)
         setTimeout(() => {
@@ -65,7 +56,7 @@ const SelectUserBox = (props) => {
             props.navigation.navigate('OtpLogin',{needsApproval:needsApproval, userType:props.content, userId:props.id,registrationRequired:registrationRequired})
         }
         else{
-            props.navigation.navigate('OtpLogin',{needsApproval:needsApproval, userType:props.content, userId:props.id,registrationRequired:registrationRequired})
+            props.navigation.navigate('PasswordLogin',{needsApproval:needsApproval, userType:props.content, userId:props.id,registrationRequired:registrationRequired})
         console.log("Password Login",props.content,props.id,registrationRequired,needsApproval)
         }
 
@@ -77,10 +68,7 @@ const SelectUserBox = (props) => {
         }} style={{...styles.container,backgroundColor:boxColor}}>
             
             {image && <View style={{height:90,width:90,borderRadius:45,backgroundColor:"white",alignItems:"center",justifyContent:'center'}}>
-            <Image source={{uri:image}} style={styles.image}></Image>
-            {/* <SvgUri width={'100%'} height={'100%'} uri={image}></SvgUri> */}
-            
-            </View>}
+            <Image source={{uri:image}} style={styles.image}></Image></View>}
 
             
             <PoppinsTextMedium style={{color:'#B0B0B0',marginTop:20,fontSize:18,fontWeight:'700'}} content ={(props.content).toUpperCase()}></PoppinsTextMedium>
@@ -102,8 +90,8 @@ const styles = StyleSheet.create({
        
     },
     image:{
-        height:80,
-        width:80,
+        height:70,
+        width:70,
         marginBottom:8,resizeMode:'contain'
        
         

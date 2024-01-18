@@ -8,6 +8,7 @@ import { useGetActiveMembershipMutation } from '../../apiServices/membership/App
 import * as Keychain from 'react-native-keychain';
 import PlatinumModal from '../../components/platinum/PlatinumModal';
 import { useGetPointSharingDataMutation } from '../../apiServices/pointSharing/pointSharingApi';
+import { useGetReturnPointListMutation } from '../../apiServices/returnPointList/ReturnPointListApi';
 
 
 const Passbook = ({ navigation }) => {
@@ -27,9 +28,6 @@ const Passbook = ({ navigation }) => {
         isLoading: getPointSharingIsLoading,
         isError: getPointSharingIsError
     }] = useGetPointSharingDataMutation()
-
-
-
 
     const [getActiveMembershipFunc, {
         data: getActiveMembershipData,
@@ -55,6 +53,8 @@ const Passbook = ({ navigation }) => {
     console.log("pointSharingData", pointSharingData, userData)
     const name = userData.name
     const membership = getActiveMembershipData && getActiveMembershipData.body?.tier.name;
+    const isDistributor = userData?.user_type_id == 3
+
 
 
     const getOptionsAccordingToWorkflow = () => {
@@ -94,7 +94,7 @@ const Passbook = ({ navigation }) => {
         })();
     }, []);
 
-
+    
     useEffect(() => {
         if (getPointSharingData) {
             console.log("getPointSharingData", JSON.stringify(getPointSharingData))
@@ -152,15 +152,15 @@ const Passbook = ({ navigation }) => {
             if (data === "Scanned History") {
                 navigation.navigate('ScannedHistory')
             }
-            else if (data === "Points History") {
+            else if (data === "Points Earned History") {
                 navigation.navigate('PointHistory')
 
             }
-            else if (data === "Redeemed History") {
+            else if (data === "Gift Redeemed History") {
                 navigation.navigate('RedeemedHistory')
 
             }
-            else if (data === "Cashback History") {
+            else if (data === "Cashback Redeemed History") {
                 navigation.navigate('CashbackHistory')
 
             }
@@ -178,7 +178,9 @@ const Passbook = ({ navigation }) => {
             }
             else if (data === "Shared Point History") {
                 navigation.navigate('SharedPointsHistory')
-
+            }
+            else if(data === "Returned Point List"){
+                navigation.navigate("ReturnPointHistory")
             }
         }
 
@@ -212,15 +214,15 @@ const Passbook = ({ navigation }) => {
             if (data === "Scanned History") {
                 navigation.navigate('ScannedHistory')
             }
-            else if (data === "Points History") {
+            else if (data === "Points Earned History") {
                 navigation.navigate('PointHistory')
 
             }
-            else if (data === "Redeemed History") {
+            else if (data === "Gift Redeemed History") {
                 navigation.navigate('RedeemedHistory')
 
             }
-            else if (data === "Cashback History") {
+            else if (data === "Cashback Redeemed History") {
                 navigation.navigate('CashbackHistory')
 
             }
@@ -238,8 +240,10 @@ const Passbook = ({ navigation }) => {
             }
             else if (data === "Shared Point History") {
                 navigation.navigate('SharedPointsHistory')
-
             }
+            else if(data === "Returned Point List"){
+                navigation.navigate("ReturnPointHistory")
+            }   
         }
 
 
@@ -283,14 +287,14 @@ const Passbook = ({ navigation }) => {
                     {/* --------------------------- */}
                     <View style={{ flexDirection: "row", height: 50, width: '100%', alignItems: "center", justifyContent: "flex-start" }}>
                         <PoppinsText content={name} style={{ color: 'white', fontSize: 20, marginLeft: 20 }}></PoppinsText>
-                        <View style={{ height: 20, width: 2, backgroundColor: "white", marginLeft: 10 }}></View>
+                        {/* <View style={{ height: 20, width: 2, backgroundColor: "white", marginLeft: 10 }}></View> */}
 
-                        <TouchableOpacity style={{ flexDirection: 'row' }} onPress={() => {
+                        {/* <TouchableOpacity style={{ flexDirection: 'row' }} onPress={() => {
                             setPlatinumModal(true)
                         }}>
                             <Image style={{ height: 20, width: 20, resizeMode: 'contain', marginLeft: 10 }} source={require('../../../assets/images/reward.png')}></Image>
                             <PoppinsTextMedium style={{ color: "white" }} content={membership}></PoppinsTextMedium>
-                        </TouchableOpacity>
+                        </TouchableOpacity> */}
 
                     </View>
                     {workflowProgram?.length !== 0 && <View style={{ alignItems: "center", justifyContent: "center", width: '100%', }}>
@@ -333,13 +337,13 @@ const Passbook = ({ navigation }) => {
 
                         {
                             pointsOptionEnabled &&
-                            <NavigateTO title="Points History" discription=" list of points redeemed by you" image={require('../../../assets/images/coinStack.png')}></NavigateTO>
+                            <NavigateTO title="Points Earned History" discription=" list of points redeemed by you" image={require('../../../assets/images/coinStack.png')}></NavigateTO>
                         }
 
                         {/* ozone change */}
                         {/* {userData.user_type !== "dealer" && <NavigateTO title="Scanned History" discription=" list of products scanned by you" image={require('../../../assets/images/scannedHistory.png')}></NavigateTO>} */}
-                        <NavigateTO title="Redeemed History" discription=" list of products redeemed by you" image={require('../../../assets/images/redeemed_icon.png')}></NavigateTO>
-                        <NavigateTO title="Cashback History" discription=" list of cashback claimed by you" image={require('../../../assets/images/cashbackBlack.png')}></NavigateTO>
+                       {!isDistributor && <NavigateTO title="Gift Redeemed History" discription=" list of gifts redeemed by you" image={require('../../../assets/images/redeemed_icon.png')}></NavigateTO>} 
+                        {/* <NavigateTO title="Cashback History" discription=" list of cashback claimed by you" image={require('../../../assets/images/cashbackBlack.png')}></NavigateTO> */}
 
                         {warrantyOptionEnabled &&  <NavigateTO title="Warranty History" discription=" list of warranty claimed by you" image={require('../../../assets/images/warranty_icon.png')}></NavigateTO>}
                         {
@@ -347,8 +351,8 @@ const Passbook = ({ navigation }) => {
                             <NavigateTO title="Coupon History" discription=" list of coupons redeemed by you" image={require('../../../assets/images/scannedHistory.png')}></NavigateTO>
                         }
                         {
-                            cashbackOptionEnabled &&
-                            <NavigateTO title="Cashback History" discription=" list of cashback claimed by you" image={require('../../../assets/images/cashbackBlack.png')}></NavigateTO>
+                         
+                        !isDistributor && <NavigateTO title="Cashback Redeemed History" discription=" list of cashback claimed by you" image={require('../../../assets/images/cashbackBlack.png')}></NavigateTO>
 
                         }
 
@@ -360,6 +364,9 @@ const Passbook = ({ navigation }) => {
                         {
 
                             pointSharing && <NavigateTO title="Shared Point History" discription=" list of shared points recieved by you" image={require('../../../assets/images/shared_point.png')}></NavigateTO>
+                        }
+                        {
+                            isDistributor &&  <NavigateTO title="Returned Point List" discription="List of returned points" image={require('../../../assets/images/shared_point.png')}></NavigateTO>
                         }
                     </View>
                 }
@@ -396,14 +403,14 @@ const Passbook = ({ navigation }) => {
                         <View style={{ flexDirection: 'row', width: '100%', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'center' }}>
                             {
                                 pointsOptionEnabled &&
-                                <GridVIew title="Points History" discription=" list of points redeemed by you" image={require('../../../assets/images/coinStack.png')}></GridVIew>
+                                <GridVIew title="Points Earned History" discription=" list of points redeemed by you" image={require('../../../assets/images/coinStack.png')}></GridVIew>
 
                             }
                             {/* ozone change */}
 
                             {/* {userData.user_type !== "dealer" && <GridVIew title="Scanned History" discription=" list of products scanned by you" image={require('../../../assets/images/scannedHistory.png')}></GridVIew>} */}
-                            <GridVIew title="Redeemed History" discription=" list of products redeemed by you" image={require('../../../assets/images/redeemed_icon.png')}></GridVIew>
-                            <GridVIew title="Cashback History" discription=" list of cashback redeemed by you" image={require('../../../assets/images/cashbackBlack.png')}></GridVIew>
+                           {!isDistributor && <GridVIew title="Gift Redeemed History" discription=" list of products redeemed by you" image={require('../../../assets/images/redeemed_icon.png')}></GridVIew>}  
+                            {/* <GridVIew title="Cashback History" discription=" list of cashback redeemed by you" image={require('../../../assets/images/cashbackBlack.png')}></GridVIew> */}
 
                             {/* {
                 warrantyOptionEnabled &&  */}
@@ -414,8 +421,8 @@ const Passbook = ({ navigation }) => {
                                 <GridVIew title="Coupon History" discription=" list of coupons redeemed by you" image={require('../../../assets/images/scannedHistory.png')}></GridVIew>
                             }
                             {
-                                cashbackOptionEnabled &&
-                                <GridVIew title="Cashback History" discription=" list of cashback redeemed by you" image={require('../../../assets/images/scannedHistory.png')}></GridVIew>
+                         
+                              !isDistributor &&  <GridVIew title="Cashback Redeemed History" discription=" list of cashback redeemed by you" image={require('../../../assets/images/scannedHistory.png')}></GridVIew>
 
                             }
 
@@ -427,6 +434,10 @@ const Passbook = ({ navigation }) => {
                             {
                                 pointSharing && <GridVIew title="Shared Point History" discription=" list of shared points recieved by you" image={require('../../../assets/images/shared_point.png')}></GridVIew>
                             }
+
+{
+                            isDistributor &&  <GridVIew title="Returned Point List" discription="List of returned points" image={require('../../../assets/images/shared_point.png')}></GridVIew>
+                        }
                         </View>
                     </View>
                 }

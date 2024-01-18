@@ -30,13 +30,14 @@ import * as Keychain from "react-native-keychain";
 import PoppinsText from "../../components/electrons/customFonts/PoppinsText";
 import { slug } from "../../utils/Slug";
 import { useExtraPointEnteriesMutation } from "../../apiServices/pointSharing/pointSharingApi";
-import { useAddBulkPointOnProductMutation } from "../../apiServices/bulkScan/BulkScanApi";
+import { useAddBulkPointOnProductMutation, useAddBulkPointOnProductReturnMutation } from "../../apiServices/bulkScan/BulkScanApi";
 import { setQrIdList } from "../../../redux/slices/qrCodeDataSlice";
 import Celebrate from "react-native-vector-icons/MaterialIcons";
 import Error from "react-native-vector-icons/MaterialIcons"
 import { useGetActiveMembershipMutation } from '../../apiServices/membership/AppMembershipApi';
 import ErrorModal from "../../components/modals/ErrorModal";
 import { useGetAppThemeDataMutation } from "../../apiServices/appTheme/AppThemeApi";
+import { useGetAppUsersDataByIdMutation } from "../../apiServices/appUsers/AppUsersApi";
 
 
 const CongratulateOnScan = ({ navigation, route }) => {
@@ -63,6 +64,8 @@ const CongratulateOnScan = ({ navigation, route }) => {
   );
   const qrIdList = useSelector((state) => state.qrData.qrIdList);
   const userData = useSelector((state) => state.appusersdata.userData);
+
+  console.log("The QR List ", qrIdList)
   console.log("userData", `${userData.user_type}_points`, pointSharingData);
   const pointPercentage = useSelector(
     (state) => state.pointSharing.percentagePoints
@@ -87,6 +90,8 @@ const CongratulateOnScan = ({ navigation, route }) => {
   console.log("rewardType", rewardType, workflowProgram, productData);
   const platform = Platform.OS === "ios" ? "1" : "2";
 
+  const isDistributor = userData?.user_type_id == 3
+
   const [
     getCouponOnCategoryFunc,
     {
@@ -96,6 +101,8 @@ const CongratulateOnScan = ({ navigation, route }) => {
       isError: getCouponOnCategoryIsError,
     },
   ] = useGetCouponOnCategoryMutation();
+
+
   const [
     addBulkPointOnProductFunc,
     {
@@ -105,6 +112,19 @@ const CongratulateOnScan = ({ navigation, route }) => {
       isError: addBulkPointOnProductIsError,
     },
   ] = useAddBulkPointOnProductMutation();
+
+  const [
+    addBulkPointOnProductReturnFunc,
+    {
+      data: addBulkPointOnProductReturnData,
+      error: addBulkPointOnProductReturnError,
+      isLoading: addBulkPointOnProductReturnIsLoading,
+      isError: addBulkPointOnProductReturnIsError,
+    },
+  ] = useAddBulkPointOnProductReturnMutation();
+
+
+
 
   const [
     getAppTheme,
@@ -189,6 +209,25 @@ const CongratulateOnScan = ({ navigation, route }) => {
       isError: addCashbackEnteriesIsError,
     },
   ] = useAddCashbackEnteriesMutation();
+
+  const [
+    getUsersByIdFunc,
+    {
+      data: getUsersByIdData,
+      error: getUsersByIdError,
+      isLoading: getUsersByIdDataIsLoading,
+      isError: getUsersDataByIdIsError,
+    },
+  ] = useGetAppUsersDataByIdMutation();
+
+  useEffect(() => {
+    const params = {
+      user_type_id: userData?.user_type_id
+    }
+    getUsersByIdFunc(params);
+  }, [])
+
+
   useEffect(() => {
     getMembership()
   }, [])
@@ -196,6 +235,31 @@ const CongratulateOnScan = ({ navigation, route }) => {
   useEffect(() => {
     getAppTheme("Bata")
   }, [])
+
+
+
+
+  useEffect(() => {
+    if (getUsersByIdData) {
+      console.log("getUsersByIdData", getUsersByIdData)
+    }
+    else {
+      console.log("getUsersByIdError", getUsersByIdError)
+    }
+  }, [getUsersByIdData, getUsersByIdError])
+
+
+  useEffect(() => {
+    if (getAppThemeData) {
+      console.log("getAppThemeData", getAppThemeData)
+      setPercentMultiplier(Number(getAppThemeData?.body?.points_sharing?.percentage_points_value))
+    }
+    else {
+      console.log("getAppThemeError", getAppThemeError)
+    }
+  }, [getAppThemeData, getAppThemeError])
+
+
 
   useEffect(() => {
     if (getAppThemeData) {
@@ -211,9 +275,9 @@ const CongratulateOnScan = ({ navigation, route }) => {
   useEffect(() => {
     if (getActiveMembershipData) {
       console.log("getActiveMembershipData", JSON.stringify(getActiveMembershipData))
-      if (getActiveMembershipData.success) {
+      if (getActiveMembershipData?.success) {
 
-        console.log("getActiveMembershipData.body.points", getActiveMembershipData.body.points)
+        console.log("getActiveMembershipData.body.points", getActiveMembershipData?.body?.points)
       }
     }
     else if (getActiveMembershipError) {
@@ -248,7 +312,8 @@ const CongratulateOnScan = ({ navigation, route }) => {
           qr_code: qrData.unique_code,
         };
         getCouponOnCategoryFunc(params);
-      } else if (rewardType === "Points On Product") {
+      }
+      else if (rewardType === "Points On Product") {
         console.log("QRIDLIST==========>", qrIdList)
         if (qrIdList.length === 0) {
           const params = {
@@ -257,109 +322,108 @@ const CongratulateOnScan = ({ navigation, route }) => {
           };
 
           console.log("shouldSharePoints", shouldSharePoints);
-          if(pointSharingData)
-          {
-          if (pointSharingData?.flat_points === true) {
-            if (shouldSharePoints) {
+          if (pointSharingData) {
+            if (pointSharingData?.flat_points === true) {
+              if (shouldSharePoints) {
+                const points =
+                  Number(productData[`${userData.user_type}_points`]) *
+                  (Number(pointPercentage) / 100)
+
+
+                console.log("extra flat points", points, pointPercentage);
+                const body = {
+                  data: {
+                    // app_user_id: userData.id.toString(),
+                    // user_type_id: userData.user_type_id,
+                    // user_type: userData.user_type,
+                    product_id: productData.product_id,
+                    product_code: productData.product_code,
+                    platform_id: Number(platform),
+                    pincode:
+                      location.postcode === undefined ? "N/A" : location.postcode,
+                    platform: "mobile",
+                    state: location.state === undefined ? "N/A" : location.state,
+                    district:
+                      location.district === undefined ? "N/A" : location.district,
+                    city: location.city === undefined ? "N/A" : location.city,
+                    area:
+                      location.district === undefined ? "N/A" : location.district,
+                    known_name:
+                      location.city === undefined ? "N/A" : location.city,
+                    lat:
+                      location.lat === undefined ? "N/A" : String(location.lat),
+                    log:
+                      location.lon === undefined ? "N/A" : String(location.lon),
+                    method_id: 1,
+                    method: "point on product",
+                    points: points,
+                    type: "points_sharing",
+                    point_earned_through_type: "points_sharing",
+                  },
+                  qrId: Number(qrData.qr_id),
+                  tenant_id: slug,
+                  token: token,
+                };
+                extraPointEntryFunc(body);
+              } else if (!shouldSharePoints) {
+                // alert("Points can't be shared for this tenant");
+              }
+            } else if (pointSharingData?.percentage_points === true) {
+              console.log("percentage_points_value", productData, pointSharingData)
+              const point =
+                productData["mrp"] *
+                (pointSharingData["percentage_points_value"] / 100);
+              const memberShipBonus = (points * Number(getActiveMembershipData?.body.points !== undefined ? getActiveMembershipData?.body.points : 0)) / 100
+
+              const totalPoints = point + memberShipBonus
               const points =
-                Number(productData[`${userData.user_type}_points`]) *
-                (Number(pointPercentage) / 100)
+                totalPoints *
+                (Number(pointPercentage) / 100);
 
-
-              console.log("extra flat points", points, pointPercentage);
-              const body = {
-                data: {
-                  // app_user_id: userData.id.toString(),
-                  // user_type_id: userData.user_type_id,
-                  // user_type: userData.user_type,
-                  product_id: productData.product_id,
-                  product_code: productData.product_code,
-                  platform_id: Number(platform),
-                  pincode:
-                    location.postcode === undefined ? "N/A" : location.postcode,
-                  platform: "mobile",
-                  state: location.state === undefined ? "N/A" : location.state,
-                  district:
-                    location.district === undefined ? "N/A" : location.district,
-                  city: location.city === undefined ? "N/A" : location.city,
-                  area:
-                    location.district === undefined ? "N/A" : location.district,
-                  known_name:
-                    location.city === undefined ? "N/A" : location.city,
-                  lat:
-                    location.lat === undefined ? "N/A" : String(location.lat),
-                  log:
-                    location.lon === undefined ? "N/A" : String(location.lon),
-                  method_id: 1,
-                  method: "point on product",
-                  points: points,
-                  type: "points_sharing",
-                  point_earned_through_type: "points_sharing",
-                },
-                qrId: Number(qrData.qr_id),
-                tenant_id: slug,
-                token: token,
-              };
-              extraPointEntryFunc(body);
-            } else if (!shouldSharePoints) {
-              // alert("Points can't be shared for this tenant");
-            }
-          } else if (pointSharingData?.percentage_points === true) {
-            console.log("percentage_points_value", productData, pointSharingData)
-            const point =
-              productData["mrp"] *
-              (pointSharingData["percentage_points_value"] / 100);
-            const memberShipBonus = (points * Number(getActiveMembershipData?.body.points !== undefined ? getActiveMembershipData?.body.points : 0)) / 100
-
-            const totalPoints = point + memberShipBonus
-            const points =
-              totalPoints *
-              (Number(pointPercentage) / 100);
-
-            console.log("mrp points", points);
-            if (shouldSharePoints) {
-              const body = {
-                data: {
-                  // app_user_id: userData.id.toString(),
-                  // user_type_id: userData.user_type_id,
-                  // user_type: userData.user_type,
-                  product_id: productData.product_id,
-                  product_code: productData.product_code,
-                  platform_id: Number(platform),
-                  pincode:
-                    location.postcode === undefined ? "N/A" : location.postcode,
-                  platform: "mobile",
-                  state: location.state === undefined ? "N/A" : location.state,
-                  district:
-                    location.district === undefined ? "N/A" : location.district,
-                  city: location.city === undefined ? "N/A" : location.city,
-                  area:
-                    location.district === undefined ? "N/A" : location.district,
-                  known_name:
-                    location.city === undefined ? "N/A" : location.city,
-                  lat:
-                    location.lat === undefined ? "N/A" : String(location.lat),
-                  log:
-                    location.lon === undefined ? "N/A" : String(location.lon),
-                  method_id: 1,
-                  method: "point on product",
-                  points: points,
-                  type: "points_sharing",
-                  point_earned_through_type: "points_sharing",
-                },
-                qrId: Number(qrData.qr_id),
-                tenant_id: slug,
-                token: token,
-              };
-              extraPointEntryFunc(body);
-            } else if (!shouldSharePoints) {
-              // alert("Points can't be shared for this tenant");
+              console.log("mrp points", points);
+              if (shouldSharePoints) {
+                const body = {
+                  data: {
+                    // app_user_id: userData.id.toString(),
+                    // user_type_id: userData.user_type_id,
+                    // user_type: userData.user_type,
+                    product_id: productData.product_id,
+                    product_code: productData.product_code,
+                    platform_id: Number(platform),
+                    pincode:
+                      location.postcode === undefined ? "N/A" : location.postcode,
+                    platform: "mobile",
+                    state: location.state === undefined ? "N/A" : location.state,
+                    district:
+                      location.district === undefined ? "N/A" : location.district,
+                    city: location.city === undefined ? "N/A" : location.city,
+                    area:
+                      location.district === undefined ? "N/A" : location.district,
+                    known_name:
+                      location.city === undefined ? "N/A" : location.city,
+                    lat:
+                      location.lat === undefined ? "N/A" : String(location.lat),
+                    log:
+                      location.lon === undefined ? "N/A" : String(location.lon),
+                    method_id: 1,
+                    method: "point on product",
+                    points: points,
+                    type: "points_sharing",
+                    point_earned_through_type: "points_sharing",
+                  },
+                  qrId: Number(qrData.qr_id),
+                  tenant_id: slug,
+                  token: token,
+                };
+                extraPointEntryFunc(body);
+              } else if (!shouldSharePoints) {
+                // alert("Points can't be shared for this tenant");
+              }
             }
           }
-        }
           checkUserPointFunc(params);
-          console.log("checkuserpointfuncparams",params)
-        } 
+          console.log("checkuserpointfuncparams", params)
+        }
         else {
           const params = {
             data: {
@@ -384,9 +448,44 @@ const CongratulateOnScan = ({ navigation, route }) => {
             token: token,
           };
           console.log("addBulkPointOnProductFunc", JSON.stringify(params))
+
+
           addBulkPointOnProductFunc(params);
+
         }
-      } else if (rewardType === "Wheel") {
+      }
+      else if (isDistributor && rewardType == "barcode revert") {
+        if (isDistributor) {
+          const params = {
+            data: {
+              qrs: qrIdList,
+              // point_sharing: pointSharingData,
+              platform_id: Number(platform),
+              pincode:
+                location.postcode === undefined ? "N/A" : location.postcode,
+           
+              state: location.state === undefined ? "N/A" : location.state,
+              district:
+                location.district === undefined ? "N/A" : location.district,
+              city: location.city === undefined ? "N/A" : location.city,
+              // area: location.district === undefined ? "N/A" : location.district,
+              // known_name: location.city === undefined ? "N/A" : location.city,
+              lat: location.lat === undefined ? "N/A" : String(location.lat),
+              log: location.lon === undefined ? "N/A" : String(location.lon),
+              // method_id: 1,
+              address:"test",
+              // method: "Bulk Scan", 
+              // token: token,
+            },
+            token: token,
+          };
+          if(isDistributor){
+          addBulkPointOnProductReturnFunc(params)
+            
+          }
+        }
+      }
+      else if (rewardType === "Wheel") {
         const params = {
           token: token,
           id: userData.id.toString(),
@@ -432,6 +531,38 @@ const CongratulateOnScan = ({ navigation, route }) => {
       console.log("addBulkPointOnProductError", addBulkPointOnProductError);
     }
   }, [addBulkPointOnProductData, addBulkPointOnProductError]);
+
+
+  useEffect(() => {
+    if (addBulkPointOnProductReturnData) {
+      console.log(
+        "addBulkPointOnProductReturnData",
+        JSON.stringify(addBulkPointOnProductReturnData)
+      );
+      if (addBulkPointOnProductReturnData.success) {
+        let tp = 0
+        dispatch(setQrIdList([]));
+        const bulkPoints = addBulkPointOnProductReturnData.body.body.map((item, index) => {
+          return item["points_on_product"];
+
+        });
+
+        console.log("addBulkPointOnProductReturnData.body.total_points",addBulkPointOnProductReturnData.body.total_points )
+
+        setTotalPoints(addBulkPointOnProductReturnData.body.total_points)
+        setShowBulkScanPoints(bulkPoints);
+        setTimeout(() => {
+          handleWorkflowNavigation();
+        }, 5000);
+      }
+    } else if (addBulkPointOnProductReturnError) {
+      console.log("addBulkPointOnProductReturnError", addBulkPointOnProductReturnError);
+    }
+  }, [addBulkPointOnProductReturnData, addBulkPointOnProductReturnError]);
+
+
+
+
   useEffect(() => {
     if (addCashbackEnteriesData) {
       console.log("addCashbackEnteriesData", addCashbackEnteriesData);
@@ -523,24 +654,27 @@ const CongratulateOnScan = ({ navigation, route }) => {
         user_type: userData.user_type,
         product_id: productData.product_id,
         product_code: productData.product_code,
-        platform_id: Number(platform),
-        pincode: location.postcode,
+        platform_id: platform,
+        pincode: location.postcode == undefined ? "N/A" : location.postcode,
         platform: "mobile",
-        state: location.state,
-        district: location.district,
-        city: location.city,
-        area: location.state,
-        known_name: location.city,
-        lat: String(location.lat),
-        log: String(location.lon),
-        method_id: 1,
+        state: location.state == undefined ? "N/A" : location.state,
+        district: location.district == undefined ? "N/A" : location.district,
+        city: location.city == undefined ? "N/A" : location.city,
+        area: location.state == undefined ? "N/A" : location.state,
+        known_name: location.city == undefined ? "N/A" : location.city,
+        lat: location.lat === undefined ? "N/A" : String(location.lat),
+        log: location.lon === undefined ? "N/A" : String(location.lon),
+        method_id: "1",
         method: "Cashback",
-        cashback: "10",
+        cashback: getUsersByIdData?.body?.cashback,
       },
 
       token: token,
       qrId: qrData.qr_id,
     };
+
+    console.log("add cashback entries func============>", params)
+
     addCashbackEnteriesFunc(params);
   };
 
@@ -570,12 +704,12 @@ const CongratulateOnScan = ({ navigation, route }) => {
 
   useEffect(() => {
     if (checkUserPointData) {
-      console.log("checkUserPointData", checkUserPointData);
+      console.log("checkUserPointData", checkUserPointData,qrData);
       if (!checkUserPointData.body) {
         if (pointSharingData?.flat_points) {
           const points = productData[`${userData.user_type}_points`]
 
-          const memberShipBonus = (points * Number(getActiveMembershipData?.body.points !== undefined ? getActiveMembershipData?.body.points : 0)) / 100
+          const memberShipBonus = (points * Number(getActiveMembershipData?.body?.points !== undefined ? getActiveMembershipData?.body?.points : 0)) / 100
 
           const totalPoints = points + memberShipBonus
           setShowPoints(totalPoints);
@@ -616,16 +750,18 @@ const CongratulateOnScan = ({ navigation, route }) => {
           };
           submitPoints();
         } else if (pointSharingData?.percentage_points) {
+          console.log("percentage_points",qrData)
           const submitPoints = async () => {
             const credentials = await Keychain.getGenericPassword();
             const token = credentials.username;
             const points =
               productData["mrp"] *
               (pointSharingData["percentage_points_value"] / 100);
-            const memberShipBonus = (points * Number(getActiveMembershipData?.body.points !== undefined ? getActiveMembershipData?.body.points : 0)) / 100
+            const memberShipBonus = (points * Number(getActiveMembershipData?.body?.points !== undefined ? getActiveMembershipData?.body?.points : 0)) / 100
 
             const totalPoints = points + memberShipBonus
             setShowPoints(totalPoints);
+            console.log("submitPointshsahdgsafdfasfd",totalPoints)
 
             const body = {
               data: {
@@ -662,12 +798,12 @@ const CongratulateOnScan = ({ navigation, route }) => {
           submitPoints();
         }
       }
-      else{
+      else {
         setError(true)
         setMessage(checkUserPointData.message)
-        setTimeout(()=>{
+        setTimeout(() => {
           navigation.pop(2)
-        },2000)
+        }, 2000)
       }
     } else if (checkUserPointError) {
       console.log("checkUserPointError", checkUserPointError);
@@ -877,7 +1013,7 @@ const CongratulateOnScan = ({ navigation, route }) => {
                   width: "60%",
                   marginTop: 6,
                 }}
-                content="You have successfully performed the action"
+                content={`${isDistributor ? "You have successfully Returned the points" : "You have successfully earned the points"}`}
               ></PoppinsTextMedium>
               {/* action box ---------------------------------------------- */}
               <View
@@ -944,7 +1080,7 @@ const CongratulateOnScan = ({ navigation, route }) => {
 
               )}
               {showBulkScanPoints && (
-                <Win data="Total Points Earned" title={Math.floor(Number(totalPoints))}></Win>
+                <Win data={`${isDistributor ? "Point Return":"Total Points Earned"}`} title={ totalPoints < 0 ? (Number(totalPoints).toPrecision(2)) :(Number(totalPoints)) }></Win>
 
                 // <View
                 //   style={{

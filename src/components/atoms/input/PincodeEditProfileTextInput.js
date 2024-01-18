@@ -24,7 +24,7 @@ const PincodeEditProfileTextInput = (props) => {
 
     useEffect(()=>{
         props.handleData(props.value,placeHolder)
-        console.log("value textinput",props.value)
+        // console.log("value textinput",props.value)
     },[props.value])
     const handleInput=(text)=>{
         setValue(text)

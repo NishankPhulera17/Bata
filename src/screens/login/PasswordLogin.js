@@ -33,7 +33,7 @@ const PasswordLogin = ({ navigation, route }) => {
   const [success, setSuccess] = useState(false)
   const [error, setError] = useState(false)
   const [message, setMessage] = useState("")
-  const [isChecked, setIsChecked] = useState("")
+  const [isChecked, setIsChecked] = useState(false)
 
   //modal
   const [openModalWithBorder, setModalWithBorder] = useState(false);
@@ -244,7 +244,9 @@ const PasswordLogin = ({ navigation, route }) => {
   //function to handle Modal
   const modalWithBorderClose = () => {
     setModalWithBorder(false);
-    navigation.navigate("Dashboard")
+    // navigation.navigate("Dashboard")
+    navigation.reset({ index: '0', routes: [{ name: 'Dashboard' }] })
+
   };
 
   const ModalContent = () => {
@@ -314,7 +316,7 @@ const PasswordLogin = ({ navigation, route }) => {
       <View style={{
         width: '100%', alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: ternaryThemeColor,
+        backgroundColor: 'white',
       }}>
         <View
           style={{
@@ -322,7 +324,7 @@ const PasswordLogin = ({ navigation, route }) => {
             width: '100%',
             alignItems: 'center',
             justifyContent: 'center',
-            backgroundColor: ternaryThemeColor,
+            backgroundColor: 'white',
             flexDirection: 'row',
 
           }}>
@@ -339,16 +341,14 @@ const PasswordLogin = ({ navigation, route }) => {
           <Image
             style={{
               height: 50,
-              width: 100,
+              width: 150,
               resizeMode: 'center',
               top: 20,
               position: "absolute",
               left: 50,
 
-
-
             }}
-            source={require('../../../assets/images/ozoneWhiteLogo.png')}></Image>
+            source={require('../../../assets/images/batalogo.png')}></Image>
           {/* ozone change */}
          
 
@@ -444,13 +444,13 @@ const PasswordLogin = ({ navigation, route }) => {
             <PoppinsTextLeftMedium content={"I agree to the Terms & Conditions"} style={{ color: '#808080', marginHorizontal: 30, marginBottom: 20, fontSize: 15, marginLeft: 8, marginTop: 16 }}></PoppinsTextLeftMedium>
           </TouchableOpacity>
         </View>
-
+{/* 
         <View style={{ flexDirection: "row", alignItems: "center", justifyContent: 'center', width: '90%' }}>
           <PoppinsTextMedium style={{ color: "#727272", fontSize: 14 }} content="Not remembering password? "></PoppinsTextMedium>
           <TouchableOpacity >
             <PoppinsTextMedium style={{ color: ternaryThemeColor, fontSize: 14 }} content="Forget Password"></PoppinsTextMedium>
           </TouchableOpacity>
-        </View>
+        </View> */}
 
         <View style={{ width: "100%", flex: 1 }}>
           <View style={{ marginBottom: 27, marginLeft: 20, marginTop: 'auto' }}>

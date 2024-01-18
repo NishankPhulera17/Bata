@@ -31,7 +31,10 @@ const EditProfile = ({ navigation, route }) => {
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState(false);
   const [marginB, setMarginB] = useState(0)
-  const [isValidEmail,setIsValidEmail] = useState(true)
+  const [isValidEmail, setIsValidEmail] = useState(true)
+
+  const editable = false;
+
   // const userData = useSelector(state=>state.appusersdata.userData)
   console.log("saved image", route.params?.savedImage)
   // console.log("route.params.savedImage",route.params.savedImage)
@@ -118,7 +121,7 @@ const EditProfile = ({ navigation, route }) => {
       const checkEmail = emailRegex.test(data)
       setIsValidEmail(checkEmail);
     }
-    
+
     removedValues.push({
       "value": data,
       "name": title
@@ -170,22 +173,22 @@ const EditProfile = ({ navigation, route }) => {
       console.log("params from submitProfile", params)
 
 
-      if(params.data?.email !==null){
-        if(isValidEmail){
+      if (params.data?.email !== null) {
+        if (isValidEmail) {
           setTimeout(() => {
             updateProfileFunc(params)
           }, 2000);
         }
-        else{
+        else {
           setError(true)
           setMessage("Please enter a valid email")
         }
       }
-      else{
+      else {
         updateProfileFunc(params)
       }
-     
-    
+
+
     }
   }
 
@@ -286,7 +289,7 @@ const EditProfile = ({ navigation, route }) => {
         <View style={{ backgroundColor: "white", height: 110, width: 110, borderRadius: 50, alignItems: "center", justifyContent: "center", flexDirection: "row", borderWidth: 1, borderColor: '#DDDDDD', marginBottom: 40, marginLeft: 20 }}>
           {profileImage !== route.params?.savedImage && profileImage !== null && <Image style={{ height: 98, width: 98, borderRadius: 49, resizeMode: "contain" }} source={{ uri: profileImage.uri }}></Image>}
           {profileImage === route.params?.savedImage && <Image style={{ height: 98, width: 98, borderRadius: 49, resizeMode: "contain" }} source={{ uri: BaseUrlImages + profileImage }}></Image>}
-          {(profileImage === null || profileImage == undefined) && <Image style={{ height: 58, width: 58, resizeMode: "contain", marginRight:'92%' }} source={(require('../../../assets/images/userGrey.png'))}></Image>}
+          {(profileImage === null || profileImage == undefined) && <Image style={{ height: 58, width: 58, resizeMode: "contain", marginRight: '92%' }} source={(require('../../../assets/images/userGrey.png'))}></Image>}
 
         </View>
         <TouchableOpacity onPress={() => {
@@ -304,56 +307,54 @@ const EditProfile = ({ navigation, route }) => {
 
             formFields && formValues && formFields.map((item, index) => {
               if (item.type === "text") {
-                if(item.name==="aadhar")
-                {
-                  return(
+                if (item.name === "aadhar") {
+                  return (
                     <DisplayOnlyTextInput
-                    key={index}
-                    data={formValues[index] === null || formValues[index] === undefined  ? 'No data available' : formValues[index]}
-                    title={item.label}
-                    photo={require('../../../assets/images/eye.png')}>
+                      key={index}
+                      data={formValues[index] === null || formValues[index] === undefined ? 'No data available' : formValues[index]}
+                      title={item.label}
+                      photo={require('../../../assets/images/eye.png')}>
 
-                  </DisplayOnlyTextInput>
+                    </DisplayOnlyTextInput>
                   )
                 }
-                else if(item.name==="pan")
-                {
-                  return(
+                else if (item.name === "pan") {
+                  return (
                     <DisplayOnlyTextInput
-                    key={index}
-                    data={formValues[index] === null || formValues[index] === undefined  ? 'No data available' : formValues[index]}
-                    title={item.label}
-                    photo={require('../../../assets/images/eye.png')}>
+                      key={index}
+                      data={formValues[index] === null || formValues[index] === undefined ? 'No data available' : formValues[index]}
+                      title={item.label}
+                      photo={require('../../../assets/images/eye.png')}>
 
-                  </DisplayOnlyTextInput>
+                    </DisplayOnlyTextInput>
                   )
                 }
-                else if(item.name==="enrollment_date")
-                {
-                  return(
+                else if (item.name === "enrollment_date") {
+                  return (
                     <DisplayOnlyTextInput
-                    key={index}
-                    data={formValues[index] === null || formValues[index] === undefined  ? 'No data available' : formValues[index]}
-                    title={item.label}
-                    photo={require('../../../assets/images/eye.png')}>
+                      key={index}
+                      data={formValues[index] === null || formValues[index] === undefined ? 'No data available' : formValues[index]}
+                      title={item.label}
+                      photo={require('../../../assets/images/eye.png')}>
 
-                  </DisplayOnlyTextInput>
+                    </DisplayOnlyTextInput>
                   )
                 }
-                else if(item.name.split("_").includes("mobile"))
-                {
-                  return(
-                    <TextInputRectangularWithPlaceholder placeHolder={formFields?.[index]?.label } pressedSubmit={pressedSubmit} key={index} handleData={handleData} label={item.label} title={item.name} value={formValues[index] != undefined ? formValues[index] : ""}></TextInputRectangularWithPlaceholder>
+                else if (item.name.split("_").includes("mobile")) {
+                  return (
+                    <TextInputRectangularWithPlaceholder editable={editable} placeHolder={formFields?.[index]?.label} pressedSubmit={pressedSubmit} key={index} handleData={handleData} label={item.label} title={item.name} value={formValues[index] != undefined ? formValues[index] : ""}></TextInputRectangularWithPlaceholder>
 
                   )
                 }
-                else{
+                else {
                   return (
 
-                    <TextInputRectangularWithPlaceholder placeHolder={formFields?.[index]?.label } pressedSubmit={pressedSubmit} key={index} handleData={handleData} label={item.label} title={item.name} value={formValues[index] != undefined ? formValues[index] : ""}></TextInputRectangularWithPlaceholder>
+                    // <TextInputRectangularWithPlaceholder placeHolder={formFields?.[index]?.label } pressedSubmit={pressedSubmit} key={index} handleData={handleData} label={item.label} title={item.name} value={formValues[index] != undefined ? formValues[index] : ""}></TextInputRectangularWithPlaceholder>
+                    <TextInputRectangularWithPlaceholder placeHolder={formFields?.[index]?.label} pressedSubmit={pressedSubmit} key={index} handleData={handleData} label={item.label} editable={editable} title={item.name} value={formValues[index] != undefined ? item.label == "D.O.B" ? moment(formValues[index]).format("MMM DD YYYY") : formValues[index] : ""}></TextInputRectangularWithPlaceholder>
+
                   )
                 }
-                
+
               }
               else if (item.type === "date") {
                 return (

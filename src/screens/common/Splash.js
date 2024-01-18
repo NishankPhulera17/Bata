@@ -25,7 +25,7 @@ const Splash = ({ navigation }) => {
   const [gotLoginData, setGotLoginData] = useState()
   const [listUsers, setListUsers] = useState([]);
   const [isUserLoggedIn, setIsUserLoggedIn] = useState(null)
-  
+
 
   const registrationRequired = useSelector(state => state.appusers.registrationRequired)
   const manualApproval = useSelector(state => state.appusers.manualApproval)
@@ -55,7 +55,7 @@ const Splash = ({ navigation }) => {
   ] = useGetAppUsersDataMutation();
 
 
-  
+
 
   useEffect(() => {
     getUsers();
@@ -101,7 +101,7 @@ const Splash = ({ navigation }) => {
     requestLocationPermission()
   }, [])
 
-   // fetching data and checking for errors from the API-----------------------
+  // fetching data and checking for errors from the API-----------------------
 
 
 
@@ -173,11 +173,11 @@ const Splash = ({ navigation }) => {
 
 
   useEffect(() => {
-    console.log("list user ki ==========>",  isUserLoggedIn)
-    if(user_type_option=="single"){
-      isUserLoggedIn!==null && !isUserLoggedIn &&  checkRegistrationRequired(listUsers)
+    console.log("list user ki ==========>", isUserLoggedIn)
+    if (user_type_option == "single") {
+      isUserLoggedIn !== null && !isUserLoggedIn && checkRegistrationRequired(listUsers)
     }
-  
+
   }, [listUsers?.[0]?.user_type, isUserLoggedIn])
 
 
@@ -185,17 +185,17 @@ const Splash = ({ navigation }) => {
 
   const checkRegistrationRequired = (listUsers) => {
     console.log("yaha pe list user---------------->", listUsers[0])
-    
-      if (registrationRequired.includes(listUsers?.[0]?.user_type)) {
-        checkApprovalFlow(true)
-        console.log("registration required")
-      }
-      else {
-        checkApprovalFlow(false)
-        console.log("registration not required")
 
-      }
-  
+    if (registrationRequired.includes(listUsers?.[0]?.user_type)) {
+      checkApprovalFlow(true)
+      console.log("registration required")
+    }
+    else {
+      checkApprovalFlow(false)
+      console.log("registration not required")
+
+    }
+
 
   }
 
@@ -246,8 +246,10 @@ const Splash = ({ navigation }) => {
 
           setIsUserLoggedIn(true)
           setTimeout(() => {
-          navigation.navigate('Dashboard');
-            
+            // navigation.navigate('Dashboard');
+            navigation.reset({ index: '0', routes: [{ name: 'Dashboard' }] })
+
+
           }, 3000);
 
 
@@ -266,12 +268,18 @@ const Splash = ({ navigation }) => {
             checkRegistrationRequired()
           }
           else {
-            navigation.navigate('SelectUser');
+            setTimeout(()=>{
+              navigation.navigate('SelectUser');
+
+            },1000)
           }
 
         }
         else {
-          navigation.navigate('Introduction')
+          setTimeout(()=>{
+            navigation.navigate('Introduction')
+
+          },1000)
         }
         // console.log("isAlreadyIntroduced",isAlreadyIntroduced,gotLoginData)
 
@@ -297,25 +305,25 @@ const Splash = ({ navigation }) => {
   // calling API to fetch themes for the app
 
 
- 
+
 
 
 
 
 
   return (
-    <View style={{ flex: 1, alignItems: 'center', width: '100%', height: '100%', justifyContent: 'center',backgroundColor:'white' }}>
+    <View style={{ flex: 1, alignItems: 'center', width: '100%', height: '100%', justifyContent: 'center', backgroundColor: 'white' }}>
       {/* <ImageBackground resizeMode='stretch' style={{ flex: 1, height: '100%', width: '100%', }} source={require('../../../assets/images/batalogo.png')}> */}
 
       {/* <Image style={{ width: 300, height: 100, }} source={require('../../../assets/images/batalogo.png')} /> */}
       <FastImage
-          style={{ width: 250, height: "100%", marginTop:'auto',alignSelf:'center',  }}
-          source={{
-            uri: gifUri, // Update the path to your GIF
-            priority: FastImage.priority.normal,
-          }}
-          resizeMode={FastImage.resizeMode.contain}
-        />
+        style={{ width: 250, height: "100%", marginTop: 'auto', alignSelf: 'center', }}
+        source={{
+          uri: gifUri, // Update the path to your GIF
+          priority: FastImage.priority.normal,
+        }}
+        resizeMode={FastImage.resizeMode.contain}
+      />
 
       {/* </ImageBackground> */}
 

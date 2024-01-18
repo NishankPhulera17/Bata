@@ -41,7 +41,7 @@ const OtpVerification = ({ navigation, route }) => {
 
   const pointsConversion = useSelector(state => state.redemptionData.pointConversion)
   const cashConversion = useSelector(state => state.redemptionData.cashConversion)
-  console.log("Point conversion and cash conversion data", pointsConversion, cashConversion)
+  // console.log("Point conversion and cash conversion data", pointsConversion, cashConversion)
   const [
     verifyOtpForNormalUseFunc,
     {
@@ -87,12 +87,16 @@ const OtpVerification = ({ navigation, route }) => {
 
   const type = route.params.type
   const selectedAccount = route.params?.selectedAccount
+
   const handleCashbackRedemption = async () => {
+    console.log(
+      'Location ', location
+    );
+
     const credentials = await Keychain.getGenericPassword();
-    if (credentials) {
-      console.log(
-        'Credentials successfully loaded for user ' + credentials.username
-      );
+    console.log("credentials97", credentials)
+  
+   
       const token = credentials.username
       const params = {
         token: token,
@@ -101,17 +105,17 @@ const OtpVerification = ({ navigation, route }) => {
           platform: "mobile",
           cash: String(cashConversion),
           remarks: "demo",
-          state: location.state === undefined ? "N/A" : location.state,
-          district: location.district === undefined ? "N/A" : location.district,
-          city: location.city === undefined ? "N/A" : location.city,
-          lat: location.lat,
-          log: location.lon,
+          state: location === undefined ? "N/A" : location.state,
+          district: location === undefined ? "N/A" : location.district,
+          city: location === undefined ? "N/A" : location.city,
+          lat: location == undefined ? "N/A" : location.lat,
+          log: location == undefined ? "N/A" : location.lon,
           active_beneficiary_account_id: selectedAccount
         },
       }
-      console.log("addCashToBankFunc", params)
+      console.log("addCashToBankFunc params116", params, location.state)
       addCashToBankFunc(params)
-    }
+    
 
   }
 
@@ -123,11 +127,11 @@ const OtpVerification = ({ navigation, route }) => {
     let lat = ''
     let lon = ''
     Geolocation.getCurrentPosition((res) => {
-      console.log("res", res)
+      // console.log("res", res)
       lat = res.coords.latitude
       lon = res.coords.longitude
       // getLocation(JSON.stringify(lat),JSON.stringify(lon))
-      console.log("latlong", lat, lon)
+      // console.log("latlong", lat, lon)
       var url = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${res.coords.latitude},${res.coords.longitude}
         &location_type=ROOFTOP&result_type=street_address&key=AIzaSyADljP1Bl-J4lW3GKv0HsiOW3Fd1WFGVQE`
 
@@ -193,7 +197,7 @@ const OtpVerification = ({ navigation, route }) => {
   useEffect(() => {
     if (redeemCashbackData) {
       console.log("redeemCashbackData", redeemCashbackData)
-      if (redeemCashbackData.success) {
+      if (redeemCashbackData) {
         handleCashbackRedemption()
       }
       // setSuccess(true)
@@ -221,7 +225,7 @@ const OtpVerification = ({ navigation, route }) => {
     else if (addCashToBankError) {
       console.log("addCashToBankError", addCashToBankError)
       setError(true)
-      setMessage("There was some problem ")
+      setMessage("Server Error")
     }
   }, [addCashToBankData, addCashToBankError])
 
@@ -262,7 +266,7 @@ const OtpVerification = ({ navigation, route }) => {
   const address = useSelector(state => state.address.address)
   const userData = useSelector((state) => state.appusersdata.userData);
 
-  console.log("cart and address", cart, address);
+  // console.log("cart and address", cart, address);
   useEffect(() => {
     if (getOtpforVerificationData) {
       console.log("getOtpforVerificationData", getOtpforVerificationData);
@@ -297,6 +301,7 @@ const OtpVerification = ({ navigation, route }) => {
     setSuccess(false)
   };
   const finalGiftRedemption = async () => {
+    console.log("Cashback type", type)
     const credentials = await Keychain.getGenericPassword();
     if (credentials) {
       console.log(
@@ -343,7 +348,7 @@ const OtpVerification = ({ navigation, route }) => {
           token: token
         };
         redeemCashbackFunc(params)
-        console.log("params", params)
+        console.log("params cashback", params)
       }
     }
 

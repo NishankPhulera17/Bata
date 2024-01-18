@@ -39,7 +39,7 @@ const styles = StyleSheet.create({
     elevation: 4,
   },
   textInput: {
-    height: 114,
+    height: 90,
     fontSize: 16,
     color:'#000000',
     textAlign:"left",

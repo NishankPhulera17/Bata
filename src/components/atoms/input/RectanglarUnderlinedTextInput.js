@@ -31,7 +31,7 @@ const RectanglarUnderlinedTextInput = (props) => {
   useEffect(() => {
     if (props.value !== undefined || props.value !== null) {
       props.handleData(input, title);
-      console.log("value textinput", input)
+      // console.log("value textinput", input)
     }
   }, [props.value, keyboardShow]);
   // useEffect(() => {

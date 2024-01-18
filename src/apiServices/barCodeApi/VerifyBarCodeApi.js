@@ -17,10 +17,26 @@ export const VerifyBarCodeApi = baseApi.injectEndpoints({
                     
                 }
             }
+        }),
+        verifyBarDistributor : builder.mutation({
+            query(data){
+                console.log("from verifyqr api",data)
+                return {
+                    url:`api/app/barCodeScan/distributorScan`,
+                    method:'post',
+                    headers:{
+                        "Content-Type": "application/json",
+                        "slug":slug,
+                        "Authorization": `Bearer ${data.token}`,
+                    },
+                    body:JSON.stringify(data.body)
+                    
+                }
+            }
         })
     })
 });
 
 
-export const {useVerifyBarMutation} = VerifyBarCodeApi
+export const {useVerifyBarMutation, useVerifyBarDistributorMutation} = VerifyBarCodeApi
 

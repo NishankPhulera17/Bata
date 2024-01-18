@@ -16,6 +16,7 @@ import * as Keychain from 'react-native-keychain';
 import Logo from 'react-native-vector-icons/AntDesign';
 import moment from 'moment';
 import { BaseUrlImages } from '../../utils/BaseUrlImages';
+import DataNotFound from '../data not found/DataNotFound';
 
 export default function Scheme({navigation}) {
     const [scheme, setScheme] = useState([])
@@ -266,11 +267,14 @@ useEffect(()=>{
 
             
             {
-                gifts && gifts.map((item,index)=>{
+                gifts.length > 0 ? gifts.map((item,index)=>{
                     return(
           <SchemeComponent key={index} name={item.name} worth={item.value} coin={item.points} image={item.images[0]}></SchemeComponent>
                     )
                 })
+
+                :
+                <DataNotFound/>
             }
         </View>
         </ScrollView>
