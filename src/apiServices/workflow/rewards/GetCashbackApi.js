@@ -44,7 +44,22 @@ export const GetCashback = baseApi.injectEndpoints({
         };
       },
     }),
+
+    fetchUserCashbackByAppUserId: builder.mutation({
+      query: (params) => {
+        return {
+          method: "GET",
+          url: `api/app/userCashback?app_user_id=${params.userId}`,
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + params.token,
+            slug: slug,
+          },
+        };
+      },
+    }),
+
   }),
 });
 
-export const {useAddCashbackEnteriesMutation,useCheckQrCodeAlreadyRedeemedMutation,useFetchCashbackEnteriesOfUserMutation} = GetCashback;
+export const {useAddCashbackEnteriesMutation,useCheckQrCodeAlreadyRedeemedMutation,useFetchCashbackEnteriesOfUserMutation, useFetchUserCashbackByAppUserIdMutation} = GetCashback;

@@ -1,6 +1,7 @@
 import React from 'react';
 import {View, StyleSheet, Text, TouchableOpacity, Image} from 'react-native';
 import PoppinsTextMedium from '../electrons/customFonts/PoppinsTextMedium';
+import PoppinsTextLeftMedium from '../electrons/customFonts/PoppinsTextLeftMedium';
 
 const ScannedListItem = props => {
   const index = props.index;
@@ -30,9 +31,18 @@ const ScannedListItem = props => {
         </View>
       </View>
       <View style={{width: '76%'}}>
-        <PoppinsTextMedium
+        <PoppinsTextLeftMedium
         style={{color:'black',fontSize:14,fontWeight:'600'}}
-          content={`Serial No : ${serialNo}, Artical Name : ${productName}, Artical No : ${productCode}, Bar Code No :${bar_code_no},  MRP :Rs${mrp} `}></PoppinsTextMedium>
+          content={`Article Name : ${productName} `}></PoppinsTextLeftMedium>
+              <PoppinsTextLeftMedium
+        style={{color:'black',fontSize:14,fontWeight:'600'}}
+          content={`Article No : ${productCode} `}></PoppinsTextLeftMedium>
+              <PoppinsTextLeftMedium
+        style={{color:'black',fontSize:14,fontWeight:'600'}}
+          content={`MRP: Rs ${mrp}`}></PoppinsTextLeftMedium>
+              <PoppinsTextLeftMedium
+        style={{color:'black',fontSize:14,fontWeight:'600'}}
+          content={`Bar Code No :${bar_code_no}`}></PoppinsTextLeftMedium>
       </View>
       <View style={{width: '10%',marginLeft:4}}>
         <TouchableOpacity

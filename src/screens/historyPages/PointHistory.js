@@ -324,7 +324,7 @@ const PointHistory = ({ navigation }) => {
                     {type !== "registration_bonus" && <PoppinsTextMedium style={{ fontWeight: '700', fontSize: 14, color: 'black' }} content={description}></PoppinsTextMedium>}
                     {type === "registration_bonus" && <PoppinsTextMedium style={{ fontWeight: '400', fontSize: 14, color: 'black', fontWeight: '700' }} content={`Registration Bonus`}></PoppinsTextMedium>}
 
-                    {type !== "registration_bonus" && <PoppinsTextMedium style={{ fontWeight: '400', fontSize: 12, color: 'black' }} content={`Artical No : ${productCode}`}></PoppinsTextMedium>}
+                    {type !== "registration_bonus" && <PoppinsTextMedium style={{ fontWeight: '400', fontSize: 12, color: 'black' }} content={`Article No : ${productCode}`}></PoppinsTextMedium>}
                     {type !== "registration_bonus" && <PoppinsTextMedium style={{ fontWeight: '400', fontSize: 12, color: 'black' }} content={`MRP : ${mrp}`}></PoppinsTextMedium>}
 
                     {/* {visibleCode && type !== "registration_bonus" && <PoppinsTextMedium style={{ fontWeight: '400', fontSize: 12, color: 'black' }} content={`Visible Code : ${visibleCode}`}></PoppinsTextMedium>} */}

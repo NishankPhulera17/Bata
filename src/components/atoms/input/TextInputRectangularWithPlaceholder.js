@@ -7,7 +7,7 @@ const TextInputRectangularWithPlaceholder = (props) => {
     const [keyboardType, setKeyboardType] = useState('default')
     const [maxLength, setMaxlength] = useState(props.maxLength)
     const [error, setError] = useState(false);
-    console.log("value", props)
+    // console.log("value", props)
     const placeHolder = props.placeHolder
     const required = props.required
     const specialChar = props.specialCharValidation

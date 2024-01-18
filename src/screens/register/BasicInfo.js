@@ -687,7 +687,7 @@ const BasicInfo = ({ navigation, route }) => {
                             placeHolder={item.name}
                             value={userMobile}
                             label={item.label}
-                            isEditable={user_type_option == "single" && !otpVerified}
+                            isEditable={!otpVerified}
                           >
                             {' '}
                           </TextInputNumericRectangle>}
@@ -762,7 +762,7 @@ const BasicInfo = ({ navigation, route }) => {
                       placeHolder={item.name}
                       value={userName}
                       label={item.label}
-                      isEditable={user_type_option == "single" && !otpVerified}
+                      isEditable={!otpVerified}
                     ></PrefilledTextInput>
                   )
                 }

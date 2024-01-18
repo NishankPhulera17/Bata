@@ -268,12 +268,18 @@ const Splash = ({ navigation }) => {
             checkRegistrationRequired()
           }
           else {
-            navigation.navigate('SelectUser');
+            setTimeout(()=>{
+              navigation.navigate('SelectUser');
+
+            },1000)
           }
 
         }
         else {
-          navigation.navigate('Introduction')
+          setTimeout(()=>{
+            navigation.navigate('Introduction')
+
+          },1000)
         }
         // console.log("isAlreadyIntroduced",isAlreadyIntroduced,gotLoginData)
 

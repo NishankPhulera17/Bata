@@ -9,7 +9,7 @@ import PointsDataBox from '../../components/molecules/PointsDataBox';
 import { useFetchUserPointsHistoryMutation } from '../../apiServices/workflow/rewards/GetPointsApi';
 import { useGetAllRedeemedCouponsMutation } from '../../apiServices/workflow/rewards/GetCouponApi';
 import { useFetchGiftsRedemptionsOfUserMutation } from '../../apiServices/workflow/RedemptionApi';
-import { useFetchCashbackEnteriesOfUserMutation } from '../../apiServices/workflow/rewards/GetCashbackApi';
+import { useFetchCashbackEnteriesOfUserMutation, useFetchUserCashbackByAppUserIdMutation } from '../../apiServices/workflow/rewards/GetCashbackApi';
 import moment from 'moment';
 import RedeemRewardDataBoxLong from '../../components/molecules/RedeemRewardDataBoxLong';
 import { BaseUrlImages } from '../../utils/BaseUrlImages';
@@ -54,6 +54,7 @@ const RedeemRewardHistory = ({navigation}) => {
         }
 
     },[])
+
     const [fetchUserPointsHistoryFunc,{
         data:fetchUserPointsHistoryData,
         error:fetchUserPointsHistoryError,
@@ -74,6 +75,7 @@ const RedeemRewardHistory = ({navigation}) => {
         isLoading: getActiveMembershipIsLoading,
         isError: getActiveMembershipIsError
       }] = useGetActiveMembershipMutation()
+
     const [fetchCashbackEnteriesFunc,{
         data:fetchCashbackEnteriesData,
         error:fetchCashbackEnteriesError,
@@ -90,6 +92,13 @@ const RedeemRewardHistory = ({navigation}) => {
           error: fetchGiftsRedemptionsOfUserError,
         },
       ] = useFetchGiftsRedemptionsOfUserMutation();
+
+      const [getPointSharingCashbackFunc, {
+        data: getPointSharingCashbackData,
+        error: getPointSharingCashbackError,
+        isLoading: getPointSharingCashbackisLoading,
+        isError: getPointSharingCashbackisError
+    }] = useFetchUserCashbackByAppUserIdMutation()
       
       const [userPointFunc,{
         data:userPointData,
@@ -97,6 +106,21 @@ const RedeemRewardHistory = ({navigation}) => {
         isLoading:userPointIsLoading,
         isError:userPointIsError
     }]= useFetchUserPointsMutation()
+
+
+    useEffect(() => {
+        (async () => {
+            const credentials = await Keychain.getGenericPassword();
+            const token = credentials.username;
+            const params = {
+                token: token,
+                userId: String(userData.id),
+                // cause: "registration_bonus"
+            }
+            getPointSharingCashbackFunc(params)
+
+        })();
+    }, []);
 
     useEffect(()=>{
         if(userPointData)
@@ -109,6 +133,16 @@ const RedeemRewardHistory = ({navigation}) => {
         }
     
     },[userPointData,userPointError])
+
+    useEffect(()=>{
+        if(getPointSharingCashbackData){
+            console.log("getPointSharingCashbackData",getPointSharingCashbackData)
+        }
+        else{
+            console.log("getPointSharingCashbackError",getPointSharingCashbackError)
+            
+        }
+    },[getPointSharingCashbackData,getPointSharingCashbackError ])
 
     useEffect(() => {
         if (getActiveMembershipData) {
@@ -415,7 +449,7 @@ const RedeemRewardHistory = ({navigation}) => {
             <ScrollView showsHorizontalScrollIndicator={false} horizontal={true}>
            {showCoupons &&
             <RedeemRewardDataBox header="My Vouchers"  data="5000" image={require('../../../assets/images/voucher1.png')} ></RedeemRewardDataBox>}
-           {showCashback && <RedeemRewardDataBox navigation = {navigation} header="Cashback"  data="5000" image={require('../../../assets/images/cashback.png')} ></RedeemRewardDataBox>}
+               { getPointSharingCashbackData?.body?.cashback_balance > 0 && <RedeemRewardDataBox navigation = {navigation} header="Cashback"  data={ getPointSharingCashbackData?.body?.cashback_balance} image={require('../../../assets/images/cashback.png')} ></RedeemRewardDataBox>}
             {showPoints && userPointData &&  <RedeemRewardDataBox navigation = {navigation} header="Earned Points"  data={userPointData.body.point_earned} image={require('../../../assets/images/points.png')} ></RedeemRewardDataBox>}
            {showWheel &&  <RedeemRewardDataBox navigation = {navigation} header="Total Spins"  data="5000" image={require('../../../assets/images/wheel.png')} ></RedeemRewardDataBox>
            }

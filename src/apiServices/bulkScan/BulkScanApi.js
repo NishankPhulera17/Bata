@@ -33,9 +33,25 @@ export const BulkScanApi = baseApi.injectEndpoints({
               };
             },
           }),
+
+          addBulkPointOnProductReturn: builder.mutation({
+            query: (params) => {
+                console.log("Params from bulk point on product api mutation",params.data)
+              return {
+                method: "POST",
+                url: `/api/bulkScan/return-barcode`,
+                headers: {
+                  "Content-Type": "application/json",
+                  slug: slug,
+                  "Authorization": `Bearer ${params.token}`,
+                },
+                body:params.data
+              };
+            },
+          }),
     })
 });
 
 
-export const {useAddBulkQrMutation,useAddBulkPointOnProductMutation} = BulkScanApi
+export const {useAddBulkQrMutation,useAddBulkPointOnProductMutation, useAddBulkPointOnProductReturnMutation} = BulkScanApi
 

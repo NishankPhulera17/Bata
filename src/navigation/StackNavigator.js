@@ -77,6 +77,7 @@ import AddedUserScanList from '../screens/addUser/AddedUserScanList';
 import RequestAppointment from '../screens/requestAppointment/RequestAppointment';
 import SupportQueries from '../screens/helpAndSupport/SupportQueries';
 import QueryList from '../screens/queryList/QueryList';
+import ReturnPointHistory from '../screens/historyPages/ReturnPointHistory';
 const Stack = createNativeStackNavigator()
 
 const StackNavigator = () => {
@@ -267,6 +268,11 @@ const StackNavigator = () => {
                         headerShown: false
                     }
                 } name="PdfComponent" component={PdfComponent}></Stack.Screen>
+                   <Stack.Screen options={
+                    {
+                        headerShown: false
+                    }
+                } name="ReturnPointHistory" component={ReturnPointHistory}></Stack.Screen>
                 <Stack.Screen options={
                     {
                         headerShown: false

@@ -33,7 +33,7 @@ const PasswordLogin = ({ navigation, route }) => {
   const [success, setSuccess] = useState(false)
   const [error, setError] = useState(false)
   const [message, setMessage] = useState("")
-  const [isChecked, setIsChecked] = useState("")
+  const [isChecked, setIsChecked] = useState(false)
 
   //modal
   const [openModalWithBorder, setModalWithBorder] = useState(false);
@@ -244,7 +244,9 @@ const PasswordLogin = ({ navigation, route }) => {
   //function to handle Modal
   const modalWithBorderClose = () => {
     setModalWithBorder(false);
-    navigation.navigate("Dashboard")
+    // navigation.navigate("Dashboard")
+    navigation.reset({ index: '0', routes: [{ name: 'Dashboard' }] })
+
   };
 
   const ModalContent = () => {
@@ -314,7 +316,7 @@ const PasswordLogin = ({ navigation, route }) => {
       <View style={{
         width: '100%', alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: ternaryThemeColor,
+        backgroundColor: 'white',
       }}>
         <View
           style={{
@@ -322,7 +324,7 @@ const PasswordLogin = ({ navigation, route }) => {
             width: '100%',
             alignItems: 'center',
             justifyContent: 'center',
-            backgroundColor: ternaryThemeColor,
+            backgroundColor: 'white',
             flexDirection: 'row',
 
           }}>
@@ -339,16 +341,14 @@ const PasswordLogin = ({ navigation, route }) => {
           <Image
             style={{
               height: 50,
-              width: 100,
+              width: 150,
               resizeMode: 'center',
               top: 20,
               position: "absolute",
               left: 50,
 
-
-
             }}
-            source={require('../../../assets/images/ozoneWhiteLogo.png')}></Image>
+            source={require('../../../assets/images/batalogo.png')}></Image>
           {/* ozone change */}
          
 

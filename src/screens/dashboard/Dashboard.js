@@ -50,6 +50,7 @@ const Dashboard = ({ navigation }) => {
   const dispatch = useDispatch()
   const userId = useSelector((state) => state.appusersdata.userId)
   const userData = useSelector(state => state.appusersdata.userData);
+
   const pointSharingData = useSelector(state => state.pointSharing.pointSharing)
   const ternaryThemeColor = useSelector(
     state => state.apptheme.ternaryThemeColor,
@@ -452,7 +453,7 @@ console.log("fetchAllQrScanedListError",fetchAllQrScanedListError)
       <DrawerHeader></DrawerHeader>
       <View style={{width:'100%',alignItems:'center',justifyContent:'flex-start',flexDirection:'row',marginBottom:10}}>
       <PoppinsTextLeftMedium style={{color:ternaryThemeColor, fontWeight:'bold', fontSize:19,marginLeft:20}} content={`Welcome ${userData?.name}`}></PoppinsTextLeftMedium>
-      {getActiveMembershipData?.body!==null && <View
+      {/* {getActiveMembershipData?.body!==null && <View
               style={{
                 flexDirection: 'row',
                 alignItems: 'center',
@@ -471,7 +472,7 @@ console.log("fetchAllQrScanedListError",fetchAllQrScanedListError)
                   content={membership}></PoppinsTextMedium>
               </TouchableOpacity>
 
-            </View>}
+            </View>} */}
             <PlatinumModal isVisible={isSuccessModalVisible} onClose={hideSuccessModal} getActiveMembershipData={getActiveMembershipData} />
 
       </View>
