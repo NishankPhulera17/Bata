@@ -77,6 +77,7 @@ import AddedUserScanList from '../screens/addUser/AddedUserScanList';
 import RequestAppointment from '../screens/requestAppointment/RequestAppointment';
 import SupportQueries from '../screens/helpAndSupport/SupportQueries';
 import QueryList from '../screens/queryList/QueryList';
+import VisionCamera from '../screens/camera/VisionCamera';
 const Stack = createNativeStackNavigator()
 
 const StackNavigator = () => {
@@ -94,6 +95,11 @@ const StackNavigator = () => {
                         headerShown: false
                     }
                 } name="WhatsNew" component={WhatsNew}></Stack.Screen>
+                <Stack.Screen options={
+                    {
+                        headerShown: false
+                    }
+                } name="VisionCamera" component={VisionCamera}></Stack.Screen>
                 <Stack.Screen options={
                     {
                         headerShown: false
