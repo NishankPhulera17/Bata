@@ -57,6 +57,7 @@ const CongratulateOnScan = ({ navigation, route }) => {
   //  data from scanning qr code
   const dispatch = useDispatch();
   const qrData = useSelector((state) => state.qrData.qrData);
+  console.log("Qr data", qrData)
   // product data recieved from scanned product
   const productData = useSelector((state) => state.productData.productData);
   const pointSharingData = useSelector(
@@ -79,7 +80,7 @@ const CongratulateOnScan = ({ navigation, route }) => {
     (state) => state.pointSharing.shouldSharePoints
   );
   // getting location from redux state
-  const location = useSelector((state) => state.userLocation.location);
+  const location = useSelector((state) => state?.userLocation?.location);
   console.log("shouldSharePoints", shouldSharePoints, productData);
   console.log("location", location);
   console.log('Location', location, userData, productData, qrData);
@@ -87,7 +88,7 @@ const CongratulateOnScan = ({ navigation, route }) => {
   // workflow for the given user
   const workflowProgram = route.params.workflowProgram;
   const rewardType = route.params.rewardType;
-  console.log("rewardType", rewardType, workflowProgram, productData);
+  console.log("rewardType", rewardType );
   const platform = Platform.OS === "ios" ? "1" : "2";
 
   const isDistributor = userData?.user_type_id == 3
@@ -315,10 +316,10 @@ const CongratulateOnScan = ({ navigation, route }) => {
       }
       else if (rewardType === "Points On Product") {
         console.log("QRIDLIST==========>", qrIdList)
-        if (qrIdList.length === 0) {
+        if (qrIdList.length ==1 ) {
           const params = {
             token: token,
-            qr_code: qrData.qr_id,
+            qr_code: qrIdList,
           };
 
           console.log("shouldSharePoints", shouldSharePoints);
@@ -421,8 +422,14 @@ const CongratulateOnScan = ({ navigation, route }) => {
               }
             }
           }
-          checkUserPointFunc(params);
-          console.log("checkuserpointfuncparams", params)
+
+          if(qrIdList.length==1){
+            checkUserPointFunc(params);
+            console.log("checkuserpointfuncparams", params)
+          }
+          
+       
+
         }
         else {
           const params = {
@@ -479,6 +486,7 @@ const CongratulateOnScan = ({ navigation, route }) => {
             },
             token: token,
           };
+          console.log("bulk point Data distributor", params)
           if(isDistributor){
           addBulkPointOnProductReturnFunc(params)
             
@@ -704,7 +712,7 @@ const CongratulateOnScan = ({ navigation, route }) => {
 
   useEffect(() => {
     if (checkUserPointData) {
-      console.log("checkUserPointData", checkUserPointData,qrData);
+      console.log("checkUserPointData", checkUserPointData,qrIdList);
       if (!checkUserPointData.body) {
         if (pointSharingData?.flat_points) {
           const points = productData[`${userData.user_type}_points`]
@@ -741,7 +749,7 @@ const CongratulateOnScan = ({ navigation, route }) => {
                 points: totalPoints,
                 type: "point on product",
               },
-              qrId: Number(qrData.qr_id),
+              qrId: qrIdList,
               tenant_id: slug,
               token: token,
             };
@@ -788,7 +796,7 @@ const CongratulateOnScan = ({ navigation, route }) => {
                 points: totalPoints,
                 type: "point on product",
               },
-              qrId: Number(qrData.qr_id),
+              qrId: qrIdList,
               tenant_id: slug,
               token: token,
             };
@@ -807,7 +815,11 @@ const CongratulateOnScan = ({ navigation, route }) => {
       }
     } else if (checkUserPointError) {
       console.log("checkUserPointError", checkUserPointError);
+  
+      setError(true)
+      setMessage("Qr Code is not redemmed")
     }
+
   }, [checkUserPointData, checkUserPointError]);
 
   useEffect(() => {
@@ -825,6 +837,10 @@ const CongratulateOnScan = ({ navigation, route }) => {
         }, 5000);
       }
       else if (userPointEntryError.status === 400) {
+        setError(true)
+        setMessage(userPointEntryError.data.message)
+      }
+      else if(userPointEntryError.status === 500){
         setError(true)
         setMessage(userPointEntryError.data.message)
       }

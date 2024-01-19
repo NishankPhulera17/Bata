@@ -86,12 +86,10 @@ const DashboardMenuBox=(props)=>{
         {
             navigation.navigate("Passbook")
         }
-        // else if(data.toLowerCase() === "rewards"){
-        //     navigation.navigate('RedeemRewardHistory')
-        // }
         else if(data.toLowerCase() === "rewards"){
-            navigation.navigate('VisionCamera')
+            navigation.navigate('RedeemRewardHistory')
         }
+    
         else if(data.toLowerCase() === "profile"){
             navigation.navigate('Profile')
         }

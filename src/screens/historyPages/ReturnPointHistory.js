@@ -361,6 +361,7 @@ const ReturnPointHistory = ({ navigation }) => {
                 
                     
                 }}
+                // inverted
                 style={{ width: "100%", marginBottom:20 }}
                 data={fetctReturnListData?.body}
                 renderItem={({ item, index }) => (

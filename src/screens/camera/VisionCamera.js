@@ -6,7 +6,7 @@ const VisionCamera = () => {
     const device = useCameraDevice('back')
 
     const codeScanner= {
-        codeTypes: ['qr', 'ean-13'],
+      codeTypes: 'code-128',
         onCodeScanned: (codes) => {
           console.log(`Scanned ${codes.length} codes!`)
         }

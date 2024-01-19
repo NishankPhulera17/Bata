@@ -178,12 +178,15 @@ const CustomDrawer = () => {
     
       try {
      
-        await AsyncStorage.removeItem('loginData')
+  
+
         if(user_type_option=="single"){
+          await AsyncStorage.removeItem('loginData')
           navigation.reset({ index: '0', routes: [{ name: 'Splash' }] })
           
         }
         else{
+          await AsyncStorage.removeItem('loginData')
           navigation.reset({ index: '0', routes: [{ name: 'SelectUser' }] })
 
         }

@@ -25,6 +25,7 @@ import PrefilledTextInput from '../../components/atoms/input/PrefilledTextInput'
 import FeedbackTextArea from '../../components/feedback/FeedbackTextArea';
 import ImageInput from '../../components/atoms/input/ImageInput';
 import ImageInputWithUpload from '../../components/atoms/input/ImageInputWithUpload';
+import { useUploadImagesMutation } from '../../apiServices/imageApi/imageApi';
 
 const SupportQueries = ({ navigation }) => {
   const [error, setError] = useState(false)
@@ -37,7 +38,7 @@ const SupportQueries = ({ navigation }) => {
   const [selectedOption, setSelectedOption] = useState(null);
   const [tokenNumer, setTokenNumber] = useState(null);
   const [shortDescText, setShortDescText] = useState("");
-  const[selectedImage, setSelectedImage] =useState(null)
+  const [selectedImage, setSelectedImage] = useState(null)
 
 
 
@@ -65,6 +66,20 @@ const SupportQueries = ({ navigation }) => {
     isError: submitQueriesTypeIsError
   }] = useSubmitQueriesMutation()
 
+  const [
+    uploadImageFunc,
+    {
+      data: uploadImageData,
+      error: uploadImageError,
+      isLoading: uploadImageIsLoading,
+      isError: uploadImageIsError,
+    },
+  ] = useUploadImagesMutation();
+
+
+
+
+
 
   useEffect(() => {
     const getTypes = async () => {
@@ -82,10 +97,29 @@ const SupportQueries = ({ navigation }) => {
     getTypes()
   }, [])
 
-  const handleChildComponentData = (uri) =>{
-    console.log("the uri====>", uri.name);
-    setSelectedImage(uri.Image)
-    
+
+  useEffect(() => {
+    if (uploadImageData?.success) {
+      console.log("uploadImageData", uploadImageData);
+      const uploadArray = []
+      uploadArray.push(uploadImageData?.body[0]?.filename)
+      setSelectedImage(uploadImageData?.body[0]?.filename)
+    } else {
+      console.log(uploadImageError);
+    }
+  }, [uploadImageData, uploadImageError]);
+
+
+
+
+  const handleChildComponentData = (uri) => {
+    console.log("the uri====>", uri);
+    const uploadFile = new FormData();
+    uploadFile.append('images', uri);
+    // console.log("invoice data",item.value)
+    uploadImageFunc({ body: uploadFile });
+
+
   }
 
   useEffect(() => {
@@ -118,6 +152,7 @@ const SupportQueries = ({ navigation }) => {
       }
     }
   }, [submitQueriesTypeData, submitQueriesTypeError])
+
 
   const modalClose = () => {
     setError(false);
@@ -220,7 +255,7 @@ const SupportQueries = ({ navigation }) => {
               }}
               source={require('../../../assets/images/blackBack.png')}></Image>
           </TouchableOpacity>
-          <View style={{ alignItems: 'center', justifyContent: 'center', position: "absolute", top: 20, left: 50 }}>
+          <View style={{ alignItems: 'center', justifyContent: 'center', position: "absolute", left: 50 }}>
             <PoppinsTextMedium
               content="Report Issue"
               style={{
@@ -254,11 +289,11 @@ const SupportQueries = ({ navigation }) => {
             ></PrefilledTextInput>
           </View>
 
-          <View style={{ marginTop: 20, width: '95%',marginBottom:20 }}>
+          <View style={{ marginTop: 20, width: '95%', marginBottom: 20 }}>
             <FeedbackTextArea onFeedbackChange={handleFeedbackChange} placeholder={"Long description"} />
           </View>
 
-          <View style={{}}>
+          <View style={{width:'85%'}}>
             <ImageInputWithUpload
               // jsonData={item}
               handleData={handleChildComponentData}

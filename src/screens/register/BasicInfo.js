@@ -43,6 +43,7 @@ import DropDownRegistration from '../../components/atoms/dropdown/DropDownRegist
 import EmailTextInput from '../../components/atoms/input/EmailTextInput';
 import { validatePathConfig } from '@react-navigation/native';
 import { user_type_option } from '../../utils/usertTypeOption';
+import FastImage from 'react-native-fast-image';
 
 
 const BasicInfo = ({ navigation, route }) => {
@@ -67,6 +68,8 @@ const BasicInfo = ({ navigation, route }) => {
   const [timer, setTimer] = useState(0)
 
   const timeOutCallback = useCallback(() => setTimer(currTimer => currTimer - 1), []);
+  const gifUri = Image.resolveAssetSource(require('../../../assets/gif/loader.gif')).uri;
+
 
 
 
@@ -362,7 +365,7 @@ const BasicInfo = ({ navigation, route }) => {
 
   const handleTimer = () => {
 
-    if(userName != "" && userName!=undefined && userName!= null){
+    if (userName != "" && userName != undefined && userName != null) {
       if (timer === 60) {
         getOTPfunc()
         setOtpVisible(true)
@@ -371,16 +374,16 @@ const BasicInfo = ({ navigation, route }) => {
         setTimer(60);
         getOTPfunc()
         setOtpVisible(true)
-  
-  
+
+
       }
     }
-    else{
+    else {
       setError(true)
       setMessage("Please Enter Owner Name")
     }
 
- 
+
   }
 
   const isthisValid = (text) => {
@@ -665,7 +668,7 @@ const BasicInfo = ({ navigation, route }) => {
       <ScrollView style={{ width: '100%' }}>
 
         <View style={{ width: width, backgroundColor: "white", alignItems: "center", justifyContent: 'flex-start', paddingTop: 20 }}>
-          {formFound ? <PoppinsTextMedium style={{ color: 'black', fontWeight: '700', fontSize: 18, marginBottom: 40 }} content="Please Fill The Following Form To Register"></PoppinsTextMedium> : <PoppinsTextMedium style={{ color: 'black', fontWeight: '700', fontSize: 18, marginBottom: 40 }} content="No Form Available !!"></PoppinsTextMedium>}
+          {formFound && <PoppinsTextMedium style={{ color: 'black', fontWeight: '700', fontSize: 18, marginBottom: 40 }} content="Please Fill The Following Form To Register"></PoppinsTextMedium>}
 
           {/* <RegistrationProgress data={["Basic Info","Business Info","Manage Address","Other Info"]}></RegistrationProgress> */}
           {registrationForm &&
@@ -949,7 +952,21 @@ const BasicInfo = ({ navigation, route }) => {
               }
             })}
 
-          {formFound && <ButtonOval
+          {getFormIsLoading &&
+            <View style={{ backgroundColor: 'white', height:"100%" }}>
+              <FastImage
+                style={{ width: 100, height: 100, alignSelf: 'center', marginTop: '50%' }}
+                source={{
+                  uri: gifUri, // Update the path to your GIF
+                  priority: FastImage.priority.normal,
+                }}
+                resizeMode={FastImage.resizeMode.contain}
+              />
+            </View>
+
+          }
+
+          {!getFormIsLoading && formFound && <ButtonOval
             handleOperation={() => {
               handleRegistrationFormSubmission();
             }}

@@ -16,6 +16,8 @@ import { setAppUsers, setAppUsersData } from '../../../redux/slices/appUserSlice
 import { useGetAppUsersDataMutation } from '../../apiServices/appUsers/AppUsersApi';
 import Geolocation from '@react-native-community/geolocation';
 import { user_type_option } from '../../utils/usertTypeOption';
+import { request, PERMISSIONS } from 'react-native-permissions';
+
 
 const Splash = ({ navigation }) => {
   const dispatch = useDispatch()
@@ -25,6 +27,8 @@ const Splash = ({ navigation }) => {
   const [gotLoginData, setGotLoginData] = useState()
   const [listUsers, setListUsers] = useState([]);
   const [isUserLoggedIn, setIsUserLoggedIn] = useState(null)
+  const [hasPermission, setHasPermission] = useState(null);
+
 
 
   const registrationRequired = useSelector(state => state.appusers.registrationRequired)
@@ -54,6 +58,30 @@ const Splash = ({ navigation }) => {
     },
   ] = useGetAppUsersDataMutation();
 
+
+  useEffect(() => {
+    checkCameraPermission();
+  }, []);
+
+  const checkCameraPermission = async () => {
+    try {
+      const status = await requestCameraPermission();
+      console.log('Camera Permission Status:', status);
+      setHasPermission(status === 'granted');
+    } catch (error) {
+      console.error('Error checking camera permission:', error);
+    }
+  };
+
+  const requestCameraPermission = async () => {
+    try {
+      const result = await request(PERMISSIONS.ANDROID.CAMERA);
+      return result;
+    } catch (error) {
+      console.error('Error requesting camera permission:', error);
+      return 'denied';
+    }
+  };
 
 
 

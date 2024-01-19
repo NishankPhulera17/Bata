@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState, useCallback } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   View,
   StyleSheet,
@@ -39,12 +39,6 @@ import RNQRGenerator from 'rn-qr-generator';
 import { useCashPerPointMutation } from '../../apiServices/workflow/rewards/GetPointsApi';
 import { useVerifyBarDistributorMutation, useVerifyBarMutation } from '../../apiServices/barCodeApi/VerifyBarCodeApi';
 import { scannerType } from '../../utils/ScannerType';
-import { useCameraDevice } from 'react-native-vision-camera';
-// import {useScanBarcodes, BarcodeFormat} from 'vision-camera-code-scanner';
-import { Camera } from 'react-native-vision-camera';
-import { Gesture, GestureDetector } from 'react-native-gesture-handler'
-import { request, PERMISSIONS } from 'react-native-permissions';
-
 
 const QrCodeScanner = ({ navigation }) => {
   const [zoom, setZoom] = useState(0);
@@ -62,6 +56,9 @@ const QrCodeScanner = ({ navigation }) => {
   const [helpModal, setHelpModal] = useState(false);
   const [isFirstScan, setIsFirstScan] = useState(false)
   const [isReportable, setIsReportable] = useState(false)
+  const [barcodeRead, setBarcodeRead] = useState(false)
+
+  const cameraRef = useRef(null);
 
   const userId = useSelector(state => state.appusersdata.userId);
   const userData = useSelector(state => state.appusersdata.userData)
@@ -80,47 +77,7 @@ const QrCodeScanner = ({ navigation }) => {
   console.log('Workflow Program is ', workflowProgram, shouldSharePoints, location, userData);
 
   const isDistributor = userData?.user_type_id == 3
-  console.log("Selector state", userData)
-
-  const [hasPermission, setHasPermission] = useState(null);
-
-  useEffect(() => {
-    checkCameraPermission();
-  }, []);
-
-  const checkCameraPermission = async () => {
-    try {
-      const status = await requestCameraPermission();
-      console.log('Camera Permission Status:', status);
-      setHasPermission(status === 'granted');
-    } catch (error) {
-      console.error('Error checking camera permission:', error);
-    }
-  };
-
-  const requestCameraPermission = async () => {
-    try {
-      const result = await request(PERMISSIONS.ANDROID.CAMERA);
-      return result;
-    } catch (error) {
-      console.error('Error requesting camera permission:', error);
-      return 'denied';
-    }
-  };
-
-  // Render the camera component if permission is granted
-
-  // if (hasPermission === false) {
-  //   return (
-  //     <View style={{width:'100%', alignItems:'center'}}>
-  //       <Text style={{ alignSelf: 'center', justifyContent: 'center', color: 'black', marginTop: '90%', fontSize: 17 }}>No access to camera Please Give Permission</Text>
-  //       <TouchableOpacity style={{height:40, width:120, backgroundColor:ternaryThemeColor,alignItems:'center', justifyContent:'center', marginTop:30}} onPress={requestCameraPermission}>
-  //         <PoppinsTextMedium style={{ borderRadius:5,color:'white', fontWeight:'bold' }} content={"Give Permission"}></PoppinsTextMedium>
-  //       </TouchableOpacity>
-  //     </View>
-  //   )
-  // }
-
+  // console.log("Selector state",useSelector((state)=>state.appusersdata.userId))
 
   // mutations ----------------------------------------
   const [
@@ -224,7 +181,6 @@ const QrCodeScanner = ({ navigation }) => {
 
 
 
-
   useEffect(() => {
     if (addBulkQrData) {
       console.log("addBulkQrData", addBulkQrData)
@@ -242,6 +198,7 @@ const QrCodeScanner = ({ navigation }) => {
       console.log("addBulkQrError", addBulkQrError)
     }
   }, [addBulkQrData, addBulkQrError])
+  
   useEffect(() => {
     if (cashPerPointData) {
       console.log("cashPerPointData", cashPerPointData)
@@ -264,7 +221,6 @@ const QrCodeScanner = ({ navigation }) => {
 
 
 
-
   useEffect(() => {
     if (addQrData) {
       console.log("addQrData", addQrData)
@@ -277,41 +233,6 @@ const QrCodeScanner = ({ navigation }) => {
     }
 
   }, [addQrData]);
-
-  useEffect(() => {
-    if (verifyQrDistributorData) {
-      //reverse logic as retailer
-      console.log('verifyQrDistributorData', verifyQrDistributorData);
-      if (verifyQrDistributorData.body?.qr_status === "2") {
-        addQrDataToListDistributor(verifyQrDistributorData.body);
-      }
-      if (verifyQrDistributorData.body?.qr_status === "1" && verifyQrDistributorData.status === 201) {
-
-        setError(true);
-        setMessage(verifyQrDistributorData.message);
-      }
-      if (verifyQrDistributorData.body?.qr_status === "2" && verifyQrDistributorData.status === 202) {
-        setIsReportable(true)
-        setError(true);
-        setMessage(verifyQrDistributorData.message);
-      }
-    }
-    else if (verifyQDistributorrError) {
-      if (verifyQDistributorrError === undefined) {
-
-        setError(true)
-        setMessage("This QR is not activated yet")
-      }
-      else {
-        setError(true)
-        setMessage(verifyQDistributorrError?.data?.message);
-
-      }
-      
-      console.log('Verify qr error', verifyQDistributorrError);
-
-    }
-  }, [verifyQrDistributorData, verifyQDistributorrError]);
 
   useEffect(() => {
 
@@ -348,24 +269,6 @@ const QrCodeScanner = ({ navigation }) => {
     })();
   }
 
-  const codeScanner = {
-    // codeTypes: ["code-128" | "code-39" | "code-93" | "codabar" | "ean-13" | "ean-8" | "itf" | "upc-e" | "qr" | "pdf-417" | "aztec" | "data-matrix"],
-    codeTypes: ['code-128'],
-    onCodeScanned: (codes) => {
-      console.log(`Scanned ${codes.length} codes!`, JSON.stringify(codes[0]))
-      let e = {
-        data: codes[0].value
-      }
-      if (isDistributor) {
-        OnReturedCheck(e)
-      }
-      else {
-        onSuccessBar(e)
-
-      }
-    }
-  }
-
   const checkFirstScan = async () => {
 
 
@@ -376,7 +279,7 @@ const QrCodeScanner = ({ navigation }) => {
       );
       console.log("First scan")
       const token = credentials.username
-      const body = {
+      const body = {  
         tenant_id: slug,
         token: token,
         data: {
@@ -481,12 +384,22 @@ const QrCodeScanner = ({ navigation }) => {
     setIsReportable(false)
   };
 
+  //for testing
+    // useEffect(()=>{
+    //   let e ={
+    //     data:"93461030703476559600048"
+        
+    //   }
+    //   onSuccessBar(e)
+    // },[])
+
   const onSuccessBar = e => {
-    console.log('Qr data is ------------------>', e);
-
-    Vibration.vibrate([1000, 500, 1000]);
-
+    console.log('Qr data is ------------------>', e.data);
     if (e.data === undefined) {
+      setError(true)
+      setMessage("Please scan a valid QR")
+    }
+    else if(e.data.length != 23){
       setError(true)
       setMessage("Please scan a valid QR")
     }
@@ -530,9 +443,8 @@ const QrCodeScanner = ({ navigation }) => {
 
   };
 
-
   const OnReturedCheck = e => {
-
+    
     console.log("eee", e)
     if (e.data === undefined) {
       setError(true)
@@ -620,40 +532,9 @@ const QrCodeScanner = ({ navigation }) => {
   };
 
   // add qr to the list of qr--------------------------------------
+
   const addQrDataToList = data => {
-    console.log("addQrDataToList", data)
-    const qrId = data.qr_id;
-    setQr_id(qrId);
-    const token = savedToken;
-    const productCode = data.product_code;
-
-
-    workflowProgram.includes("Genunity") && checkGenuinityFunc({ qrId, token });
-
-    productDataFunc({ productCode, userType, token });
-    console.log("ProductDataFunc", { productCode, userType, token })
-
-    if (addedQrList.length === 0) {
-      setAddedQrList([...addedQrList, data]);
-    } else {
-      const existingObject = addedQrList.find(
-        obj => obj.unique_code === data.unique_code,
-      );
-      if (!existingObject) {
-        setAddedQrList([...addedQrList, data]);
-      } else {
-
-        setError(true);
-        setMessage('Sorry This Barcode is already added to the list');
-      }
-    }
-  };
-
-
-
-
-  const addQrDataToListDistributor = data => {
-    console.log("addQrDataToListDistributor", data)
+    console.log("addQrDataToList", data,addedQrList)
     const qrId = Number(data.id);
     setQr_id(qrId);
     const token = savedToken;
@@ -681,7 +562,33 @@ const QrCodeScanner = ({ navigation }) => {
   };
 
 
+  const addQrDataToListDistributor = data => {
+    console.log("addQrDataToListDistributor", data)
+    const qrId = data.id;
+    setQr_id(qrId);
+    const token = savedToken;
+    const productCode = data.product_code;
 
+
+    workflowProgram?.includes("Genunity") && checkGenuinityFunc({ qrId, token });
+
+    productDataFunc({ productCode, userType, token });
+    console.log("ProductDataFunc", { productCode, userType, token })
+
+    if (addedQrList.length === 0) {
+      setAddedQrList([...addedQrList, data]);
+    } else {
+      const existingObject = addedQrList.find(
+        obj => obj.unique_code === data.unique_code,
+      );
+      if (!existingObject) {
+        setAddedQrList([...addedQrList, data]);
+      } else {
+        setError(true);
+        setMessage('Sorry This Barcode is already added to the list');
+      }
+    }
+  };
 
   // --------------------------------------------------------
 
@@ -736,15 +643,13 @@ const QrCodeScanner = ({ navigation }) => {
         rewardType: updatedWorkflowProgram[0]
       });
     }
-
-    else if (updatedWorkflowProgram[0] === "barcode revert") {
+    else if(updatedWorkflowProgram[0]==="barcode revert"){
       navigation.navigate('CongratulateOnScan', {
         workflowProgram: updatedWorkflowProgram.slice(1),
         rewardType: updatedWorkflowProgram[0]
 
       });
     }
-
     else {
       console.log("You have completed the workflow")
     }
@@ -796,6 +701,42 @@ const QrCodeScanner = ({ navigation }) => {
     }
   }, [verifyQrData, verifyQrError]);
 
+  useEffect(() => {
+    if (verifyQrDistributorData) {
+      //reverse logic as retailer
+      console.log('verifyQrDistributorData', verifyQrDistributorData);
+      if (verifyQrDistributorData.body?.qr_status === "2") {
+        addQrDataToListDistributor(verifyQrDistributorData.body);
+      }
+      if (verifyQrDistributorData.body?.qr_status === "1" && verifyQrDistributorData.status === 201) {
+
+        setError(true);
+        setMessage(verifyQrDistributorData.message);
+      }
+      if (verifyQrDistributorData.body?.qr_status === "2" && verifyQrDistributorData.status === 202) {
+        setIsReportable(true)
+        setError(true);
+        setMessage(verifyQrDistributorData.message);
+      }
+    }
+    else if (verifyQDistributorrError) {
+      if (verifyQDistributorrError === undefined) {
+
+        setError(true)
+        setMessage("This QR is not activated yet")
+      }
+      else {
+        setError(true)
+        setMessage(verifyQDistributorrError?.data?.message);
+
+      }
+      console.log('Verify qr error', verifyQDistributorrError);
+
+    }
+  }, [verifyQrDistributorData, verifyQDistributorrError]);
+
+  
+
 
 
 
@@ -805,7 +746,6 @@ const QrCodeScanner = ({ navigation }) => {
   useEffect(() => {
     if (verifyBarData) {
       addQrDataToList(verifyBarData.body);
-      
 
       console.log('Verify bar data', verifyBarData);
       if (verifyBarData.body?.status === "1") {
@@ -834,10 +774,6 @@ const QrCodeScanner = ({ navigation }) => {
           setMessage(JSON.stringify(verifyBarError));
         }
 
-        else{
-          setError(true)
-          setMessage(verifyBarError?.data?.message);
-        }
 
       }
       console.log('Verify qr error', verifyBarError);
@@ -854,7 +790,6 @@ const QrCodeScanner = ({ navigation }) => {
         console.log("check Genuinity and warranty", checkGenuinityData, checkWarrantyData)
 
         if (checkGenuinityData) {
-
           if (checkGenuinityData.body) {
             console.log("check warranty data", checkWarrantyData)
             if (checkWarrantyError) {
@@ -1010,27 +945,28 @@ const QrCodeScanner = ({ navigation }) => {
 
   const handleAddBar = () => {
     let addedbarcodesId = []
-    // console.log("list of added barcodes",addedQrList)
+    console.log("list of added barcodes",addedQrList)
     for (var i = 0; i < addedQrList.length; i++) {
       addedbarcodesId.push(addedQrList[i].qr_id)
     }
 
-    console.log("list of added barcodes", addedbarcodesId, addedQrList.length)
+    console.log("list of added barcodes", addedbarcodesId)
     if (addedQrList.length <= 1) {
       console.log("qr list is less than 1", addedQrList)
-      dispatch(setQrIdList(addedbarcodesId))
+      dispatch(setQrData(addedQrList[0]))
     }
     else if (addedQrList.length > 1) {
       console.log("qr list is greater than 1", addedQrList)
+
       dispatch(setQrIdList(addedbarcodesId))
     }
-
+    
     handleWorkflowNavigation()
   }
 
   const handleReturnBar = () => {
     let addedbarcodesId = []
-    console.log("list of added barcodes", addedQrList)
+    console.log("list of added barcodes",addedQrList)
     for (var i = 0; i < addedQrList.length; i++) {
       addedbarcodesId.push(addedQrList[i]?.id)
     }
@@ -1044,10 +980,13 @@ const QrCodeScanner = ({ navigation }) => {
       console.log("qr list is greater than 1", addedQrList)
       dispatch(setQrIdList(addedbarcodesId));
     }
-
+    
     handleWorkflowNavigation()
   }
 
+
+
+  
 
 
   const handleAddQr = () => {
@@ -1096,9 +1035,6 @@ const QrCodeScanner = ({ navigation }) => {
 
 
   };
-  const device = useCameraDevice('back')
-
-
   // --------------------------------------------------------
   const helpModalComp = () => {
     return (
@@ -1354,7 +1290,7 @@ const QrCodeScanner = ({ navigation }) => {
               <ButtonProceed
                 handleOperation={handleAddQr}
                 style={{ color: 'white' }}
-                content={isDistributor ? "Revert Bar & Points" : "Proceed"}
+                content={isDistributor ? "Revert Points" : "Proceed"} 
                 navigateTo={'QrCodeScanner'}></ButtonProceed>
             }
 
@@ -1370,21 +1306,6 @@ const QrCodeScanner = ({ navigation }) => {
         }
       />
       :
-      // <GestureHandlerRootView></GestureHandlerRootView>
-      <View style={{ height: '100%', width: '100%' }}>
-        {/* <Camera
-          onBarCodeRead={onSuccessBar}
-      //     onBarCodeRead={(e)=>{
-      //            if (!barcodeRead) {
-      //      setBarcodeRead(true) 
-      //       // Do your work
-      //       onSuccessBar(e)
-      //       console.log("barcode scan,",e)
-      //  }
-       
-           
-      //     }}
-     
       <View style={{ flex: 1, }}>
         <RNCamera
           //     onBarCodeRead={(e)=>{
@@ -1406,142 +1327,131 @@ const QrCodeScanner = ({ navigation }) => {
           }
           ref={cameraRef}
           style={{ height: '60%' }}
-        > */}
-
-        <Camera
-          codeScanner={codeScanner}
-          focusable={true}
-          // frameProcessor={frameProcessor}
-          // frameProcessorFps={5}
-          style={{ height: '60%' }}
-          device={device}
-          isActive={true}
-          torch={flash ? "on" : "off"}
-        // format={}
         >
-
-        </Camera>
-
-
-        <View style={{ width: '100%', flexDirection: 'row', position: 'absolute', top: 0, right: 0 }}>
-
-          <View
-            style={{
-              height: '36%',
-              width: '80%',
-              alignItems: 'center',
-              justifyContent: 'center',
-
-            }}>
-            <PoppinsTextMedium
-              style={{
-                fontSize: 20,
-                color: 'white',
-                marginLeft: 75
-              }}
-              content="Scan Product Bar Code"></PoppinsTextMedium>
+          <View style={{ width: '100%', flexDirection: 'row' }}>
             <View
               style={{
-                backgroundColor: 'transparent',
-                borderWidth: 4,
-                borderColor: '#305CB8',
-                height: 200,
-                width: 240,
-                alignSelf: 'center',
+                height: '36%',
+                width: '80%',
                 position: 'absolute',
-                right: 0,
-                top: 60,
-
+                top: 10,
                 alignItems: 'center',
-                justifyContent: 'flex-end',
-
+                justifyContent: 'center',
+                left: 0,
               }}>
+              <PoppinsText
+                style={{
+                  fontSize: 20,
+                  color: 'white',
+                  position: 'absolute',
+                  right: 0,
+                  top: 0,
+                }}
+                content="Scan Product Bar Code"></PoppinsText>
               <View
                 style={{
-                  height: 40,
-                  width: 80,
-                  backgroundColor: '#58585A',
+                  backgroundColor: 'transparent',
+                  borderWidth: 4,
+                  borderColor: '#305CB8',
+                  height: 200,
+                  width: 240,
                   borderRadius: 20,
-                  marginBottom: 8,
-                  flexDirection: 'row',
+                  position: 'absolute',
+                  right: 0,
+                  top: 40,
                   alignItems: 'center',
-                  justifyContent: 'center'
+                  justifyContent: 'flex-end',
                 }}>
-                <TouchableOpacity
-                  onPress={() => {
-                    setHelpModal(true)
-                  }}
+                <View
                   style={{
-                    backgroundColor: 'black',
-                    height: 34,
-                    width: 34,
-                    borderRadius: 17,
-                    alignItems: 'center',
-                    justifyContent: 'center',
+                    height: 40,
+                    width: 80,
+                    backgroundColor: '#58585A',
+                    borderRadius: 20,
+                    marginBottom: 8,
+                    flexDirection: 'row',
                   }}>
-                  <Image
-                    style={{ height: 16, width: 16, resizeMode: 'contain', alignSelf: 'center' }}
-                    source={require('../../../assets/images/qrQuestionMark.png')}></Image>
-                </TouchableOpacity>
-                {/* <TouchableOpacity
-                  onPress={() => {
-                    handleZoom();
-                  }}
-                  style={{
-                    backgroundColor: 'black',
-                    height: 34,
-                    width: 34,
-                    borderRadius: 17,
-                    position: 'absolute',
-                    right: 5,
-                    top: 3,
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  }}>
-                  <Text style={{ fontSize: 14, color: '#FB774F' }}>
-                    {zoomText}X
-                  </Text>
-                </TouchableOpacity> */}
+                  <TouchableOpacity
+                    onPress={() => {
+                      setHelpModal(true)
+                    }}
+                    style={{
+                      backgroundColor: 'black',
+                      height: 34,
+                      width: 34,
+                      borderRadius: 17,
+                      position: 'absolute',
+                      left: 25,
+                      top: 3,
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    }}>
+                    <Image
+                      style={{ height: 16, width: 16, resizeMode: 'contain' }}
+                      source={require('../../../assets/images/qrQuestionMark.png')}></Image>
+                  </TouchableOpacity>
+                  {/* <TouchableOpacity
+                    onPress={() => {
+                      handleZoom();
+                    }}
+                    style={{
+                      backgroundColor: 'black',
+                      height: 34,
+                      width: 34,
+                      borderRadius: 17,
+                      position: 'absolute',
+                      right: 5,
+                      top: 3,
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    }}>
+                    <Text style={{ fontSize: 14, color: '#FB774F' }}>
+                      {zoomText}X
+                    </Text>
+                  </TouchableOpacity> */}
+                </View>
               </View>
             </View>
+            <View
+              style={{
+                width: '20%',
+                height: '36%',
+                position: 'absolute',
+                right: 0,
+                alignItems: 'flex-start',
+                justifyContent: 'flex-start',
+              }}>
+              <TouchableOpacity
+                onPress={() => {
+                  navigation.navigate('Dashboard');
+                }}
+                style={{ height: 34, width: 34, margin: 10, left: 20 }}>
+                <Image
+                  style={{ height: 34, width: 34, resizeMode: 'contain' }}
+                  source={require('../../../assets/images/qrCancel.png')}></Image>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => {
+                  handleFlash();
+                }}
+                style={{ height: 44, width: 44, margin: 20 }}>
+                <Image
+                  style={{ height: 44, width: 44, resizeMode: 'contain', marginTop: 40 }}
+                  source={require('../../../assets/images/qrTorch.png')}></Image>
+              </TouchableOpacity>
+              {/* <TouchableOpacity
+                onPress={() => {
+                  handleOpenImageGallery();
+                }}
+                style={{ height: 44, width: 44, margin: 20 }}>
+                <Image
+                  style={{ height: 44, width: 44, resizeMode: 'contain' }}
+                  source={require('../../../assets/images/qrGallery.png')}></Image>
+              </TouchableOpacity> */}
+            </View>
           </View>
-          <View
-            style={{
-              width: '20%',
-              height: '36%',
-              alignItems: 'flex-start',
-              justifyContent: 'flex-start',
-            }}>
-            <TouchableOpacity
-              onPress={() => {
-                navigation.navigate('Dashboard');
-              }}
-              style={{ height: 34, width: 34, margin: 10, left: 20 }}>
-              <Image
-                style={{ height: 34, width: 34, resizeMode: 'contain' }}
-                source={require('../../../assets/images/qrCancel.png')}></Image>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => {
-                handleFlash();
-              }}
-              style={{ height: 44, width: 44, margin: 20, marginTop: 80 }}>
-              <Image
-                style={{ height: 44, width: 44, resizeMode: 'contain', }}
-                source={require('../../../assets/images/qrTorch.png')}></Image>
-            </TouchableOpacity>
-            {/* <TouchableOpacity
-              onPress={() => {
-                handleOpenImageGallery();
-              }}
-              style={{ height: 44, width: 44, margin: 20 }}>
-              <Image
-                style={{ height: 44, width: 44, resizeMode: 'contain' }}
-                source={require('../../../assets/images/qrGallery.png')}></Image>
-            </TouchableOpacity> */}
-          </View>
-        </View>
 
+        </RNCamera>
         <View>
 
           <View
@@ -1593,8 +1503,8 @@ const QrCodeScanner = ({ navigation }) => {
                     style={{ height: 300, width: 300, resizeMode: 'contain' }}
                     source={require('../../../assets/images/barHowTo.png')}></Image>
                   {/* <PoppinsTextMedium
-style={{ color: 'grey', fontWeight: '700', fontSize: 20 }}
-content="Please start scanning by pointing the camera towards the Bar Code"></PoppinsTextMedium> */}
+                    style={{ color: 'grey', fontWeight: '700', fontSize: 20 }}
+                    content="Please start scanning by pointing the camera towards the Bar Code"></PoppinsTextMedium> */}
                 </ScrollView>
               </View>
             ) : (
@@ -1615,6 +1525,7 @@ content="Please start scanning by pointing the camera towards the Bar Code"></Po
                         alignItems: 'center',
                         justifyContent: 'center',
                       }}>
+                      {console.log("The Item", item)}
                       {!error && (
                         <ScannedListItem
                           handleDelete={deleteQrFromList}
@@ -1638,25 +1549,20 @@ content="Please start scanning by pointing the camera towards the Bar Code"></Po
               <ButtonProceed
                 handleOperation={isDistributor ? handleReturnBar : handleAddBar}
                 style={{ color: 'white' }}
-                // content="Proceed"
-                content={isDistributor ? "Revert Bar & Points" : "Proceed"}
-
+                content= { isDistributor ? "Revert Bar & Points" :"Proceed"}
                 navigateTo={'QrCodeScanner'}></ButtonProceed>
             }
+
+
+            {helpModal && <ModalWithBorder
+              modalClose={() => { setHelpModal(!helpModal) }}
+              // message={message}
+              openModal={helpModal}
+              // navigateTo="WarrantyClaimDetails"
+              // parameters={{ warrantyItemData: data, afterClaimData: warrantyClaimData }}
+              comp={helpModalComp}></ModalWithBorder>}
           </View>
         </View>
-
-
-
-        {helpModal && <ModalWithBorder
-          modalClose={() => { setHelpModal(!helpModal) }}
-          // message={message}
-          openModal={helpModal}
-          // navigateTo="WarrantyClaimDetails"
-          // parameters={{ warrantyItemData: data, afterClaimData: warrantyClaimData }}
-          comp={helpModalComp}></ModalWithBorder>}
-
-
 
       </View>
   );
