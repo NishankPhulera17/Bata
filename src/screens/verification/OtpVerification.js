@@ -105,11 +105,11 @@ const OtpVerification = ({ navigation, route }) => {
           platform: "mobile",
           cash: String(cashConversion),
           remarks: "demo",
-          state: location === undefined ? "N/A" : location.state,
-          district: location === undefined ? "N/A" : location.district,
-          city: location === undefined ? "N/A" : location.city,
-          lat: location == undefined ? "N/A" : location.lat,
-          log: location == undefined ? "N/A" : location.lon,
+          state: location?.state === undefined ? "N/A" : location.state,
+          district: location?.district  === undefined ? "N/A" : location.district,
+          city: location?.city=== undefined ? "N/A" : location.city,
+          lat: location?.lat == undefined ? "N/A" : location.lat,
+          log: location?.lon == undefined ? "N/A" : location.lon,
           active_beneficiary_account_id: selectedAccount
         },
       }
