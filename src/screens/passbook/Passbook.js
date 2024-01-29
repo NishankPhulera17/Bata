@@ -275,7 +275,7 @@ const Passbook = ({ navigation }) => {
                 <View style={{ height: 250, width: '100%', backgroundColor: ternaryThemeColor, alignItems: "flex-start", justifyContent: 'flex-start' }}>
 
                     <View style={{ alignItems: "center", justifyContent: "flex-start", flexDirection: "row", width: '100%', marginTop: 10, height: 40, marginLeft: 20 }}>
-                        <TouchableOpacity onPress={() => { navigation.goBack() }}>
+                        <TouchableOpacity onPress={() => { navigation.navigate("Dashboard") }}>
                             <Image style={{ height: 30, width: 30, resizeMode: 'contain' }} source={require('../../../assets/images/blackBack.png')}></Image>
                         </TouchableOpacity>
                         <PoppinsTextMedium content="Passbook" style={{ marginLeft: 10, fontSize: 18, fontWeight: '700', color: 'white' }}></PoppinsTextMedium>

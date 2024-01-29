@@ -25,6 +25,9 @@ import * as Keychain from 'react-native-keychain';
 import PoppinsText from '../../components/electrons/customFonts/PoppinsText';
 import { useDeleteBankMutation } from '../../apiServices/bankAccount.js/DeleteBankAccount';
 import { useIsFocused } from '@react-navigation/native';
+import { isAction } from '@reduxjs/toolkit';
+import { useUpdateStatusBankAccountMutation } from '../../apiServices/bankAccount.js/AddBankAccount';
+import FastImage from 'react-native-fast-image';
 
 
 const BankAccounts = ({ navigation, route }) => {
@@ -34,6 +37,11 @@ const BankAccounts = ({ navigation, route }) => {
   const [accountData, setAccountData] = useState()
   const [hasSelectedPaymentMethod, setHasSelectedPaymentMethod] = useState()
   const [modalVisible, setModalVisible] = useState(false);
+  const[activeBeneId, setActiveBeneID] = useState(null)
+
+
+  const gifUri = Image.resolveAssetSource(require('../../../assets/gif/loader.gif')).uri;
+
 
   const ternaryThemeColor = useSelector(
     state => state.apptheme.ternaryThemeColor,
@@ -49,7 +57,21 @@ const BankAccounts = ({ navigation, route }) => {
     error: listAccountError,
     isLoading: listAccountIsLoading,
     isError: listAccountIsError
-  }] = useListAccountsMutation()
+  }] = useListAccountsMutation();
+
+
+  const [
+    updateStatusBankAccount,
+    {
+      data: updateStatusBankAccountData,
+      isLoading: updateStatusBankAccountIsLoading,
+      isError: updateStatusBankAccountIsError,
+      error: updateStatusBankAccountError,
+    },
+  ] = useUpdateStatusBankAccountMutation();
+
+
+  
 
   const [deleteBankFunc, {
     data: deleteBankData,
@@ -84,6 +106,7 @@ const BankAccounts = ({ navigation, route }) => {
         'Credentials successfully loaded for user ' + credentials.username
       );
       const token = credentials.username
+        
       const userId = userData.id
 
       const params = {
@@ -131,9 +154,24 @@ const BankAccounts = ({ navigation, route }) => {
   }, [deleteBankData, deleteBankError])
 
   useEffect(() => {
+    if (updateStatusBankAccountData) {
+      console.log("updateStatusBankAccountData", updateStatusBankAccountData)
+    
+      refetchData()
+    }
+    else if (updateStatusBankAccountError) {
+      console.log("updateStatusBankAccountError", updateStatusBankAccountError)
+    }
+  }, [updateStatusBankAccountData, updateStatusBankAccountError])
+
+
+  
+
+  useEffect(() => {
     if (listAccountData) {
       console.log("listAccountData", listAccountData.body)
       setAccountData(listAccountData.body)
+      
     }
     else if (listAccountError) {
       console.log("listAccountError", listAccountError)
@@ -158,7 +196,11 @@ const BankAccounts = ({ navigation, route }) => {
     const ifsc = props.ifsc
     const type = props.type
     const name = props.name
+  
+
     console.log("selected", props.unSelect)
+    
+
     useEffect(() => {
       console.log(props.unSelect)
       if (props.unSelect === "account") {
@@ -248,8 +290,11 @@ const BankAccounts = ({ navigation, route }) => {
   const BankComponentUpi = (props) => {
     const [selected, setSelected] = useState(false)
     const [openDrawer, setOpenDrawer] = useState(false)
+    const [isClicked,setIsClicked] = useState(false)
     const upi = props.upi
     const type = props.type
+    const status = props.status
+    const id = props.id
 
     useEffect(() => {
       console.log(props.unSelect)
@@ -258,7 +303,30 @@ const BankAccounts = ({ navigation, route }) => {
       }
     }, [props.unSelect])
 
+    useEffect(()=>{
+        console.log("isClicked", )
+    },[isClicked])
+
     const handleSelection = (selection) => {
+
+      const getToken = async()=>{
+        const credentials = await Keychain.getGenericPassword();
+        if (credentials) {
+          console.log(
+            'Credentials successfully loaded for user ' + credentials.username
+          );
+          const token = credentials.username
+
+          updateStatusBankAccount({
+            // s: getTenantData().tenant_id,
+            token: token,
+            id: id
+          })
+      }}
+      
+      getToken();
+     
+
       setSelected(!selection)
       console.log("selection",selection)
       if(!selection)
@@ -269,11 +337,10 @@ const BankAccounts = ({ navigation, route }) => {
           type: type
         })
       }
+      // setIsClicked(true)
+
       
       
-
-
-
     }
     return (
 
@@ -329,7 +396,11 @@ const BankAccounts = ({ navigation, route }) => {
             <TouchableOpacity onPress={() => {
               handleSelection(selected)
             }}>
-              <Icon name={"checkcircle"} color={selected ? ternaryThemeColor : "white"} size={20}></Icon>
+              {/* <Icon name={"checkcircle"} color={selected ? ternaryThemeColor : status && !isClicked ? ternaryThemeColor : "white"} size={20}></Icon> */}
+              {/* <Icon name={"checkcircle"} color={selected ? ternaryThemeColor : "white"} size={20}></Icon> */}
+              <Icon name={"checkcircle"} color={status ? ternaryThemeColor : "white"} size={20}></Icon>
+
+
             </TouchableOpacity>
           </View>
           {
@@ -357,6 +428,7 @@ const BankAccounts = ({ navigation, route }) => {
 
     );
   };
+
   return (
     <View
       style={{
@@ -457,7 +529,7 @@ const BankAccounts = ({ navigation, route }) => {
                     if (!Object.keys(item.bene_details).includes("upi_id")) {
                       console.log("true", item)
                       return (
-                        <BankComponentAccount unSelect={hasSelectedPaymentMethod} handleData={setSelectedPaymentMethod} key={index} type="account" id={item.id} bankName={item.bene_bank} accountNo={item.bene_details.bank_account} ifsc={item.bene_details.ifsc} name={item.bene_name}></BankComponentAccount>
+                        <BankComponentAccount unSelect={hasSelectedPaymentMethod} handleData={setSelectedPaymentMethod} key={index} type="account" id={item.id} bankName={item.bene_bank} accountNo={item.bene_details.bank_account} ifsc={item.bene_details.ifsc} name={item.bene_name} status={item.status=="1"}></BankComponentAccount>
 
                       )
 
@@ -465,7 +537,7 @@ const BankAccounts = ({ navigation, route }) => {
                     else {
                       console.log("false", item)
                       return (
-                        <BankComponentUpi unSelect={hasSelectedPaymentMethod} handleData={setSelectedPaymentMethod} key={index} id={item.id} type="upi" upi={item.bene_details.upi_id} ></BankComponentUpi>
+                        <BankComponentUpi unSelect={hasSelectedPaymentMethod} handleData={setSelectedPaymentMethod} key={index} id={item.id} type="upi" upi={item.bene_details.upi_id} status={item.status == "1"} ></BankComponentUpi>
                       )
                     }
 
@@ -481,6 +553,9 @@ const BankAccounts = ({ navigation, route }) => {
               <PoppinsTextMedium style ={{fontSize:16}}content="No Bank Account has been added yet !"></PoppinsTextMedium>
             </View>}
 
+            
+        
+
 
           </View>
 
@@ -495,13 +570,26 @@ const BankAccounts = ({ navigation, route }) => {
            {
            type==="Cashback" &&  <TouchableOpacity onPress={()=>{
             navigation.navigate("OtpVerification",{type:"Cashback",selectedAccount:hasSelectedPaymentMethod})
-            }} style={{width:100,alignItems:'center',justifyContent:'center',backgroundColor:ternaryThemeColor,padding:8, position: 'absolute', bottom: 14, left: 20 }}>
+            }} style={{width:130,alignItems:'center',justifyContent:'center',backgroundColor:ternaryThemeColor,padding:8, position: 'absolute', bottom: 100, left: 145 }}>
               <PoppinsText content ="Get OTP" style={{color:'white',fontSize:16}}></PoppinsText>
             </TouchableOpacity>
             }
 
+{
+              listAccountIsLoading && <View style={{ backgroundColor: 'white', width:'100%', height:'150%' } }>
+                    <FastImage
+                        style={{ width: 100, height: 100, alignSelf: 'center',marginTop:'50%' }}
+                        source={{
+                            uri: gifUri, // Update the path to your GIF
+                            priority: FastImage.priority.normal,
+                        }}
+                        resizeMode={FastImage.resizeMode.contain}
+                    />
+                </View>
+            }
 
       </View>
+      
 
     </View>
   );

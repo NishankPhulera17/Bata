@@ -18,10 +18,24 @@ export const AddBankAccount = baseApi.injectEndpoints({
                    
                 }
             }
-        })
+        }),
+        updateStatusBankAccount: builder.mutation({
+            query: (params) => {
+              return {
+                method: "PATCH",
+                url: `/api/app/bankDetail/${params.id}`,
+                headers: {
+                    Authorization: "Bearer " + params.token,
+                  slug: slug,
+                },
+              };
+            },
+          }),
+
+        
     })
 });
 
 
-export const {useAddBankDetailsMutation} = AddBankAccount
+export const {useAddBankDetailsMutation, useUpdateStatusBankAccountMutation} = AddBankAccount
 

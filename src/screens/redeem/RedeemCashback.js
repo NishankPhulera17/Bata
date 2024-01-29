@@ -269,10 +269,10 @@ else{
               content="Points"
               style={{
                 color: '#909090',
-                fontWeight: '600',
+                fontWeight: 'bold',
                 fontSize: 14,
               }}></PoppinsTextMedium>
-            <TextInput value={pointsConversion} style={{color:'black',height:40}} onChangeText={(text)=>{setPointsConversion(text),dispatch(setPointConversionF(text))}} placeholder='Enter Points'></TextInput>
+            <TextInput value={pointsConversion + ""} style={{color:'black',height:40, fontWeight:'bold', fontSize:19,marginLeft:80}} onChangeText={(text)=>{setPointsConversion(text),dispatch(setPointConversionF(text))}} placeholder='Enter Points'></TextInput>
           </View>
           <Image
             style={{height: 24, width: 24, resizeMode: 'contain', right: 12}}

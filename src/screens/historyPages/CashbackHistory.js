@@ -15,10 +15,14 @@ import DataNotFound from "../data not found/DataNotFound";
 import AnimatedDots from "../../components/animations/AnimatedDots";
 import { useGetCashTransactionsMutation } from "../../apiServices/cashback/CashbackRedeemApi";
 import moment from "moment";
+import { useIsFocused } from '@react-navigation/native';
+
+
 
 const CashbackHistory = ({ navigation }) => {
   const [showNoDataFound, setShowNoDataFound] = useState(false);
   const [totalCashbackEarned, setTotalCashbackEarned] = useState(0)
+  const focused = useIsFocused()
 
   const userId = useSelector((state) => state.appusersdata.userId);
   const userData = useSelector((state) => state.appusersdata.userData);
@@ -72,6 +76,27 @@ const CashbackHistory = ({ navigation }) => {
     };
     getData();
   }, []);
+
+  useEffect(() => {
+    const getData = async () => {
+      const credentials = await Keychain.getGenericPassword();
+      if (credentials) {
+        console.log(
+          "Credentials successfully loaded for user " + credentials.username
+        );
+        const token = credentials.username;
+        // const params = { token: token, appUserId: userData.id };
+        const params = { token: token, appUserId: userData.id };
+
+        // getCashTransactionsFunc(params);
+        fetchCashbackEnteriesFunc(params)
+      }
+    };
+    getData();
+  }, [focused ]);
+
+
+
   useEffect(() => {
     if (fetchCashbackEnteriesData) {
       let cashback = 0
@@ -155,12 +180,16 @@ const CashbackHistory = ({ navigation }) => {
             padding: 8
           }}
         >
+          {console.log("item of item", props)}
           <PoppinsTextMedium
-            style={{ color: props.items.status === "1" ? "green" : "red", fontWeight: "600", fontSize: 18 }}
+            style={{ color:   props.items.status === "0"? "red" : "green", fontWeight: "600", fontSize: 18 }}
+            
             content={
-              props.items.status === "1"
-                ? "Credited to cash balance"
-                : "Declined from the panel"
+             props.items.status === "0"
+                ? "Declined from the panel"
+                :    "Credited to cash balance"
+
+             
             }
           ></PoppinsTextMedium>
 
@@ -237,7 +266,7 @@ const CashbackHistory = ({ navigation }) => {
       >
         <TouchableOpacity
           onPress={() => {
-            navigation.goBack();
+            navigation.navigate("Passbook")
           }}
         >
           <Image

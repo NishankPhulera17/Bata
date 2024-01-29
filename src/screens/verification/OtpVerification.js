@@ -34,6 +34,7 @@ const OtpVerification = ({ navigation, route }) => {
   const [showRedeemButton, setShowRedeemButton] = useState(false)
   const [location, setLocation] = useState()
   const [verifiedOtp, setOtpVerified] = useState(false)
+  const[loading, setIsLoading] = useState(false)
   const timeOutCallback = useCallback(() => setTimer(currTimer => currTimer - 1), []);
 
   const gifUri = Image.resolveAssetSource(require('../../../assets/gif/loader.gif')).uri;
@@ -89,6 +90,7 @@ const OtpVerification = ({ navigation, route }) => {
   const selectedAccount = route.params?.selectedAccount
 
   const handleCashbackRedemption = async () => {
+    setIsLoading(true)
     console.log(
       'Location ', location
     );
@@ -133,7 +135,7 @@ const OtpVerification = ({ navigation, route }) => {
       // getLocation(JSON.stringify(lat),JSON.stringify(lon))
       // console.log("latlong", lat, lon)
       var url = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${res.coords.latitude},${res.coords.longitude}
-        &location_type=ROOFTOP&result_type=street_address&key=AIzaSyADljP1Bl-J4lW3GKv0HsiOW3Fd1WFGVQE`
+        &location_type=ROOFTOP&result_type=street_address&key=AIzaSyDeQk1g1Ow9HGtbWR52n5Mz7la2WThiOWw`
 
       fetch(url).then(response => response.json()).then(json => {
         console.log("location address=>", JSON.stringify(json));
@@ -221,10 +223,12 @@ const OtpVerification = ({ navigation, route }) => {
       console.log("addCashToBankData", addCashToBankData)
       setSuccess(true)
       setMessage(addCashToBankData.message)
+      setIsLoading(false)
     }
     else if (addCashToBankError) {
       console.log("addCashToBankError", addCashToBankError)
       setError(true)
+      setIsLoading(false)
       setMessage("Server Error")
     }
   }, [addCashToBankData, addCashToBankError])
@@ -249,11 +253,13 @@ const OtpVerification = ({ navigation, route }) => {
       console.log("redeemGiftsData", redeemGiftsData)
       setSuccess(true)
       setMessage(redeemGiftsData.message)
+      setIsLoading(false)
     }
     else if (redeemGiftsError) {
       console.log("redeemGiftsError", redeemGiftsError)
       setMessage(redeemGiftsError.data.message)
       setError(true)
+      setIsLoading(false)
     }
   }, [redeemGiftsError, redeemGiftsData])
 
@@ -301,6 +307,7 @@ const OtpVerification = ({ navigation, route }) => {
     setSuccess(false)
   };
   const finalGiftRedemption = async () => {
+    setIsLoading(true)
     console.log("Cashback type", type)
     const credentials = await Keychain.getGenericPassword();
     if (credentials) {
@@ -435,7 +442,8 @@ const OtpVerification = ({ navigation, route }) => {
             title={"Thanks"}
             message={message}
             openModal={success}
-            navigateTo="RedeemedHistory"
+            params={"Redeem"}
+            navigateTo="CashbackHistory"
           ></MessageModal>
         )}
       </View>
@@ -496,9 +504,9 @@ const OtpVerification = ({ navigation, route }) => {
 
 
       {
-        (redeemGiftsIsLoading || redeemCashbackIsLoading) && <View style={{ backgroundColor: 'white' }}>
+        (loading) && <View style={{ backgroundColor: 'white' }}>
           <FastImage
-            style={{ width: 100, height: 100, alignSelf: 'center', marginTop: '50%' }}
+            style={{ width: 100, height: 100, alignSelf: 'center', marginTop: '20%' }}
             source={{
               uri: gifUri, // Update the path to your GIF
               priority: FastImage.priority.normal,
