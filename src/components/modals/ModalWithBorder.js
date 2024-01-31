@@ -16,6 +16,16 @@ const ModalWithBorder = (props) => {
   const Comp = props.comp
 
   useEffect(() => {
+    console.log("props.openModal:", props.openModal);
+  
+    if (props.openModal === true) {
+      setModalVisible(true);
+    } else {
+      setModalVisible(false);
+    }
+  }, [props.openModal]);
+  
+  useEffect(() => {
     if (props.openModal === true) {
       console.log("Trying to close the modal")
       setModalVisible(true)

@@ -1,27 +1,35 @@
 import React, { useEffect, useState } from 'react';
-import { View, StyleSheet, SafeAreaView, Alert, Text } from 'react-native';
+import { View, StyleSheet, SafeAreaView, Alert, Text,TouchableOpacity } from 'react-native';
 import StackNavigator from './src/navigation/StackNavigator';
 import { store } from './redux/store';
 import { Provider } from 'react-redux'
 import messaging from '@react-native-firebase/messaging';
-import CustomModal from './src/components/modals/CustomModal';
 import ModalWithBorder from './src/components/modals/ModalWithBorder';
+import Close from 'react-native-vector-icons/Ionicons';
 
 const App = () => {
 
-  const [notifModal, setNotifModal] = useState(true)
+  const [notifModal, setNotifModal] = useState(false)
   const [notifData, setNotifData] = useState(null)
 
   useEffect(() => {
     const unsubscribe = messaging().onMessage(async remoteMessage => {
       console.log("remote", remoteMessage)
-      Alert.alert(JSON.stringify(remoteMessage?.notification?.title ? remoteMessage?.notification?.title : "Notification"), JSON.stringify(remoteMessage?.notification?.body));
-
+      // Alert.alert(JSON.stringify(remoteMessage?.notification?.title ? remoteMessage?.notification?.title : "Notification"), JSON.stringify(remoteMessage?.notification?.body));
+      setNotifModal(true)
+      setNotifData(remoteMessage?.notification)
 
     });
 
     return unsubscribe;
   }, []);
+
+
+  useEffect(()=>{
+
+  console.log("Notification data",notifData,notifModal)
+  },[notifModal,notifData])
+
 
 
 
@@ -56,17 +64,19 @@ const App = () => {
     <Provider store={store}>
       <SafeAreaView style={{ flex: 1 }}>
         <StackNavigator>
-          <ModalWithBorder
+         {notifModal &&  <ModalWithBorder
             modalClose={() => {
               setNotifModal(false)
             }}
             message={"message"}
-            openModal={true}
-            comp={notifModalFunc}></ModalWithBorder>
+            openModal={notifModal}
+            comp={notifModalFunc}></ModalWithBorder>}
         </StackNavigator>
 
       </SafeAreaView>
     </Provider>
+    // <View>
+    // </View>
   );
 }
 
