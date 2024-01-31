@@ -36,6 +36,12 @@ import FastImage from 'react-native-fast-image';
 import ScannedDetailsBox from '../../components/organisms/ScannedDetailsBox';
 import moment from 'moment';
 import AnimatedDots from '../../components/animations/AnimatedDots';
+import messaging from '@react-native-firebase/messaging';
+import CustomModal from '../../components/modals/CustomModal';
+import ModalWithBorder from '../../components/modals/ModalWithBorder';
+import Bell from 'react-native-vector-icons/FontAwesome';
+import Close from 'react-native-vector-icons/Ionicons';
+
 
 const Dashboard = ({ navigation }) => {
   const [dashboardItems, setDashboardItems] = useState()
@@ -45,6 +51,8 @@ const Dashboard = ({ navigation }) => {
   const [isSuccessModalVisible, setIsSuccessModalVisible] = useState(false)
   const [membership, setMembership] = useState()
   const [scanningDetails, seScanningDetails] = useState()
+  const [notifModal, setNotifModal] = useState(false)
+  const [notifData, setNotifData] = useState(null)
 
   const focused = useIsFocused()
   const dispatch = useDispatch()
@@ -146,6 +154,18 @@ const Dashboard = ({ navigation }) => {
     userPointFunc(params)
 
   }
+
+
+  useEffect(() => {
+    const unsubscribe = messaging().onMessage(async remoteMessage => {
+      // Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage?.body));
+      setNotifData(remoteMessage)
+      setNotifModal(true)
+    });
+
+    return unsubscribe;
+  }, []);
+
 
 
   useEffect(() => {
@@ -448,6 +468,30 @@ const Dashboard = ({ navigation }) => {
     console.log("hello")
   };
 
+  const notifModalFunc = () => {
+    return (
+      <View style={{height:130  }}>
+        <View style={{ height: '100%', width:'100%', alignItems:'center',}}>
+          <View>
+          {/* <Bell name="bell" size={18} style={{marginTop:5}} color={ternaryThemeColor}></Bell> */}
+
+          </View>
+          <PoppinsTextLeftMedium content={notifData?.title ? notifData?.title : "Notification Title"} style={{ color: ternaryThemeColor, fontWeight:'800', fontSize:20, marginTop:8 }}></PoppinsTextLeftMedium>
+      
+          <PoppinsTextLeftMedium content={notifData?.title ? notifData?.title : "Notification Bodyn  kjja  mfkfkkff   ff jffj jknkjen jws k cndk kn jn"} style={{ color: '#000000', marginTop:10, padding:10, fontSize:15, fontWeight:'600' }}></PoppinsTextLeftMedium>
+        </View>
+
+        <TouchableOpacity style={[{
+          backgroundColor: ternaryThemeColor, padding: 6, borderRadius: 5, position: 'absolute', top: -10, right: -10,
+        }]} onPress={() => setNotifModal(false)} >
+          <Close name="close" size={17} color="#ffffff" />
+        </TouchableOpacity>
+
+
+
+      </View>
+    )
+  }
 
 
   return (
@@ -531,6 +575,11 @@ const Dashboard = ({ navigation }) => {
 
           </View>}
         </View>
+
+
+
+
+
       </ScrollView>
       {/* {
         getActiveMembershipIsLoading && getFormIsLoading && getWorkflowIsLoading && getBannerIsLoading && getDashboardIsLoading && fetchAllQrScanedListIsLoading && getKycStatusIsLoading && userPointIsLoading && <FastImage
@@ -542,6 +591,14 @@ const Dashboard = ({ navigation }) => {
           resizeMode={FastImage.resizeMode.contain}
         />
       } */}
+
+      <ModalWithBorder
+        modalClose={() => {
+          setNotifModal(false)
+        }}
+        message={"message"}
+        openModal={notifModal}
+        comp={notifModalFunc}></ModalWithBorder>
     </View>
   );
 }

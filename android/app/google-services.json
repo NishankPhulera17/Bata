@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "597234478127",
-    "project_id": "ozo-stars",
-    "storage_bucket": "ozo-stars.appspot.com"
+    "project_number": "111891164830",
+    "project_id": "bata-cd2cf",
+    "storage_bucket": "bata-cd2cf.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:597234478127:android:bcc022dca685f137b8eada",
+        "mobilesdk_app_id": "1:111891164830:android:f4fc14c822a57e209fd58f",
         "android_client_info": {
           "package_name": "com.bata"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyAZOAl_osG_JCanX4o0pg-XGZgGXbNSKds"
+          "current_key": "AIzaSyBqMAXuEvCHD4DKzZgQoEgVGKVUEJmB8Ds"
         }
       ],
       "services": {

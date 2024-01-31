@@ -13,6 +13,7 @@ const CustomModal = (props) => {
     const navigation = useNavigation()
     const navigateTo = props.navigateTo
     const Comp = props.comp
+
   useEffect(()=>{
     if(props.openModal===true)
     
@@ -24,6 +25,7 @@ const CustomModal = (props) => {
         setModalVisible(false)
     }
   },[])
+
   const closeModal=()=>{
    
     setModalVisible(!modalVisible)
@@ -60,9 +62,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: 'rgba(52, 52, 52, 0.8)'
   },
+  
   modalView: {
-   
-    backgroundColor: 'white',
+  backgroundColor: 'white',
    borderTopLeftRadius:40,
    borderTopRightRadius:40,
     width:'100%',
