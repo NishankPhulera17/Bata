@@ -41,9 +41,9 @@ const App = () => {
           {/* <Bell name="bell" size={18} style={{marginTop:5}} color={ternaryThemeColor}></Bell> */}
 
           </View>
-          <PoppinsTextLeftMedium content={notifData?.title ? notifData?.title : "Notification Title"} style={{ color: ternaryThemeColor, fontWeight:'800', fontSize:20, marginTop:8 }}></PoppinsTextLeftMedium>
+          <PoppinsTextLeftMedium content={notifData?.title ? notifData?.title : ""} style={{ color: ternaryThemeColor, fontWeight:'800', fontSize:20, marginTop:8 }}></PoppinsTextLeftMedium>
       
-          <PoppinsTextLeftMedium content={notifData?.title ? notifData?.title : "Notification Bodyn  kjja  mfkfkkff   ff jffj jknkjen jws k cndk kn jn"} style={{ color: '#000000', marginTop:10, padding:10, fontSize:15, fontWeight:'600' }}></PoppinsTextLeftMedium>
+          <PoppinsTextLeftMedium content={notifData?.title ? notifData?.title : ""} style={{ color: '#000000', marginTop:10, padding:10, fontSize:15, fontWeight:'600' }}></PoppinsTextLeftMedium>
         </View>
 
         <TouchableOpacity style={[{

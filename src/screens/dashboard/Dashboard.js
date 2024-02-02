@@ -41,6 +41,8 @@ import CustomModal from '../../components/modals/CustomModal';
 import ModalWithBorder from '../../components/modals/ModalWithBorder';
 import Bell from 'react-native-vector-icons/FontAwesome';
 import Close from 'react-native-vector-icons/Ionicons';
+import {GoogleMapsKey} from "@env"
+
 
 
 const Dashboard = ({ navigation }) => {
@@ -155,16 +157,18 @@ const Dashboard = ({ navigation }) => {
 
   }
 
-
   useEffect(() => {
     const unsubscribe = messaging().onMessage(async remoteMessage => {
-      // Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage?.body));
-      setNotifData(remoteMessage)
+      console.log("remote", remoteMessage)
+      // Alert.alert(JSON.stringify(remoteMessage?.notification?.title ? remoteMessage?.notification?.title : "Notification"), JSON.stringify(remoteMessage?.notification?.body));
       setNotifModal(true)
+      setNotifData(remoteMessage?.notification)
+
     });
 
     return unsubscribe;
   }, []);
+
 
 
 
@@ -277,7 +281,8 @@ const Dashboard = ({ navigation }) => {
         // getLocation(JSON.stringify(lat),JSON.stringify(lon))
         console.log("latlong", lat, lon)
         var url = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${res?.coords?.latitude},${res?.coords?.longitude}
-            &location_type=ROOFTOP&result_type=street_address&key=AIzaSyDeQk1g1Ow9HGtbWR52n5Mz7la2WThiOWw`
+import {GoogleMapsKey} from "@env"
+            &location_type=ROOFTOP&result_type=street_address&key=${GoogleMapsKey}`
 
         fetch(url).then(response => response.json()).then(json => {
           console.log("location address=>", JSON?.stringify(json));
@@ -476,23 +481,20 @@ const Dashboard = ({ navigation }) => {
           {/* <Bell name="bell" size={18} style={{marginTop:5}} color={ternaryThemeColor}></Bell> */}
 
           </View>
-          <PoppinsTextLeftMedium content={notifData?.title ? notifData?.title : "Notification Title"} style={{ color: ternaryThemeColor, fontWeight:'800', fontSize:20, marginTop:8 }}></PoppinsTextLeftMedium>
+          <PoppinsTextLeftMedium content={notifData?.title ? notifData?.title : ""} style={{ color: ternaryThemeColor, fontWeight:'800', fontSize:20, marginTop:8 }}></PoppinsTextLeftMedium>
       
-          <PoppinsTextLeftMedium content={notifData?.title ? notifData?.title : "Notification Bodyn  kjja  mfkfkkff   ff jffj jknkjen jws k cndk kn jn"} style={{ color: '#000000', marginTop:10, padding:10, fontSize:15, fontWeight:'600' }}></PoppinsTextLeftMedium>
+          <PoppinsTextLeftMedium content={notifData?.title ? notifData?.title : ""} style={{ color: '#000000', marginTop:10, padding:10, fontSize:15, fontWeight:'600' }}></PoppinsTextLeftMedium>
         </View>
 
         <TouchableOpacity style={[{
-          backgroundColor: ternaryThemeColor, padding: 6, borderRadius: 5, position: 'absolute', top: -10, right: -10,
+          backgroundColor: ternaryThemeColor, padding: 6, borderRadius: 5, position: 'absolute', top: -10,right:-130
         }]} onPress={() => setNotifModal(false)} >
           <Close name="close" size={17} color="#ffffff" />
         </TouchableOpacity>
 
-
-
       </View>
     )
   }
-
 
   return (
     <View style={{ alignItems: "center", justifyContent: "center", backgroundColor: "#F7F9FA", flex: 1, height: '100%' }}>

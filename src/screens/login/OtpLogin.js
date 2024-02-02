@@ -168,6 +168,8 @@ const OtpLogin = ({ navigation, route }) => {
       }
     }
 
+    
+
   };
 
   const fetchTerms = async () => {
