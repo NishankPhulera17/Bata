@@ -1,13 +1,46 @@
 # Resolve react_native_pods.rb with node to allow for hoisting
-require Pod::Executable.execute_command('node', ['-p',
-  'require.resolve(
-    "react-native/scripts/react_native_pods.rb",
-    {paths: [process.argv[1]]},
-  )', __dir__]).strip
+# require Pod::Executable.execute_command('node', ['-p',
+#   'require.resolve(
+#     "react-native/scripts/react_native_pods.rb",
+#     {paths: [process.argv[1]]},
+#   )', __dir__]).strip
+def node_require(script)
+  # Resolve script with node to allow for hoisting
+  require Pod::Executable.execute_command('node', ['-p',
+    "require.resolve(
+      '#{script}',
+      {paths: [process.argv[1]]},
+    )", __dir__]).strip
+end
+
+node_require('react-native/scripts/react_native_pods.rb')
+node_require('react-native-permissions/scripts/setup.rb')
 
 platform :ios, min_ios_version_supported
 prepare_react_native_project!
 
+setup_permissions([
+  # 'AppTrackingTransparency',
+  # 'Bluetooth',
+  # 'Calendars',
+  # 'CalendarsWriteOnly',
+  'Camera',
+  # 'Contacts',
+  # 'FaceID',
+  'LocationAccuracy',
+  'LocationAlways',
+  'LocationWhenInUse',
+  'MediaLibrary',
+  # 'Microphone',
+  # 'Motion',
+  # 'Notifications',
+  'PhotoLibrary',
+  'PhotoLibraryAddOnly',
+  # 'Reminders',
+  # 'Siri',
+  # 'SpeechRecognition',
+  # 'StoreKit',
+])
 # If you are using a `react-native-flipper` your iOS build will fail when `NO_FLIPPER=1` is set.
 # because `react-native-flipper` depends on (FlipperKit,...) that will be excluded
 #
@@ -27,20 +60,22 @@ end
 
 target 'Bata' do
   config = use_native_modules!
-
-  # Flags change depending on the env values.
   flags = get_default_flags()
 
+  use_frameworks! :linkage => :static
+  $RNFirebaseAsStaticFramework = true
+  # Flags change depending on the env values.
+  
   use_react_native!(
     :path => config[:reactNativePath],
     # Hermes is now enabled by default. Disable by setting this flag to false.
-    :hermes_enabled => flags[:hermes_enabled],
+    :hermes_enabled => false,
     :fabric_enabled => flags[:fabric_enabled],
     # Enables Flipper.
     #
     # Note that if you have use_frameworks! enabled, Flipper will not work and
     # you should disable the next line.
-    :flipper_configuration => flipper_config,
+    # :flipper_configuration => flipper_config,
     # An absolute path to your application root.
     :app_path => "#{Pod::Config.instance.installation_root}/.."
   )
@@ -71,11 +106,11 @@ end
 #  end
 # permissions_path = '../node_modules/react-native-permissions/ios'
 # pod 'Permission-Camera', :path => "#{permissions_path}/Camera"
-pod 'react-native-blob-util',
-    :path => '../node_modules/react-native-blob-util'
-    pod 'DoubleConversion', :podspec => '../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec'
-    pod 'Firebase', :modular_headers => true
-    pod 'FirebaseCoreInternal', :modular_headers => true
-    pod 'GoogleUtilities', :modular_headers => true
-    pod 'FirebaseCore', :modular_headers => true
+# pod 'react-native-blob-util',
+#     :path => '../node_modules/react-native-blob-util'
+#     pod 'DoubleConversion', :podspec => '../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec'
+#     pod 'Firebase', :modular_headers => true
+#     pod 'FirebaseCoreInternal', :modular_headers => true
+#     pod 'GoogleUtilities', :modular_headers => true
+#     pod 'FirebaseCore', :modular_headers => true
 # pod 'react-native-video', :path => '../node_modules/react-native-video/react-native-video.podspec'
