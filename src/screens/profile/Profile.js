@@ -409,6 +409,10 @@
       );
     };
 
+    const hideModal=()=>{
+      setShowDeleteModal(false)
+    }
+
     const ModalContent = () => {
       return (
         <View style={{ width: '100%', alignItems: "center", justifyContent: "center" }}>
@@ -461,6 +465,9 @@
         </View>
         {!showNoDataFoundMessage && <ProfileHeader></ProfileHeader>}
         {fetchProfileData && <GreyBar></GreyBar>}
+
+        <DeleteModal hideModal = {hideModal} modalVisible={showDeleteModal}></DeleteModal>
+
         <ScrollView>
 
           {showProfileData && <>
@@ -475,6 +482,7 @@
                 justifyContent: 'center',
               }}>
               {/* <ProfileData></ProfileData> */}
+
               {showProfileData &&
                 formFields.map((item, index) => {
                   console.log(item, formValues[index]);
