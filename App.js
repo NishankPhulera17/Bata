@@ -45,27 +45,27 @@ const latestVersion = Platform.OS === 'ios'? await fetch(`https://itunes.apple.c
 
         const currentVersion = VersionCheck.getCurrentVersion();
 
-//         if (latestVersion > currentVersion) {
-//           Alert.alert(
-//             'Update Required',
-// 'A new version of the app is available. Please update to continue using the app.',
-//             [
-//               {
-//                 text: 'Update Now',
-//                 onPress: () => {
-//                   Linking.openURL(
-//                     Platform.OS === 'ios'
-//                       ? VersionCheck.getAppStoreUrl({ appID: 'com.bata' })
-//                       : VersionCheck.getPlayStoreUrl({ packageName: 'com.bata' })
-//                   );
-//                 },
-//               },
-//             ],
-//             { cancelable: false }
-//           );
-//         } else {
-//           // App is up-to-date; proceed with the app
-//         }
+        if (latestVersion > currentVersion) {
+          Alert.alert(
+            'Update Required',
+'A new version of the app is available. Please update to continue using the app.',
+            [
+              {
+                text: 'Update Now',
+                onPress: () => {
+                  Linking.openURL(
+                    Platform.OS === 'ios'
+                      ? "https://apps.apple.com/in/app/bata-dhanshree/id6477858295"
+                      : VersionCheck.getPlayStoreUrl({ packageName: 'com.bata' })
+                  );
+                },
+              },
+            ],
+            { cancelable: false }
+          );
+        } else {
+          // App is up-to-date; proceed with the app
+        }
       } catch (error) {
         // Handle error while checking app version
         console.error('Error checking app version:', error);
