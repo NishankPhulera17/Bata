@@ -300,8 +300,9 @@ const OtpVerification = ({ navigation, route }) => {
     const name = userData.name;
     const user_type_id = userData.user_type_id;
     const user_type = userData.user_type;
+    const type = "redemption"
 
-    verifyOtpForNormalUseFunc({ mobile, name, otp, user_type_id, user_type });
+    verifyOtpForNormalUseFunc({ mobile, name, otp, user_type_id, user_type, type });
 
   }
   const modalClose = () => {
@@ -383,6 +384,7 @@ const OtpVerification = ({ navigation, route }) => {
           name: name,
           user_type: user_type,
           user_type_id: user_type_id,
+          type:'redemption'
         };
         getOtpforVerificationFunc(params);
 
