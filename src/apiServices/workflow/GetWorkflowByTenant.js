@@ -11,6 +11,7 @@ export const GetWorkflowByTenant = baseApi.injectEndpoints({
                     headers: {
                         "Content-Type": "application/json",
                         Authorization: "Bearer " + token,
+                        slug:slug
                     },
                     
                    

@@ -15,6 +15,7 @@ export const AppUserDashboardMenuAPi = baseApi.injectEndpoints({
                     headers:{
                         "Content-Type": "application/json",
                         "Authorization": `Bearer ${token}`,
+                        slug:slug
                         
                     }, 
                 }

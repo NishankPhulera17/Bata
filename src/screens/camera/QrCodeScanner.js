@@ -697,11 +697,15 @@ const QrCodeScanner = ({ navigation }) => {
 
   // function to handle workflow navigation-----------------------
   const handleWorkflowNavigation = (item1, item2, item3) => {
-    console.log('success');
+
     console.log("Items are", item1, item2, item3);
+
+
 
     const itemsToRemove = [item1, item2, item3];
     const updatedWorkflowProgram = workflowProgram.filter(item => !itemsToRemove.includes(item));
+
+    console.log('success', updatedWorkflowProgram?.[0]);
 
     if (updatedWorkflowProgram[0] === 'Static Coupon') {
       console.log(updatedWorkflowProgram.slice(1));
@@ -717,6 +721,7 @@ const QrCodeScanner = ({ navigation }) => {
 
       });
     } else if (updatedWorkflowProgram[0] === 'Points On Product' || updatedWorkflowProgram[0] === 'Cashback' || updatedWorkflowProgram[0] === 'Wheel') {
+      console.log("yaaa yaaa")
       console.log(updatedWorkflowProgram.slice(1));
       navigation.navigate('CongratulateOnScan', {
         workflowProgram: updatedWorkflowProgram.slice(1),

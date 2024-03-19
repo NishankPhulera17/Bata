@@ -430,7 +430,7 @@ import {GoogleMapsKey} from "@env"
       const removedWorkFlow = getWorkflowData.body[0]?.program.filter((item, index) => {
         return item !== "Warranty"
       })
-      console.log("getWorkflowData", getWorkflowData)
+      console.log("getWorkflowData", getWorkflowData.body[0])
       dispatch(setProgram(removedWorkFlow))
       dispatch(setWorkflow(getWorkflowData.body[0]?.workflow_id))
 
