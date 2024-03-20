@@ -20,7 +20,6 @@ import LinearGradient from 'react-native-linear-gradient';
 import {useFetchGiftCatalogueByUserTypeAndCatalogueTypeMutation} from '../../apiServices/gifts/GiftApi';
 import {useFetchUserPointsMutation} from '../../apiServices/workflow/rewards/GetPointsApi';
 import * as Keychain from 'react-native-keychain';
-import {BaseUrlImages} from '../../utils/BaseUrlImages';
 import ErrorModal from '../../components/modals/ErrorModal';
 import SuccessModal from '../../components/modals/SuccessModal';
 import MessageModal from '../../components/modals/MessageModal';
@@ -307,7 +306,7 @@ const RedeemGifts = ({navigation,route}) => {
             }}>
             <Image
               style={{height: 40, width: 40, resizeMode: 'contain'}}
-              source={{uri: BaseUrlImages + image}}></Image>
+              source={{uri:  image}}></Image>
           </View>
           <LinearGradient
             style={{

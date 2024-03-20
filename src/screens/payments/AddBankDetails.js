@@ -7,7 +7,6 @@ import { useAddBankDetailsMutation } from '../../apiServices/bankAccount.js/AddB
 import * as Keychain from 'react-native-keychain';
 import { useFetchUserPointsMutation } from '../../apiServices/workflow/rewards/GetPointsApi';
 import moment from 'moment';
-import { BaseUrlImages } from '../../utils/BaseUrlImages';
 import RectangularUnderlinedDropDown from '../../components/atoms/dropdown/RectangularUnderlinedDropDown';
 import RectanglarUnderlinedTextInput from '../../components/atoms/input/RectanglarUnderlinedTextInput';
 import ShowLoadingButton from '../../components/atoms/buttons/ShowLoadingButton';

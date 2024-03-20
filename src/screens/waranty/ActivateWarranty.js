@@ -18,7 +18,7 @@ import InputDate from '../../components/atoms/input/InputDate';
 import ImageInput from '../../components/atoms/input/ImageInput';
 import ButtonOval from '../../components/atoms/buttons/ButtonOval';
 import ProductList from '../../components/molecules/ProductList';
-import { useUploadImagesMutation } from '../../apiServices/imageApi/imageApi';
+import { useUploadSingleFileMutation } from '../../apiServices/imageApi/imageApi';
 import { useActivateWarrantyMutation } from '../../apiServices/workflow/warranty/ActivateWarrantyApi';
 import * as Keychain from 'react-native-keychain';
 import moment from 'moment';
@@ -54,7 +54,7 @@ const ActivateWarranty = ({ navigation, route }) => {
       isLoading: uploadImageIsLoading,
       isError: uploadImageIsError,
     },
-  ] = useUploadImagesMutation();
+  ] = useUploadSingleFileMutation();
 
   // const gifUri = Image.resolveAssetSource(require('../../../assets/gif/loader.gif')).uri;
 
@@ -293,7 +293,14 @@ const ActivateWarranty = ({ navigation, route }) => {
             //   setMessage("Kindly upload the invoice/bill ")
             // }
             // else{
-            uploadImageFunc({ body: uploadFile });
+              const getToken = async () => {
+                const credentials = await Keychain.getGenericPassword();
+                const token = credentials.username;
+    
+                uploadImageFunc({ body: uploadFile,token:token });
+            }
+    
+            getToken()
   
             // }
           } else if (item.name === 'dop' || item.name === "Date Of Purchase") {

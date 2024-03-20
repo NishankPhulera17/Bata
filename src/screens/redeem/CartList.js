@@ -14,7 +14,6 @@ import PoppinsTextMedium from '../../components/electrons/customFonts/PoppinsTex
 import { useSelector } from 'react-redux';
 import Icon from 'react-native-vector-icons/Entypo';
 import LinearGradient from 'react-native-linear-gradient';
-import { BaseUrlImages } from '../../utils/BaseUrlImages';
 import { useRedeemGiftsMutation } from '../../apiServices/gifts/RedeemGifts';
 import * as Keychain from 'react-native-keychain';
 import ErrorModal from '../../components/modals/ErrorModal';
@@ -350,7 +349,7 @@ const CartList = ({ navigation, route }) => {
             }}>
             <Image
               style={{ height: 46, width: 56, resizeMode: 'center' }}
-              source={{ uri: BaseUrlImages + image }}></Image>
+              source={{ uri:  image }}></Image>
           </View>
           <LinearGradient
             style={{

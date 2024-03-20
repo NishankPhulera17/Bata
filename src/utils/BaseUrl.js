@@ -1,1 +1,1 @@
-export const BaseUrl = 'http://103.153.58.83:5000'
+export const BaseUrl = 'https://saas.genefied.in/'

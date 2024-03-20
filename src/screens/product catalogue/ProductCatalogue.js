@@ -18,7 +18,6 @@ import LinearGradient from 'react-native-linear-gradient';
 import * as Keychain from 'react-native-keychain';
 import {useSelector} from 'react-redux';
 import { useProductCatalogueMutation } from '../../apiServices/productCatalogue/productCatalogueApi';
-import { BaseUrlImages } from '../../utils/BaseUrlImages';
 import Pdf from 'react-native-pdf';
 import FastImage from 'react-native-fast-image';
 
@@ -102,7 +101,7 @@ const height = Dimensions.get('window').height
        
           <Image
             style={{height: 140, width: '100%',borderTopRightRadius:20,borderTopLeftRadius:20,resizeMode:'contain'}}
-            source={{uri:BaseUrlImages+image}}></Image>
+            source={{uri:image}}></Image>
             <View style={{backgroundColor:'white',width:'100%',padding:8,alignItems:'center',justifyContent:'center',position:'absolute',bottom:0,elevation:8,borderBottomRightRadius:20,borderBottomLeftRadius:20}}>
             <PoppinsTextMedium
           style={{color: 'black', fontSize: 17}}

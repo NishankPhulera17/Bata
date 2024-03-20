@@ -15,7 +15,6 @@ import {useCheckActiveSchemeMutation} from '../../apiServices/scheme/GetSchemeAp
 import * as Keychain from 'react-native-keychain';
 import Logo from 'react-native-vector-icons/AntDesign';
 import moment from 'moment';
-import { BaseUrlImages } from '../../utils/BaseUrlImages';
 import DataNotFound from '../data not found/DataNotFound';
 
 export default function Scheme({navigation}) {
@@ -112,7 +111,7 @@ useEffect(()=>{
           }}>
           <Image
             style={{height: '100%', width: '100%', resizeMode: 'contain'}}
-            source={{uri: BaseUrlImages+image}}></Image>
+            source={{uri: image}}></Image>
         </View>
         <View
           style={{

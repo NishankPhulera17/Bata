@@ -13,7 +13,6 @@ import { useGetAppDashboardDataMutation } from '../apiServices/dashboard/AppUser
 import { useGetAppMenuDataMutation } from '../apiServices/dashboard/AppUserDashboardMenuAPi.js';
 import * as Keychain from 'react-native-keychain';
 import { SvgUri } from 'react-native-svg';
-import { BaseUrlImages } from '../utils/BaseUrlImages';
 import { ScrollView } from 'react-native-gesture-handler';
 import { useGetActiveMembershipMutation } from '../apiServices/membership/AppMembershipApi';
 import { useFetchProfileMutation } from '../apiServices/profile/profileApi';
@@ -304,7 +303,7 @@ const CustomDrawer = () => {
   }, [getAppMenuData, getAppMenuError])
 
   const DrawerItems = (props) => {
-    const image = BaseUrlImages + props.image
+    const image =  props.image
     const size = props.size
     console.log("image", image)
     return (
@@ -426,7 +425,7 @@ const CustomDrawer = () => {
   };
 
   const DrawerSections = (props) => {
-    const image = BaseUrlImages + props.image
+    const image =  props.image
     const size = props.size
     console.log("image", image)
     return (
@@ -498,7 +497,7 @@ const CustomDrawer = () => {
               left: 4,
               resizeMode: 'contain'
             }}
-            source={{ uri: BaseUrlImages + profileImage }}></Image>
+            source={{ uri:  profileImage }}></Image>
           :
           <View style={{
         

@@ -10,7 +10,6 @@ import PoppinsTextMedium from '../../components/electrons/customFonts/PoppinsTex
 import PoppinsTextLeftMedium from '../../components/electrons/customFonts/PoppinsTextLeftMedium';
 import Plus from 'react-native-vector-icons/AntDesign';
 import PoppinsText from '../../components/electrons/customFonts/PoppinsText';
-import { BaseUrlImages } from '../../utils/BaseUrlImages';
 import moment from 'moment';
 // create a component
 const QueryList = ({ navigation }) => {
@@ -101,7 +100,7 @@ const QueryList = ({ navigation }) => {
                             top:70,
                             resizeMode: 'contain'
                         }}
-                        source={{ uri: BaseUrlImages + item.data?.images[0] }}></Image>
+                        source={{ uri:  item.data?.images[0] }}></Image>
 
                     {/* <Image style={{  height: 20,
                             width: 20,

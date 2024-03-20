@@ -1,11 +1,10 @@
 import React from 'react';
 import { StyleSheet, Dimensions, View } from 'react-native';
 import Pdf from 'react-native-pdf';
-import { BaseUrlImages } from '../../utils/BaseUrlImages';
 
 const PdfComponent = ({route, navigation}) => {
     const pdf = route.params.pdf
-    const pdfLink = BaseUrlImages+pdf
+    const pdfLink = pdf
     
     const source = { uri: pdfLink, cache: true };
     return (

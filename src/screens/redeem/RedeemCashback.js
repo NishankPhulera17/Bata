@@ -14,7 +14,6 @@ import PoppinsTextMedium from '../../components/electrons/customFonts/PoppinsTex
 import {useSelector,useDispatch} from 'react-redux';
 import Icon from 'react-native-vector-icons/Entypo';
 import LinearGradient from 'react-native-linear-gradient';
-import {BaseUrlImages} from '../../utils/BaseUrlImages';
 import * as Keychain from 'react-native-keychain';
 import ErrorModal from '../../components/modals/ErrorModal';
 import { useCashPerPointMutation } from '../../apiServices/workflow/rewards/GetPointsApi';

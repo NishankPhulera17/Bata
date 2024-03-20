@@ -15,7 +15,6 @@ import { useCheckActiveSchemeMutation } from "../../apiServices/scheme/GetScheme
 import * as Keychain from "react-native-keychain";
 import Logo from "react-native-vector-icons/AntDesign";
 import moment from "moment";
-import { BaseUrlImages } from "../../utils/BaseUrlImages";
 import { useFetchGiftCatalogueByUserTypeAndCatalogueTypeMutation } from "../../apiServices/gifts/GiftApi";
 
 export default function GiftCatalogue({ navigation }) {
@@ -120,7 +119,7 @@ export default function GiftCatalogue({ navigation }) {
         >
           <Image
             style={{ height: "100%", width: "100%", resizeMode: "contain" }}
-            source={{ uri: BaseUrlImages + image }}
+            source={{ uri:  image }}
           ></Image>
         </View>
         <View

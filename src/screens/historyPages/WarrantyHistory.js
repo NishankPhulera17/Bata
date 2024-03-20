@@ -5,7 +5,6 @@ import PoppinsTextMedium from '../../components/electrons/customFonts/PoppinsTex
 import { useSelector } from 'react-redux';
 import * as Keychain from 'react-native-keychain';
 import { useGetWarrantyByAppUserIdMutation } from '../../apiServices/workflow/warranty/ActivateWarrantyApi';
-import { BaseUrlImages } from '../../utils/BaseUrlImages';
 import moment from 'moment';
 import FastImage from 'react-native-fast-image';
 import FilterModal from '../../components/modals/FilterModal';
@@ -217,7 +216,7 @@ const WarrantyHistory = ({ navigation }) => {
                     <PoppinsTextMedium style={{ fontSize: 12, color: 'white' }} content={moment(warrantyTillDate).format("DD MMM YYYY")}></PoppinsTextMedium>
                 </ImageBackground>
                 <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center", width: '60%',backgroundColor:'#F2F2F2' }}>
-                    {image ? <Image style={{ height: 60, width: 60, resizeMode: 'contain' }} source={{uri:BaseUrlImages+image}}></Image> : <Image style={{ height: 60, width: 60, resizeMode: 'contain' }} source={require('../../../assets/images/box.png')}></Image>  }
+                    {image ? <Image style={{ height: 60, width: 60, resizeMode: 'contain' }} source={{uri:image}}></Image> : <Image style={{ height: 60, width: 60, resizeMode: 'contain' }} source={require('../../../assets/images/box.png')}></Image>  }
                     <View style={{ alignItems: 'flex-start', justifyContent: "center", marginLeft: 8,width:'80%' }}>
                         <PoppinsTextMedium style={{ color: 'black' }} content="Product Name /Code : "></PoppinsTextMedium>
                         <PoppinsTextMedium style={{ color: 'black', fontWeight: '700', marginTop: 2 }} content={productName}></PoppinsTextMedium>
@@ -229,7 +228,7 @@ const WarrantyHistory = ({ navigation }) => {
                 </View>
                 <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center", position: "absolute", bottom: 10, left: 20 }}>
                     <TouchableOpacity onPress={()=>{
-                        Linking.openURL(BaseUrlImages+item.warranty_pdf)
+                        Linking.openURL(item.warranty_pdf)
                     }} style={{ flexDirection: "row", alignItems: "center", justifyContent: "center" }}>
                         <Image style={{ height: 20, width: 20, resizeMode: "contain" }} source={require('../../../assets/images/greenDownload.png')}></Image>
                         <PoppinsTextMedium style={{ color: '#353535', fontWeight: "700", marginLeft: 4 }} content="Download Warranty"></PoppinsTextMedium>

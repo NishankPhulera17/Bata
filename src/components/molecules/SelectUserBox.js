@@ -1,13 +1,12 @@
 import React,{useEffect, useState} from 'react';
 import {View, StyleSheet,TouchableOpacity,Image} from 'react-native';
 import PoppinsTextMedium from '../electrons/customFonts/PoppinsTextMedium';
-import { BaseUrlImages } from '../../utils/BaseUrlImages';
 import { SvgUri } from 'react-native-svg';
 import { useIsFocused } from '@react-navigation/native';
 const SelectUserBox = (props) => {
     const [boxColor, setBoxColor] = useState('white')
     const focused = useIsFocused()
-    const image = BaseUrlImages+props.image
+    const image = props.image
     // const image = 'https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/atom.svg'
     // console.log(image)
     const color = props.color

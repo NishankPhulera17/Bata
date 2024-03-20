@@ -7,7 +7,6 @@ import { useFetchGiftsRedemptionsOfUserMutation } from '../../apiServices/workfl
 import * as Keychain from 'react-native-keychain';
 import { useFetchUserPointsMutation } from '../../apiServices/workflow/rewards/GetPointsApi';
 import moment from 'moment';
-import { BaseUrlImages } from '../../utils/BaseUrlImages';
 
 const AddBankAccountAndUpi = ({navigation}) => {
     const ternaryThemeColor = useSelector(

@@ -5,7 +5,6 @@ import PoppinsTextMedium from '../../components/electrons/customFonts/PoppinsTex
 import { useSelector } from 'react-redux';
 import * as Keychain from 'react-native-keychain';
 import { useGetWarrantyByAppUserIdMutation } from '../../apiServices/workflow/warranty/ActivateWarrantyApi';
-import { BaseUrlImages } from '../../utils/BaseUrlImages';
 import moment from 'moment';
 import ButtonNavigate from '../../components/atoms/buttons/ButtonNavigate';
 import { Text } from 'react-native-svg';
@@ -16,7 +15,7 @@ import FeedbackTextArea from '../../components/feedback/FeedbackTextArea';
 import ImageInput from '../../components/atoms/input/ImageInput';
 import ImageInputWithUpload from '../../components/atoms/input/ImageInputWithUpload';
 import ButtonRectangle from '../../components/atoms/buttons/ButtonRectangle';
-import { useUploadImagesMutation } from '../../apiServices/imageApi/imageApi';
+import { useUploadSingleFileMutation } from '../../apiServices/imageApi/imageApi';
 import Icon from 'react-native-vector-icons/Feather';
 import Close from 'react-native-vector-icons/Ionicons';
 import ErrorModal from '../../components/modals/ErrorModal';
@@ -62,7 +61,7 @@ const WarrantyDetails = ({ navigation, route }) => {
             isLoading: uploadImageIsLoading,
             isError: uploadImageIsError,
         },
-    ] = useUploadImagesMutation();
+    ] = useUploadSingleFileMutation();
 
     const [
         createWarrantyClaim,
@@ -202,7 +201,7 @@ const WarrantyDetails = ({ navigation, route }) => {
         return (
             <View style={{ height: 200, width: '100%', backgroundColor: '#F7F7F7', alignItems: "center", justifyContent: 'center', padding: 16, marginTop: 90 }}>
                 <View style={{ height: 154, width: 154, borderRadius: 10, borderWidth: 1, backgroundColor: 'white', position: "absolute", top: -74, borderColor: '#DDDDDD', alignItems: "center", justifyContent: "center" }}>
-                 {data.product_images?.[0] ?   <Image style={{ height: 100, width: 100,resizeMode:'contain' }} source={{ uri: BaseUrlImages + data.product_images?.[0] }}></Image> : <PoppinsTextMedium style={{color:'black', fontWeight:'800'}} content="NO IMAGE"></PoppinsTextMedium>} 
+                 {data.product_images?.[0] ?   <Image style={{ height: 100, width: 100,resizeMode:'contain' }} source={{ uri:  data.product_images?.[0] }}></Image> : <PoppinsTextMedium style={{color:'black', fontWeight:'800'}} content="NO IMAGE"></PoppinsTextMedium>} 
                 </View>
                 <View style={{ alignItems: "flex-start", justifyContent: "center", position: "absolute", bottom: 10, left: 20, color: 'black' }}>
                     <PoppinsTextMedium style={{ margin: 4, fontSize: 18, fontWeight: '700', color: 'black' }} content={`Product Name : ${productName}`}></PoppinsTextMedium>
@@ -269,7 +268,14 @@ const WarrantyDetails = ({ navigation, route }) => {
                 };
                 const uploadFile = new FormData();
                 uploadFile.append('images', imageDataTemp);
-                uploadImageFunc({ body: uploadFile });
+                const getToken = async () => {
+                    const credentials = await Keychain.getGenericPassword();
+                    const token = credentials.username;
+        
+                    uploadImageFunc({ body: uploadFile,token:token });
+                }
+        
+                getToken()
                 setModal(!modal);
 
             }
@@ -363,7 +369,7 @@ const WarrantyDetails = ({ navigation, route }) => {
                     <PoppinsTextMedium style={{ color: 'white', fontSize: 18, marginTop: 4 }} content={`Warranty Id : ${warrantyId}`}></PoppinsTextMedium>
                 </View>
             </View>
-            <TouchableOpacity onPress={()=>{Linking.openURL(BaseUrlImages+data.warranty_pdf)}} style={{ padding:8, width: 240, alignItems: "center", justifyContent: "center", backgroundColor: "#91B406", marginTop: 20, borderRadius: 4 }}>
+            <TouchableOpacity onPress={()=>{Linking.openURL(data.warranty_pdf)}} style={{ padding:8, width: 240, alignItems: "center", justifyContent: "center", backgroundColor: "#91B406", marginTop: 20, borderRadius: 4 }}>
                 <PoppinsTextMedium style={{ color: 'white', fontSize: 18, marginTop: 4 }} content={`Download Warranty`}></PoppinsTextMedium>
             </TouchableOpacity>
             <TouchableOpacity onPress={() => { setModal(true) }} style={{ padding:8, width: 240, alignItems: "center", justifyContent: "center", backgroundColor: "#353535", marginTop: 20, borderRadius: 4 }}>

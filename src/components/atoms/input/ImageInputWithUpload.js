@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { View, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import PoppinsTextMedium from '../../electrons/customFonts/PoppinsTextMedium';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
-import { useUploadImagesMutation } from '../../../apiServices/imageApi/imageApi';
+import { useUploadSingleFileMutation } from '../../../apiServices/imageApi/imageApi';
 
 const ImageInputWithUpload = (props) => {
     const [image, setImage] = useState()
@@ -16,7 +16,7 @@ const ImageInputWithUpload = (props) => {
     //         isLoading: uploadImageIsLoading,
     //         isError: uploadImageIsError,
     //     },
-    // ] = useUploadImagesMutation();
+    // ] = useUploadSingleFileMutation();
 
     // useEffect(() => {
     //     if (uploadImageData) {

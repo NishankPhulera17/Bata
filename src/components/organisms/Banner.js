@@ -3,7 +3,6 @@ import React, { useEffect, useState } from 'react';
 import { View, StyleSheet, Image } from 'react-native';
 import DotHorizontalList from '../molecules/DotHorizontalList';
 import { useSelector } from 'react-redux';
-import { BaseUrlImages } from '../../utils/BaseUrlImages';
 
 const Banner = (props) => {
   const [showImage, setShowImage] = useState(props.images[0]);
@@ -52,7 +51,7 @@ const Banner = (props) => {
         alignItems:"center",justifyContent:"center"
       }}>
       <View style={{ height: 190, width: '90%',alignItems:"center",justifyContent:"center" }}>
-        {showImage && <Image style={{ height: '100%', width: '100%',borderRadius:20,resizeMode:'contain' }} source={{ uri: BaseUrlImages+showImage }} />}
+        {showImage && <Image style={{ height: '100%', width: '100%',borderRadius:20,resizeMode:'contain' }} source={{ uri: showImage }} />}
         <View style={{position:"absolute",bottom:10}}>
         <DotHorizontalList no = {props.images.length} primaryColor="white" secondaryColor={ternaryThemeColor} selectedNo = {index} ></DotHorizontalList>
         </View>

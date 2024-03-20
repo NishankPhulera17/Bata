@@ -12,7 +12,6 @@ import { useFetchGiftsRedemptionsOfUserMutation } from '../../apiServices/workfl
 import { useFetchCashbackEnteriesOfUserMutation, useFetchUserCashbackByAppUserIdMutation } from '../../apiServices/workflow/rewards/GetCashbackApi';
 import moment from 'moment';
 import RedeemRewardDataBoxLong from '../../components/molecules/RedeemRewardDataBoxLong';
-import { BaseUrlImages } from '../../utils/BaseUrlImages';
 import ProgressBar from '../../components/miscellaneous/ProgressBar';
 import RedeemRewardDataBoxWithoutImage from '../../components/molecules/RedeemRewardDataBoxWithoutImage';
 import { useFetchUserPointsMutation } from '../../apiServices/workflow/rewards/GetPointsApi';
@@ -309,7 +308,7 @@ const RedeemRewardHistory = ({navigation}) => {
         renderItem={({item,index}) => {
             console.log("Redeem",item)
             return(
-                <RedeemRewardDataBoxLong type="Uri" header={item.gift.gift[0].name} data={moment(item.created_at).format("DD MMM YYYY")} image={BaseUrlImages+item.gift.gift[0].images[0]}></RedeemRewardDataBoxLong>
+                <RedeemRewardDataBoxLong type="Uri" header={item.gift.gift[0].name} data={moment(item.created_at).format("DD MMM YYYY")} image={item.gift.gift[0].images[0]}></RedeemRewardDataBoxLong>
                 
                 )
         }}

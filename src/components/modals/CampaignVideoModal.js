@@ -8,7 +8,6 @@ import PoppinsText from '../electrons/customFonts/PoppinsText';
 import { ScrollView } from 'react-native';
 import * as Keychain from 'react-native-keychain';
 import { useGetAppCampaignMutation } from '../../apiServices/campaign/CampaignApi';
-import { BaseUrlImages } from '../../utils/BaseUrlImages';
 import Close from 'react-native-vector-icons/Ionicons';
 import { useSelector } from 'react-redux';
 
@@ -79,7 +78,7 @@ const CampaignVideoModal = ({ isVisible, onClose }) => {
                 <View style={styles.modalContent}>
                     <PoppinsTextMedium style={{ fontWeight: '800', color: 'black', fontSize: 20 }} content="Campaign App Promotion"></PoppinsTextMedium>
                     {getAppCampaignData &&
-                        <Image style={{ width: '100%', height: 150, resizeMode: "center", marginTop: 10 }} source={{ uri: BaseUrlImages + getAppCampaignData?.body?.data?.[0]?.image }}></Image>
+                        <Image style={{ width: '100%', height: 150, resizeMode: "center", marginTop: 10 }} source={{ uri:  getAppCampaignData?.body?.data?.[0]?.image }}></Image>
                     }
 
 

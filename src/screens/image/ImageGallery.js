@@ -5,7 +5,6 @@ import PoppinsTextMedium from '../../components/electrons/customFonts/PoppinsTex
 import { useGetAppGalleryMutation } from '../../apiServices/imageGallery/ImageGalleryApi';
 import * as Keychain from 'react-native-keychain';
 import moment from 'moment';
-import { BaseUrlImages } from '../../utils/BaseUrlImages';
 import Cancel from 'react-native-vector-icons/MaterialIcons'
 import Left from 'react-native-vector-icons/AntDesign'
 import Right from 'react-native-vector-icons/AntDesign'
@@ -92,7 +91,7 @@ setIndexImage(indexImage-1)
             <Left name = "caretleft" size={30} color={ternaryThemeColor} ></Left>
 
             </TouchableOpacity>
-          <Image style={{height:'96%',width:'96%',resizeMode:'contain'}} source={{uri:BaseUrlImages+images[indexImage]}}></Image>
+          <Image style={{height:'96%',width:'96%',resizeMode:'contain'}} source={{uri:images[indexImage]}}></Image>
           <TouchableOpacity style={{position:'absolute',right:4}} onPress={()=>{if(images.length-1>indexImage){
 setIndexImage(indexImage +1)
           }}}>
@@ -106,7 +105,7 @@ setIndexImage(indexImage +1)
         </View>
       </Modal>
        <View style={{width:'100%',backgroundColor:"#DDDDDD",alignItems:"center",justifyContent:'center',height:'100%',borderRadius:20}}>
-        <Image style={{height:"100%",width:"100%",borderRadius:20}} source={{uri:BaseUrlImages+images[indexImage]}}></Image>
+        <Image style={{height:"100%",width:"100%",borderRadius:20}} source={{uri:images[indexImage]}}></Image>
        
        </View>
         {/* <View style={{backgroundColor:'black',width:'100%',alignItems:'flex-start',height:'50%',justifyContent:"center"}}>

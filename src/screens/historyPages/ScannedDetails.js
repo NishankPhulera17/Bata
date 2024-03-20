@@ -3,7 +3,6 @@ import {View, StyleSheet,TouchableOpacity,Image} from 'react-native';
 import PoppinsTextMedium from '../../components/electrons/customFonts/PoppinsTextMedium';
 import StatusBox from '../../components/atoms/StatusBox';
 import moment from 'moment';
-import { BaseUrlImages } from '../../utils/BaseUrlImages';
 const ScannedDetails = ({navigation,route}) => {
     const status = "Success"
     
@@ -21,7 +20,7 @@ const ScannedDetails = ({navigation,route}) => {
         return(
             <View style={{height:180,width:'100%',backgroundColor:'#DDDDDD',alignItems:"center",justifyContent:'center',padding:16,marginTop:120}}>
                <View style={{height:154,width:154,borderRadius:10,borderWidth:1,backgroundColor:'white',position:"absolute",top:-74,borderColor:'#DDDDDD',alignItems:"center",justifyContent:"center"}}>
-                <Image style={{height:100,width:100,resizeMode:'contain'}} source={{uri:BaseUrlImages+image}}></Image>
+                <Image style={{height:100,width:100,resizeMode:'contain'}} source={{uri:image}}></Image>
                </View>
                <View style={{alignItems:"flex-start",justifyContent:"center",position:"absolute",bottom:10,left:20}}>
                <PoppinsTextMedium style={{margin:4,fontSize:18,fontWeight:'700',color:'black'}} content={`Product Name : ${productName}`}></PoppinsTextMedium>

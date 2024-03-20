@@ -10,7 +10,6 @@ import * as Keychain from 'react-native-keychain';
 import { useFetchAllQrScanedListMutation } from '../../apiServices/qrScan/AddQrApi';
 import { FlatList } from 'react-native';
 import moment from 'moment';
-import { BaseUrlImages } from '../../utils/BaseUrlImages';
 
 
 // create a component
@@ -139,7 +138,7 @@ const AddedUserScanList = ({ navigation, route }) => {
               {image !== null && (
                 <Image
                   style={{ height: 60, width: 60, resizeMode: "contain" }}
-                  source={{ uri: BaseUrlImages + image }}
+                  source={{ uri:  image }}
                 ></Image>
               )}
             </View>

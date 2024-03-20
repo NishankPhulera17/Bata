@@ -16,7 +16,6 @@ import Location from "react-native-vector-icons/EvilIcons";
 import Message from "react-native-vector-icons/Feather";
 import Edit from "react-native-vector-icons/Entypo";
 import ButtonNavigate from "../../components/atoms/buttons/ButtonNavigate";
-import { BaseUrlImages } from "../../utils/BaseUrlImages";
 import { useGetRedeemedGiftsStatusMutation } from "../../apiServices/gifts/RedeemGifts";
 import * as Keychain from 'react-native-keychain';
 import TrackDeliveryModal from "../../components/redeemDetails/TrackDeliveryModal";
@@ -234,7 +233,7 @@ const RedeemedDetails = ({ navigation, route }) => {
           >
             <Image
               style={{ height: 80, width: 80, resizeMode: "contain" }}
-              source={{ uri: BaseUrlImages + image }}
+              source={{ uri:  image }}
             ></Image>
             <PoppinsTextMedium
               style={{ fontSize: 16, fontWeight: "700", color: "#171717" }}

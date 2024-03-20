@@ -25,7 +25,7 @@ import PrefilledTextInput from '../../components/atoms/input/PrefilledTextInput'
 import FeedbackTextArea from '../../components/feedback/FeedbackTextArea';
 import ImageInput from '../../components/atoms/input/ImageInput';
 import ImageInputWithUpload from '../../components/atoms/input/ImageInputWithUpload';
-import { useUploadImagesMutation } from '../../apiServices/imageApi/imageApi';
+import { useUploadSingleFileMutation } from '../../apiServices/imageApi/imageApi';
 
 const SupportQueries = ({ navigation }) => {
   const [error, setError] = useState(false)
@@ -74,7 +74,7 @@ const SupportQueries = ({ navigation }) => {
       isLoading: uploadImageIsLoading,
       isError: uploadImageIsError,
     },
-  ] = useUploadImagesMutation();
+  ] = useUploadSingleFileMutation();
 
 
 
@@ -117,7 +117,14 @@ const SupportQueries = ({ navigation }) => {
     const uploadFile = new FormData();
     uploadFile.append('images', uri);
     // console.log("invoice data",item.value)
-    uploadImageFunc({ body: uploadFile });
+    const getToken = async () => {
+      const credentials = await Keychain.getGenericPassword();
+      const token = credentials.username;
+
+      uploadImageFunc({ body: uploadFile,token:token });
+  }
+
+  getToken()
 
 
   }

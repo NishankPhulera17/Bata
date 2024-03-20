@@ -5,12 +5,11 @@ import PoppinsTextMedium from '../../components/electrons/customFonts/PoppinsTex
 import RectanglarUnderlinedTextInput from '../../components/atoms/input/RectanglarUnderlinedTextInput';
 import InputDate from '../../components/atoms/input/InputDate';
 import ImageInput from '../../components/atoms/input/ImageInput';
-import { useUploadImagesMutation } from '../../apiServices/imageApi/imageApi';
+import { useUploadSingleFileMutation } from '../../apiServices/imageApi/imageApi';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import { useUpdateProfileMutation } from '../../apiServices/profile/profileApi';
 import * as Keychain from 'react-native-keychain';
 import MessageModal from '../../components/modals/MessageModal';
-import { BaseUrlImages } from '../../utils/BaseUrlImages';
 import ErrorModal from '../../components/modals/ErrorModal';
 import InputDateProfile from '../../components/atoms/input/InputDateProfile';
 import RectangularUnderlinedDropDown from '../../components/atoms/dropdown/RectangularUnderlinedDropDown';
@@ -56,7 +55,7 @@ const EditProfile = ({ navigation, route }) => {
       isLoading: uploadImageIsLoading,
       isError: uploadImageIsError,
     },
-  ] = useUploadImagesMutation();
+  ] = useUploadSingleFileMutation();
 
   const [updateProfileFunc, {
     data: updateProfileData,
@@ -198,7 +197,7 @@ const EditProfile = ({ navigation, route }) => {
     setProfileImage(result.assets[0])
   }
   const uploadProfilePicture = () => {
-    if (profileImage !== BaseUrlImages + route.params.savedImage && profileImage !== null) {
+    if (profileImage !==  route.params.savedImage && profileImage !== null) {
       const imageData = {
         uri: profileImage.uri,
         name: profileImage.uri.slice(0, 10),
@@ -206,7 +205,14 @@ const EditProfile = ({ navigation, route }) => {
       };
       const uploadFile = new FormData();
       uploadFile.append('images', imageData);
-      uploadImageFunc({ body: uploadFile });
+      const getToken = async () => {
+        const credentials = await Keychain.getGenericPassword();
+        const token = credentials.username;
+
+        uploadImageFunc({ body: uploadFile,token:token });
+    }
+
+    getToken()
     }
     else {
       console.log("else")
@@ -246,7 +252,7 @@ const EditProfile = ({ navigation, route }) => {
             <View style={{ height: 150, width: 150, borderRadius: 75, backgroundColor: 'white', alignItems: 'center', justifyContent: 'center', borderColor: '#DDDDDD', borderWidth: 0.6, marginTop: 20 }}>
               <View style={{ height: 130, width: 130, borderRadius: 65, backgroundColor: 'white', alignItems: 'center', justifyContent: 'center', borderColor: '#DDDDDD', borderWidth: 0.6 }}>
                 {profileImage !== route.params?.savedImage && <Image style={{ height: 130, width: 130, borderRadius: 65, resizeMode: "contain" }} source={{ uri: profileImage?.uri }}></Image>}
-                {profileImage === route.params?.savedImage && <Image style={{ height: 130, width: 130, borderRadius: 65, resizeMode: 'contain' }} source={{ uri: BaseUrlImages + profileImage }}></Image>}
+                {profileImage === route.params?.savedImage && <Image style={{ height: 130, width: 130, borderRadius: 65, resizeMode: 'contain' }} source={{ uri:  profileImage }}></Image>}
 
               </View>
             </View>
@@ -288,7 +294,7 @@ const EditProfile = ({ navigation, route }) => {
       <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "flex-start", backgroundColor: ternaryThemeColor, height: '20%' }}>
         <View style={{ backgroundColor: "white", height: 110, width: 110, borderRadius: 50, alignItems: "center", justifyContent: "center", flexDirection: "row", borderWidth: 1, borderColor: '#DDDDDD', marginBottom: 40, marginLeft: 20 }}>
           {profileImage !== route.params?.savedImage && profileImage !== null && <Image style={{ height: 98, width: 98, borderRadius: 49, resizeMode: "contain" }} source={{ uri: profileImage.uri }}></Image>}
-          {profileImage === route.params?.savedImage && <Image style={{ height: 98, width: 98, borderRadius: 49, resizeMode: "contain" }} source={{ uri: BaseUrlImages + profileImage }}></Image>}
+          {profileImage === route.params?.savedImage && <Image style={{ height: 98, width: 98, borderRadius: 49, resizeMode: "contain" }} source={{ uri:  profileImage }}></Image>}
           {(profileImage === null || profileImage == undefined) && <Image style={{ height: 58, width: 58, resizeMode: "contain", marginRight: '92%' }} source={(require('../../../assets/images/userGrey.png'))}></Image>}
 
         </View>

@@ -26,7 +26,30 @@ export const imageApi = baseApi.injectEndpoints({
         };
       },
     }),
+    uploadSingleFile: builder.mutation({
+      query: (params) => {
+        console.log("uploadSingleFile",params)
+        return {
+          method: "POST",
+          url: "api/file/single",
+          headers: {Authorization: 'Bearer ' + params.token},
+          body: params.body,
+        };
+      },
+    }),
+  
+    uploadMultipleFiles: builder.mutation({
+      query: (params) => {
+        return {
+          method: "POST",
+          url: "api/file/multiple",
+          headers: {Authorization: 'Bearer ' + params.token},
+          body: params.body,
+        };
+      },
+    }),
   }),
+ 
 });
 
-export const {useUploadImagesMutation, useGetImagesMutation} = imageApi;
+export const {useUploadImagesMutation, useGetImagesMutation,useUploadSingleFileMutation,useUploadMultipleFilesMutation} = imageApi;
