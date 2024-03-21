@@ -31,7 +31,7 @@ const DrawerHeader = () => {
             <TouchableOpacity onPress={()=>{navigation.dispatch(DrawerActions.toggleDrawer());}} style={{marginLeft:10}}>
             <Icon name="bars" size={30} color={ternaryThemeColor}></Icon>
             </TouchableOpacity>
-            <Image style={{height:100,width:120,resizeMode:"contain",marginLeft:10}} source={{uri: `${BaseUrl}/api/images/${icon}`}}></Image>
+            <Image style={{height:100,width:120,resizeMode:"contain",marginLeft:10}} source={{uri: icon}}></Image>
            
                 <RotateViewAnimation outputRange={["0deg","30deg", "-30deg","0deg"]} inputRange={[0,1,2,3]} comp={BellComponent} style={{height:30,width:30,position:'absolute',right:30}}>
                     

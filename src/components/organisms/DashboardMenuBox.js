@@ -136,7 +136,7 @@ const DashboardMenuBox=(props)=>{
             data.map((item,index)=>{
                 return(
                    
-                    <MenuItems handlePress={handleMenuItemPress} key={index} image={`${BaseUrl}/api/images/${item.icon}`} content={item.name}></MenuItems>
+                    <MenuItems handlePress={handleMenuItemPress} key={index} image={item.icon} content={item.name}></MenuItems>
                    
                 )
             })
