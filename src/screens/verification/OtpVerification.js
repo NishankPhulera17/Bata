@@ -231,7 +231,7 @@ const OtpVerification = ({ navigation, route }) => {
       console.log("addCashToBankError", addCashToBankError)
       setError(true)
       setIsLoading(false)
-      setMessage("Server Error")
+      setMessage(addCashToBankError.data.message+"")
     }
   }, [addCashToBankData, addCashToBankError])
 

@@ -21,7 +21,7 @@ const RedeemedHistory = ({ navigation }) => {
   const [message, setMessage] = useState();
   const [error, setError] = useState(false);
   const [success, setSuccess] = useState(false)
-  const [redemptionStartData, setRedemptionStartDate]  = useState()
+  const [redemptionStartData, setRedemptionStartDate] = useState()
   const [redemptionEndDate, setRedemptionEndDate] = useState()
   const [showKyc, setShowKyc] = useState(true)
   const [redeemedListData, setRedeemedListData] = useState([])
@@ -34,8 +34,8 @@ const RedeemedHistory = ({ navigation }) => {
     : 'grey';
   const userData = useSelector(state => state.appusersdata.userData)
   const userId = useSelector(state => state.appusersdata.userId);
-  
-  const appUserData = useSelector(state=>state.appusers.value)
+
+  const appUserData = useSelector(state => state.appusers.value)
   const id = useSelector(state => state.appusersdata.id);
   const focused = useIsFocused()
   const fetchPoints = async () => {
@@ -48,10 +48,10 @@ const RedeemedHistory = ({ navigation }) => {
     userPointFunc(params)
 
   }
-  console.log("appUserData",appUserData)
+  console.log("appUserData", appUserData)
   const gifUri = Image.resolveAssetSource(require('../../../assets/gif/loader.gif')).uri;
   const noData = Image.resolveAssetSource(require('../../../assets/gif/noData.gif')).uri;
-  let startDate,endDate
+  let startDate, endDate
   const [
     FetchGiftsRedemptionsOfUser,
     {
@@ -75,11 +75,11 @@ const RedeemedHistory = ({ navigation }) => {
     isLoading: userPointIsLoading,
     isError: userPointIsError
   }] = useFetchUserPointsMutation()
-  const [cashPerPointFunc,{
-    data:cashPerPointData,
-    error:cashPerPointError,
-    isLoading:cashPerPointIsLoading,
-    isError:cashPerPointIsError
+  const [cashPerPointFunc, {
+    data: cashPerPointData,
+    error: cashPerPointError,
+    isLoading: cashPerPointIsLoading,
+    isError: cashPerPointIsError
   }] = useCashPerPointMutation()
 
   useEffect(() => {
@@ -87,10 +87,10 @@ const RedeemedHistory = ({ navigation }) => {
       console.log("getKycStatusData", getKycStatusData)
       if (getKycStatusData.success) {
         const tempStatus = Object.values(getKycStatusData.body)
-        
+
         setShowKyc(tempStatus.includes(false))
 
-       
+
 
 
       }
@@ -101,41 +101,36 @@ const RedeemedHistory = ({ navigation }) => {
   }, [getKycStatusData, getKycStatusError])
   useEffect(() => {
     fetchPoints()
-    if(appUserData!==undefined)
-    {
-     const influencerRedemptionCategories =  appUserData.filter((item)=>{
-        return item.name===userData.user_type
+    if (appUserData !== undefined) {
+      const influencerRedemptionCategories = appUserData.filter((item) => {
+        return item.name === userData.user_type
       })
-      console.log("influencerRedemptionCategories",influencerRedemptionCategories)
-      if(influencerRedemptionCategories.length!==0)
-      {
+      console.log("influencerRedemptionCategories", influencerRedemptionCategories)
+      if (influencerRedemptionCategories.length !== 0) {
         setRedemptionStartDate(influencerRedemptionCategories[0].redeem_start_date)
         setRedemptionEndDate(influencerRedemptionCategories[0].redeem_end_date)
       }
-      else{
+      else {
         setRedemptionWindowEligibility(false)
       }
-     
+
     }
   }, [focused])
 
-  useEffect(()=>{
-    if(cashPerPointData)
-    {
-        console.log("cashPerPointData",cashPerPointData)
-        if(cashPerPointData.success)
+  useEffect(() => {
+    if (cashPerPointData) {
+      console.log("cashPerPointData", cashPerPointData)
+      if (cashPerPointData.success) {
+        const temp = cashPerPointData?.body
+        setRedemptionStartDate(temp.redeem_start_date)
+        setRedemptionEndDate(temp.redeem_end_date)
+      }
+    }
+    else if (cashPerPointError) {
+      console.log("cashPerPointError", cashPerPointError)
 
-        {
-          const temp = cashPerPointData?.body
-          setRedemptionStartDate(temp.redeem_start_date)
-          setRedemptionEndDate(temp.redeem_end_date)
-        }
     }
-    else if(cashPerPointError){
-        console.log("cashPerPointError",cashPerPointError)
-        
-    }
-  },[cashPerPointData,cashPerPointError])
+  }, [cashPerPointData, cashPerPointError])
 
   useEffect(() => {
     if (userPointData) {
@@ -147,7 +142,7 @@ const RedeemedHistory = ({ navigation }) => {
 
   }, [userPointData, userPointError])
 
-  
+
 
   useEffect(() => {
     (async () => {
@@ -169,14 +164,14 @@ const RedeemedHistory = ({ navigation }) => {
     if (fetchGiftsRedemptionsOfUserData) {
       console.log("fetchGiftsRedemptionsOfUserData", JSON.stringify(fetchGiftsRedemptionsOfUserData))
       fetchDates(fetchGiftsRedemptionsOfUserData.body.userPointsRedemptionList)
-   
+
     }
     else if (fetchGiftsRedemptionsOfUserError) {
       console.log("fetchGiftsRedemptionsOfUserIsLoading", fetchGiftsRedemptionsOfUserError)
     }
   }, [fetchGiftsRedemptionsOfUserData, fetchGiftsRedemptionsOfUserError])
 
-  
+
 
   const fetchDates = (data) => {
     const dateArr = []
@@ -206,28 +201,26 @@ const RedeemedHistory = ({ navigation }) => {
   const modalClose = () => {
     setError(false);
     setSuccess(false)
-    
+
   };
-  const fetchDataAccToFilter=()=>{
-    
-    console.log("fetchDataAccToFilter",startDate,endDate)
-    if(startDate && endDate)
-    {
-      if(new Date(endDate).getTime() < new Date(startDate).getTime())
-      {
+  const fetchDataAccToFilter = () => {
+
+    console.log("fetchDataAccToFilter", startDate, endDate)
+    if (startDate && endDate) {
+      if (new Date(endDate).getTime() < new Date(startDate).getTime()) {
         alert("Kindly enter proper end date")
-        startDate=undefined
-        endDate=undefined
+        startDate = undefined
+        endDate = undefined
       }
       else {
         console.log("fetchDataAccToFilter")
       }
-      
+
     }
-    else{
+    else {
       alert("Kindly enter a valid date")
-      startDate=undefined
-      endDate=undefined
+      startDate = undefined
+      endDate = undefined
     }
   }
 
@@ -235,33 +228,55 @@ const RedeemedHistory = ({ navigation }) => {
     const [modalVisible, setModalVisible] = useState(false);
 
     const handleRedeemButtonPress = () => {
-      if (Number(userPointData?.body?.point_balance) <= 0 ) {
+      if (Number(userPointData?.body?.point_balance) <= 0) {
         setError(true)
         setMessage("Sorry you don't have enough points.")
       }
-      else if(Number(cashPerPointData?.body?.min_point_redeem)>Number(userPointData?.body?.point_balance)){
+      else if (Number(cashPerPointData?.body?.min_point_redeem) > Number(userPointData?.body?.point_balance)) {
         setError(true)
-        setMessage("Minimum points required to redeem is: "+cashPerPointData?.body?.min_point_redeem)
+        setMessage("Minimum points required to redeem is: " + cashPerPointData?.body?.min_point_redeem)
       }
       else {
+
+
+        const redeemStartDate = redemptionStartData ? (new Date(redemptionStartData)).getUTCDate() : null;
+
+        const redeemEndDate = redemptionEndDate ? (new Date(redemptionEndDate)).getUTCDate() : null;
+
+        const currentDate = (new Date()).getUTCDate();
+
+        const red_start = (new Date(redeemStartDate).getDate());
+
+        const red_end = (new Date(redeemEndDate)).getDate();
+
+        const month =(new Date()).getMonth()
+        const year =(new Date()).getFullYear()
+
+        const startD = redeemStartDate +"/" + month + "/" + year 
         
-        if((Number(new Date(redemptionStartData).getTime()) < Number(new Date().getTime()))&& (Number(new Date().getTime())< Number(new Date(redemptionEndDate).getTime())) )
-        {
-          
-          console.log("correct redemption date",new Date().getTime(),new Date(redemptionStartData).getTime(),new Date(redemptionEndDate).getTime())
-        if(!showKyc)
-        {
-          setModalVisible(true)
+
+
+        console.log("MOnth month", month)
+
+
+
+        let isOutOfRange = false;
+
+        if ((redeemStartDate != null && redeemEndDate != null) && (currentDate >= redeemStartDate && currentDate <= redeemEndDate)) {
+
+          console.log("correct redemption date", new Date().getTime(), new Date(redemptionStartData).getTime(), new Date(redemptionEndDate).getTime())
+          if (!showKyc) {
+            setModalVisible(true)
+          }
+          else {
+            setError(true)
+            setMessage("Kyc not completed yet")
+            setNavigateTo("Verification")
+          }
         }
-        else{
+        else {
           setError(true)
-          setMessage("Kyc not completed yet")
-          setNavigateTo("Verification")
-        }
-        }
-        else{
-          setError(true)
-        setMessage("Redemption window starts from "+ moment(redemptionStartData).format("DD-MMM-YYYY") + " and ends on " +  moment(redemptionEndDate).format("DD-MMM-YYYY"))
+          setMessage("Redemption window starts from " + redeemStartDate +"/" + month + "/" + year + " and ends on"+ redeemEndDate +"/" + month + "/" + year )
         }
       }
 
@@ -419,7 +434,7 @@ const RedeemedHistory = ({ navigation }) => {
         navigation.navigate('RedeemedDetails', { data: data })
       }} style={{ flexDirection: "row", alignItems: "center", justifyContent: "center", marginTop: 10, width: "100%", marginBottom: 10 }}>
         <View style={{ height: 70, width: 70, alignItems: "center", justifyContent: "center", borderRadius: 10, borderWidth: 1, borderColor: '#DDDDDD', right: 10 }}>
-          <Image style={{ height: 50, width: 50, resizeMode: "contain" }} source={{ uri:  image }}></Image>
+          <Image style={{ height: 50, width: 50, resizeMode: "contain" }} source={{ uri: image }}></Image>
         </View>
         <View style={{ alignItems: "flex-start", justifyContent: "center", marginLeft: 0, width: 160 }}>
           <PoppinsTextMedium style={{ fontWeight: '600', fontSize: 16, color: 'black', textAlign: 'auto' }} content={description}></PoppinsTextMedium>
@@ -443,13 +458,13 @@ const RedeemedHistory = ({ navigation }) => {
   }
   return (
     <View style={{ alignItems: "center", justifyContent: "flex-start", width: '100%', height: '100%', backgroundColor: "white" }}>
-      {error  && (
+      {error && (
         <ErrorModal
           modalClose={modalClose}
           message={message}
           openModal={error}
           navigateTo={navigateTo}
-          ></ErrorModal>
+        ></ErrorModal>
       )}
       {error && navigateTo && (
         <ErrorModal
@@ -457,7 +472,7 @@ const RedeemedHistory = ({ navigation }) => {
           message={message}
           openModal={error}
           navigateTo={navigateTo}
-          ></ErrorModal>
+        ></ErrorModal>
       )}
       {success && (
         <MessageModal
@@ -490,40 +505,40 @@ const RedeemedHistory = ({ navigation }) => {
       </View>
       <DisplayEarnings></DisplayEarnings>
       <Header></Header>
-     
-        
-          <FlatList
-                  
-          data={redeemedListData}
-          maxToRenderPerBatch={10}
-          initialNumToRender={10}
-          renderItem={({ item,index }) => (
-            
-              <View key={index} style={{ alignItems: "center", justifyContent: "center", width: '100%' }} >
-
-                <View style={{ alignItems: "flex-start", justifyContent: "center", paddingBottom: 10, marginTop: 20, marginLeft: 20, width: '100%' }}>
-                  <PoppinsTextMedium style={{ color: 'black', fontSize: 16 }} content={(item.date)}></PoppinsTextMedium>
-
-                </View>
-
-                {
-                  item.data.map((item, index) => {
-                    return (
-                      <View key={index}>
-                        <ListItem data={item} productStatus={item.gift_status} description={item.gift} productCode={item.product_code} amount={item.points} time={moment(item.created_at).format('HH:MM a')} />
-
-                      </View>
 
 
-                    )
-                  })
-                }
-              </View>
-            
-          )}
-          keyExtractor={(item, index) => index}
-        />
-          {/* // redeemedListData && redeemedListData.map((item, index) => {
+      <FlatList
+
+        data={redeemedListData}
+        maxToRenderPerBatch={10}
+        initialNumToRender={10}
+        renderItem={({ item, index }) => (
+
+          <View key={index} style={{ alignItems: "center", justifyContent: "center", width: '100%' }} >
+
+            <View style={{ alignItems: "flex-start", justifyContent: "center", paddingBottom: 10, marginTop: 20, marginLeft: 20, width: '100%' }}>
+              <PoppinsTextMedium style={{ color: 'black', fontSize: 16 }} content={(item.date)}></PoppinsTextMedium>
+
+            </View>
+
+            {
+              item.data.map((item, index) => {
+                return (
+                  <View key={index}>
+                    <ListItem data={item} productStatus={item.gift_status} description={item.gift} productCode={item.product_code} amount={item.points} time={moment(item.created_at).format('HH:MM a')} />
+
+                  </View>
+
+
+                )
+              })
+            }
+          </View>
+
+        )}
+        keyExtractor={(item, index) => index}
+      />
+      {/* // redeemedListData && redeemedListData.map((item, index) => {
           //   return (
           //     <View key={index} style={{ alignItems: "center", justifyContent: "center", width: '100%' }} >
 
@@ -548,7 +563,7 @@ const RedeemedHistory = ({ navigation }) => {
           //   )
 
           // }) */}
-     
+
 
       {
         fetchGiftsRedemptionsOfUserIsLoading &&
@@ -561,21 +576,21 @@ const RedeemedHistory = ({ navigation }) => {
           resizeMode={FastImage.resizeMode.contain}
         />
       }
-  {/* {console.log("fetchGiftsRedemptionsOfUserData body", redeemedListData)} */}
+      {/* {console.log("fetchGiftsRedemptionsOfUserData body", redeemedListData)} */}
       {
         redeemedListData.length == 0 &&
         <View>
 
-        <FastImage
-          style={{ width: 180, height: 180,marginBottom:-10}}
-          source={{
-            uri: noData, // Update the path to your GIF
-            priority: FastImage.priority.normal,
-          }}
-          resizeMode={FastImage.resizeMode.contain}
-        />
-          <PoppinsTextMedium style={{ color: '#808080',  fontWeight: 'bold' ,marginBottom:200  }} content="NO DATA"></PoppinsTextMedium>
-    </View>
+          <FastImage
+            style={{ width: 180, height: 180, marginBottom: -10 }}
+            source={{
+              uri: noData, // Update the path to your GIF
+              priority: FastImage.priority.normal,
+            }}
+            resizeMode={FastImage.resizeMode.contain}
+          />
+          <PoppinsTextMedium style={{ color: '#808080', fontWeight: 'bold', marginBottom: 200 }} content="NO DATA"></PoppinsTextMedium>
+        </View>
 
 
       }
