@@ -344,7 +344,7 @@ const BankAccounts = ({ navigation, route }) => {
     }
     return (
 
-      <View style={{ alignItems: "flex-start", justifyContent: 'center', width: '90%', height: 110, marginTop: 20, flexDirection: "row", borderBottomWidth: 1, borderColor: '#DDDDDD' }}>
+      <View style={{ alignItems: "flex-start", justifyContent: 'center', width: '90%', height: 70, marginTop: 20, flexDirection: "row", borderBottomWidth: 1, borderColor: '#DDDDDD' }}>
         <Modal
           animationType="slide"
           transparent={true}
@@ -373,7 +373,7 @@ const BankAccounts = ({ navigation, route }) => {
                   setModalVisible(false)
                   deleteData(String(props.id))
 
-                }} style={{ alignItems: "center", justifyContent: "center", backgroundColor: ternaryThemeColor, flexDirection: "row", marginLeft: 40, height: 40, width: 100, borderRadius: 20 }}>
+                }} style={{ alignItems: "center", justifyContent: "center", backgroundColor: ternaryThemeColor, flexDirection: "row", marginLeft: 40, height: 40, width: 100,zIndex:1, borderRadius: 20 }}>
                   <PoppinsTextMedium style={{ color: 'white', marginLeft: 10 }} content="Delete"></PoppinsTextMedium>
                 </TouchableOpacity>
               </View>
@@ -517,11 +517,11 @@ const BankAccounts = ({ navigation, route }) => {
                   justifyContent: 'flex-start',
                   width: '90%',
                   backgroundColor: 'white',
-                  borderColor: '#DDDDDD',
-                  borderWidth: 0.8,
+                  borderColor: ternaryThemeColor,
+                  borderWidth: 2,
                   borderRadius: 10,
                   marginTop: 20,
-                  minHeight: 140
+                  // minHeight: 140
                 }}>
                 {console.log("listAccountData in view", listAccountData?.body.length)}
                 {

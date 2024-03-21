@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, StyleSheet, TouchableOpacity, Image, FlatList, Modal, Pressable, Text, ScrollView } from 'react-native';
+import { View, StyleSheet, TouchableOpacity, Image, FlatList, Modal, Pressable, Text, ScrollView, Touch } from 'react-native';
 import PoppinsText from '../../components/electrons/customFonts/PoppinsText';
 import PoppinsTextMedium from '../../components/electrons/customFonts/PoppinsTextMedium';
 import { useSelector } from 'react-redux';
@@ -16,6 +16,7 @@ import { useCashPerPointMutation } from '../../apiServices/workflow/rewards/GetP
 import { useGetkycStatusMutation } from '../../apiServices/kyc/KycStatusApi';
 import PoppinsTextLeftMedium from '../../components/electrons/customFonts/PoppinsTextLeftMedium';
 import InputDate from '../../components/atoms/input/InputDate';
+import { TouchableWithoutFeedbackBase } from 'react-native';
 
 const RedeemedHistory = ({ navigation }) => {
   const [message, setMessage] = useState();
@@ -24,9 +25,16 @@ const RedeemedHistory = ({ navigation }) => {
   const [redemptionStartData, setRedemptionStartDate] = useState()
   const [redemptionEndDate, setRedemptionEndDate] = useState()
   const [showKyc, setShowKyc] = useState(true)
+  const [enable, setEnable] = useState(false);
   const [redeemedListData, setRedeemedListData] = useState([])
   const [redemptionWindowEligibility, setRedemptionWindowEligibility] = useState(true)
   const [navigateTo, setNavigateTo] = useState()
+
+  const [sDate, setSDate] = useState()
+  const [eDate, setEDate] = useState()
+
+
+  
   const ternaryThemeColor = useSelector(
     state => state.apptheme.ternaryThemeColor,
   )
@@ -109,6 +117,7 @@ const RedeemedHistory = ({ navigation }) => {
       if (influencerRedemptionCategories.length !== 0) {
         setRedemptionStartDate(influencerRedemptionCategories[0].redeem_start_date)
         setRedemptionEndDate(influencerRedemptionCategories[0].redeem_end_date)
+      
       }
       else {
         setRedemptionWindowEligibility(false)
@@ -116,6 +125,11 @@ const RedeemedHistory = ({ navigation }) => {
 
     }
   }, [focused])
+
+
+  useEffect(()=>{
+    setEnable(true)
+  },[sDate,eDate, appUserData])
 
   useEffect(() => {
     if (cashPerPointData) {
@@ -245,24 +259,23 @@ const RedeemedHistory = ({ navigation }) => {
 
         const currentDate = (new Date()).getUTCDate();
 
-        const red_start = (new Date(redeemStartDate).getDate());
-
-        const red_end = (new Date(redeemEndDate)).getDate();
-
         const month =(new Date()).getMonth()
         const year =(new Date()).getFullYear()
 
-        const startD = redeemStartDate +"/" + month + "/" + year 
-        
-
+        setSDate(redeemStartDate)
+        setEDate(redeemEndDate)
+      
 
         console.log("MOnth month", month)
 
 
 
         let isOutOfRange = false;
+        
 
         if ((redeemStartDate != null && redeemEndDate != null) && (currentDate >= redeemStartDate && currentDate <= redeemEndDate)) {
+
+   
 
           console.log("correct redemption date", new Date().getTime(), new Date(redemptionStartData).getTime(), new Date(redemptionEndDate).getTime())
           if (!showKyc) {
@@ -275,8 +288,11 @@ const RedeemedHistory = ({ navigation }) => {
           }
         }
         else {
-          setError(true)
-          setMessage("Redemption window starts from " + redeemStartDate +"/" + month + "/" + year + " and ends on"+ redeemEndDate +"/" + month + "/" + year )
+          if(sDate!=null && sDate!=undefined && eDate!=undefined && eDate!=null){
+            setError(true)
+            setMessage("Redemption window starts from " + sDate +"/" + month + "/" + year + " and ends on"+ eDate +"/" + month + "/" + year )
+          }
+
         }
       }
 
@@ -326,11 +342,14 @@ const RedeemedHistory = ({ navigation }) => {
           {userPointData && <PoppinsText style={{ color: "black" }} content={userPointData.body.point_redeemed}></PoppinsText>}
           <PoppinsTextMedium style={{ color: "black", fontSize: 14 }} content="Lifetime Burns"></PoppinsTextMedium>
         </View>
-        <TouchableOpacity onPress={() => {
+        <Pressable
+        disabled={!enable}
+        onPress={() => {
           handleRedeemButtonPress()
-        }} style={{ borderRadius: 2, height: 40, width: 100, backgroundColor: "#FFD11E", alignItems: "center", justifyContent: "center", marginLeft: 20 }}>
-          <PoppinsTextMedium style={{ color: 'black' }} content="Redeem"></PoppinsTextMedium>
-        </TouchableOpacity>
+        }} 
+        style={{ borderRadius: 2, height: 40, width: 100, backgroundColor: enable ? "#FFD11E" :"#80808080", alignItems: "center", justifyContent: "center", marginLeft: 20 }}>
+          <PoppinsTextMedium style={{ color: enable ?'black' :'white' }} content="Redeem"></PoppinsTextMedium>
+        </Pressable>
       </View>
     )
   }
