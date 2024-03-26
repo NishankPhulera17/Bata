@@ -297,7 +297,9 @@ const Splash = ({ navigation }) => {
           }
           else {
             setTimeout(()=>{
-              navigation.navigate('SelectUser');
+              // navigation.navigate('SelectUser');
+            navigation.reset({ index: '0', routes: [{ name: 'SelectUser' }] })
+
 
             },1000)
           }

@@ -137,8 +137,9 @@ const CustomDrawer = () => {
         fetchProfileFunc(token);
       }
     };
-    if(profileImage)
-    fetchData()},[focused])
+
+    fetchData()
+  },[focused])
 
 
 
