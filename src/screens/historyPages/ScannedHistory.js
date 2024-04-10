@@ -101,6 +101,7 @@ const ScannedHistory = ({ navigation }) => {
       });
     })();
   }, []);
+  
   useEffect(()=>{
     (async () => {
       const credentials = await Keychain.getGenericPassword();
@@ -159,11 +160,11 @@ const ScannedHistory = ({ navigation }) => {
 
       fetchAllQrScanedList({
         token: token,
-
         query_params: queryParams,
       });
     })();
   }
+
   const fetchPoints = async () => {
     const credentials = await Keychain.getGenericPassword();
     const token = credentials.username;

@@ -1358,7 +1358,7 @@ const QrCodeScanner = ({ navigation }) => {
               productDataData && productDataData.body.products.length !== 0 &&
               <ButtonProceed
                 handleOperation={handleAddQr}
-                style={{ color: 'white' }}
+                style={{ color: 'white' , marginBottom:30}}
                 content={isDistributor ? "Revert Bar & Points" : "Proceed"}
                 navigateTo={'QrCodeScanner'}></ButtonProceed>
             }
@@ -1642,7 +1642,7 @@ content="Please start scanning by pointing the camera towards the Bar Code"></Po
               productDataData && productDataData.body.products.length !== 0 &&
               <ButtonProceed
                 handleOperation={isDistributor ? handleReturnBar : handleAddBar}
-                style={{ color: 'white', marginBottom:30 }}
+                style={{ color: 'white', marginBottom:50 }}
                 // content="Proceed"
                 content={isDistributor ? "Revert Bar & Points" : "Proceed"}
 
