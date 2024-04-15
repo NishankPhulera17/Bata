@@ -57,8 +57,10 @@ const AddBankDetails = ({navigation}) => {
     // const bankNames=["State Bank Of India","Punjab National Bank","IndusInd Bank","Canara Bank","Axis bank","HDFC Bank"]
     const bankNames = [
         "Axis Bank",
+        "Bandhan Bank",
         "Bank of Baroda",
         "Bank of India",
+        "Bank of Maharashtra",
         "Canara Bank",
         "Central Bank of India",
         "Federal Bank",
@@ -68,9 +70,14 @@ const AddBankDetails = ({navigation}) => {
         "Indian Bank",
         "IndusInd Bank",
         "Kotak Mahindra Bank",
+        "Karnataka Bank",
         "Punjab National Bank",
+        "Punjab and Sind Bank",
+        "Nainital Bank",
+        "Dhanlaxmi Bank",
         "State Bank Of India",
         "Union Bank of India",
+        "UCO Bank",
         "Yes Bank"
       ];
     const accountType = ["Current","Savings"]
