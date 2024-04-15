@@ -125,8 +125,27 @@ const PointHistory = ({ navigation }) => {
             setIsLoading(false)
         }
     }, [getPointSharingIsLoading, fetchUserPointsHistoryLoading])
+    const fetchPointHistoryData=(start,end)=>{
 
-    const fetchDataAccToFilter = (startDate, endDate) => {
+        (async () => {
+          const credentials = await Keychain.getGenericPassword();
+          const token = credentials.username;
+          const startDate = moment(start).format(
+            "YYYY-MM-DD"
+          )
+          const endDate = moment(end).format("YYYY-MM-DD")
+          console.log("Start End",startDate,endDate)
+    
+          fetchUserPointsHistoryFunc({
+            startDate:startDate,
+            endDate:endDate,
+            token: token,
+            userId:userId
+          });
+        })();
+      }
+    
+    const fetchDataAccToFilter = () => {
 
         console.log("fetchDataAccToFilter", startDate, endDate)
         if (startDate && endDate) {
@@ -136,8 +155,8 @@ const PointHistory = ({ navigation }) => {
                 endDate = undefined
             }
             else {
-                // fetchScannedHistoryData(startDate,endDate)
-                fetchUserPointsHistoryDataFunc(startDate, endDate)
+                fetchPointHistoryData(startDate,endDate)
+
             }
 
         }
@@ -148,35 +167,35 @@ const PointHistory = ({ navigation }) => {
         }
     }
 
-    const fetchPointHistoryData = (start, end) => {
+    // const fetchPointHistoryData = (start, end) => {
 
-        (async () => {
-            const credentials = await Keychain.getGenericPassword();
-            const token = credentials.username;
+    //     (async () => {
+    //         const credentials = await Keychain.getGenericPassword();
+    //         const token = credentials.username;
 
-            console.log("Start End", start, end)
+    //         console.log("Start End", start, end)
 
-            let queryParams = `?user_type_id=${userData.user_type_id}&app_user_id=${userData.id}&limit=${limit}`;
+    //         let queryParams = `?user_type_id=${userData.user_type_id}&app_user_id=${userData.id}&limit=${limit}`;
 
-            if (start && end) {
-                queryParams += `&from_date=${moment(start).format(
-                    "YYYY-MM-DD"
-                )}&to_date=${moment(end).format("YYYY-MM-DD")}`;
-            } else if (start) {
-                queryParams += `&from_date=${moment(start).format(
-                    "YYYY-MM-DD"
-                )}`;
-            }
+    //         if (start && end) {
+    //             queryParams += `&from_date=${moment(start).format(
+    //                 "YYYY-MM-DD"
+    //             )}&to_date=${moment(end).format("YYYY-MM-DD")}`;
+    //         } else if (start) {
+    //             queryParams += `&from_date=${moment(start).format(
+    //                 "YYYY-MM-DD"
+    //             )}`;
+    //         }
 
-            console.log("queryParams", queryParams);
+    //         console.log("queryParams", queryParams);
 
-            fetchAllQrScanedList({
-                token: token,
+    //         fetchAllQrScanedList({
+    //             token: token,
 
-                query_params: queryParams,
-            });
-        })();
-    }
+    //             query_params: queryParams,
+    //         });
+    //     })();
+    // }
 
     const getRegistrationPoints = async (cause) => {
         const credentials = await Keychain.getGenericPassword();

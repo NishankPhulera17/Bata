@@ -17,6 +17,7 @@ import { useGetkycStatusMutation } from '../../apiServices/kyc/KycStatusApi';
 import PoppinsTextLeftMedium from '../../components/electrons/customFonts/PoppinsTextLeftMedium';
 import InputDate from '../../components/atoms/input/InputDate';
 import { TouchableWithoutFeedbackBase } from 'react-native';
+import Close from 'react-native-vector-icons/Ionicons';
 
 const RedeemedHistory = ({ navigation }) => {
   const [message, setMessage] = useState();
@@ -309,6 +310,12 @@ const RedeemedHistory = ({ navigation }) => {
           }}>
           <View style={styles.centeredView}>
             <View style={styles.modalView}>
+              <TouchableOpacity onPress={()=>{
+                setModalVisible(false)
+              }} style={{height:40,width:40,borderRadius:20,backgroundColor:"red",alignItems:'center',justifyContent:'center',position:'absolute',top:-10,right:0}}>
+              <Close color="white" name="close" size={30}></Close>
+
+              </TouchableOpacity>
               <Image style={{ height: 80, width: 80, marginTop: 20 }} source={require('../../../assets/images/gift1.png')}></Image>
               <PoppinsTextMedium style={{ color: 'black', width: 300, marginTop: 20 }} content="Do you want redeem your point with amazing gift or cashback"></PoppinsTextMedium>
               <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: "center", marginTop: 20 }}>
@@ -374,7 +381,6 @@ const RedeemedHistory = ({ navigation }) => {
 
     const ModalContent = (props) => {
       const [startDate, setStartDate] = useState("")
-      const [openBottomModal, setOpenBottomModal] = useState(false)
       const [endDate, setEndDate] = useState("")
 
 
@@ -394,13 +400,13 @@ const RedeemedHistory = ({ navigation }) => {
       }
       return (
         <View style={{ height: 320, backgroundColor: 'white', width: '100%', borderTopRightRadius: 20, borderTopLeftRadius: 20 }}>
+         <TouchableOpacity onPress={()=>{
+                setOpenBottomModal(false)
+              }} style={{height:40,width:40,borderRadius:20,backgroundColor:"red",alignItems:'center',justifyContent:'center',position:'absolute',top:-10,right:0}}>
+              <Close color="white" name="close" size={30}></Close>
 
-          {openBottomModal && <FilterModal
-            modalClose={modalClose}
-            message={message}
-            openModal={openBottomModal}
-            handleFilter={onFilter}
-            comp={ModalContent}></FilterModal>}
+              </TouchableOpacity>
+          
 
           <PoppinsTextLeftMedium content="Date Filter" style={{ color: 'black', marginTop: 20, marginLeft: '35%', fontWeight: 'bold' }}></PoppinsTextLeftMedium>
           <View>

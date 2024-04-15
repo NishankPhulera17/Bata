@@ -1418,7 +1418,7 @@ const QrCodeScanner = ({ navigation }) => {
           focusable={true}
           // frameProcessor={frameProcessor}
           // frameProcessorFps={5}
-          style={{ height: '60%' }}
+          style={{ height: '40%' }}
           device={device}
           isActive={true}
           torch={flash ? "on" : "off"}
@@ -1488,25 +1488,7 @@ const QrCodeScanner = ({ navigation }) => {
                     style={{ height: 16, width: 16, resizeMode: 'contain', alignSelf: 'center' }}
                     source={require('../../../assets/images/qrQuestionMark.png')}></Image>
                 </TouchableOpacity>
-                {/* <TouchableOpacity
-                  onPress={() => {
-                    handleZoom();
-                  }}
-                  style={{
-                    backgroundColor: 'black',
-                    height: 34,
-                    width: 34,
-                    borderRadius: 17,
-                    position: 'absolute',
-                    right: 5,
-                    top: 3,
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  }}>
-                  <Text style={{ fontSize: 14, color: '#FB774F' }}>
-                    {zoomText}X
-                  </Text>
-                </TouchableOpacity> */}
+               
               </View>
             </View>
           </View>
@@ -1535,26 +1517,17 @@ const QrCodeScanner = ({ navigation }) => {
                 style={{ height: 44, width: 44, resizeMode: 'contain', }}
                 source={require('../../../assets/images/qrTorch.png')}></Image>
             </TouchableOpacity>
-            {/* <TouchableOpacity
-              onPress={() => {
-                handleOpenImageGallery();
-              }}
-              style={{ height: 44, width: 44, margin: 20 }}>
-              <Image
-                style={{ height: 44, width: 44, resizeMode: 'contain' }}
-                source={require('../../../assets/images/qrGallery.png')}></Image>
-            </TouchableOpacity> */}
+           
           </View>
         </View>
 
-        <View>
 
           <View
             style={{
-              height: height - 100,
+              height: '60%',
               backgroundColor: 'white',
               width: '100%',
-              top: platformMargin,
+              // top: platformMargin,
               borderRadius: 30,
               alignItems: 'center',
               justifyContent: 'flex-start',
@@ -1597,9 +1570,7 @@ const QrCodeScanner = ({ navigation }) => {
                   <Image
                     style={{ height: 300, width: 300, resizeMode: 'contain' }}
                     source={require('../../../assets/images/barHowTo.png')}></Image>
-                  {/* <PoppinsTextMedium
-style={{ color: 'grey', fontWeight: '700', fontSize: 20 }}
-content="Please start scanning by pointing the camera towards the Bar Code"></PoppinsTextMedium> */}
+                  
                 </ScrollView>
               </View>
             ) : (
@@ -1608,10 +1579,12 @@ content="Please start scanning by pointing the camera towards the Bar Code"></Po
                   width: '100%',
                   alignItems: 'center',
                   justifyContent: 'center',
+                  height:'100%',
+                // backgroundColor:'red'
                 }}>
                 {console.log("addede QRLIST", addedQrList)}
                 <FlatList
-                  style={{ width: '100%', height: 400 }}
+                  style={{ width: '100%', height: '80%' }}
                   data={addedQrList}
                   renderItem={({ item, index }) => (
                     <View
@@ -1636,10 +1609,8 @@ content="Please start scanning by pointing the camera towards the Bar Code"></Po
                   )}
                   keyExtractor={item => item.id}
                 />
-              </View>
-            )}
-            {
-              productDataData && productDataData.body.products.length !== 0 &&
+                {
+              
               <ButtonProceed
                 handleOperation={isDistributor ? handleReturnBar : handleAddBar}
                 style={{ color: 'white', marginBottom:50 }}
@@ -1648,8 +1619,10 @@ content="Please start scanning by pointing the camera towards the Bar Code"></Po
 
                 navigateTo={'QrCodeScanner'}></ButtonProceed>
             }
+              </View>
+            )}
+            
           </View>
-        </View>
 
 
 

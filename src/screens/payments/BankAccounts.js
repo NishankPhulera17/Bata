@@ -496,7 +496,7 @@ const BankAccounts = ({ navigation, route }) => {
           </View>
 
         </ScrollView>
-        <View style={{ flexDirection: "row", alignItems: 'center', justifyContent: 'center', position: 'absolute', bottom: 10, right: 20 }}>
+        <View style={{ flexDirection: "row", alignItems: 'center', justifyContent: 'center', position: 'absolute', bottom: 20, right: 20 }}>
           <PoppinsText content="Add Account" style={{ color: ternaryThemeColor, fontSize: 16 }}></PoppinsText>
           <TouchableOpacity onPress={() => { navigation.navigate('AddBankAccountAndUpi') }} style={{ backgroundColor: '#DDDDDD', height: 60, width: 60, borderRadius: 30, alignItems: "center", justifyContent: 'center', marginLeft: 10 }}>
 

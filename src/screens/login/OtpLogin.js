@@ -98,7 +98,7 @@ const OtpLogin = ({ navigation, route }) => {
   const user_type_id = route.params.userId;
   const user_type = route.params.userType;
   const registrationRequired = route.params.registrationRequired
-  console.log("registrationRequired", registrationRequired, user_type)
+  // console.log("registrationRequired", registrationRequired, user_type)
   const width = Dimensions.get('window').width;
   const navigationParams = { "needsApproval": needsApproval, "user_type_id": user_type_id, "user_type": user_type, "mobile": mobile, "name": name }
 
@@ -395,7 +395,7 @@ const OtpLogin = ({ navigation, route }) => {
 
 
         </View>
-        {error && <ErrorModal modalClose={modalClose} message={message} openModal={error}></ErrorModal>}
+        {error && <ErrorModal modalClose={modalClose} title="" message={message} openModal={error}></ErrorModal>}
 
         {/* {registrationRequired && <View style={{width:"100%",alignItems:'center',justifyContent:"center",marginTop:20}}>
         <PoppinsTextMedium style={{fontSize:18}} content ="Don't have an account ?"></PoppinsTextMedium>
