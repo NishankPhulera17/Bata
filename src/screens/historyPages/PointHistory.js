@@ -167,6 +167,36 @@ const PointHistory = ({ navigation }) => {
         }
     }
 
+    // const fetchPointHistoryData = (start, end) => {
+
+    //     (async () => {
+    //         const credentials = await Keychain.getGenericPassword();
+    //         const token = credentials.username;
+
+    //         console.log("Start End", start, end)
+
+    //         let queryParams = `?user_type_id=${userData.user_type_id}&app_user_id=${userData.id}&limit=${limit}`;
+
+    //         if (start && end) {
+    //             queryParams += `&from_date=${moment(start).format(
+    //                 "YYYY-MM-DD"
+    //             )}&to_date=${moment(end).format("YYYY-MM-DD")}`;
+    //         } else if (start) {
+    //             queryParams += `&from_date=${moment(start).format(
+    //                 "YYYY-MM-DD"
+    //             )}`;
+    //         }
+
+    //         console.log("queryParams", queryParams);
+
+    //         fetchAllQrScanedList({
+    //             token: token,
+
+    //             query_params: queryParams,
+    //         });
+    //     })();
+    // }
+
     const getRegistrationPoints = async (cause) => {
         const credentials = await Keychain.getGenericPassword();
         const token = credentials.username;
@@ -177,6 +207,43 @@ const PointHistory = ({ navigation }) => {
         }
         getPointSharingFunc(params)
 
+    }
+
+    const fetchUserPointsHistoryDataFunc = (start, end) => {
+
+        (async () => {
+            const credentials = await Keychain.getGenericPassword();
+            const token = credentials.username;
+            console.log("Start End", start, end)
+            let queryParams = ``
+            // let queryParams = `?user_type_id=${userData.user_type_id}&app_user_id=${userData.id}&limit=${limit}`;
+            if (start && end) {
+                queryParams += `&startDate=${moment(start).format(
+                    "YYYY-MM-DD"
+                )}&endDate=${moment(end).format("YYYY-MM-DD")}`;
+            } else if (start) {
+                queryParams += `&startDate=${moment(start).format(
+                    "YYYY-MM-DD"
+                )}`;
+            }
+
+            console.log("queryParams", queryParams);
+            const params = {
+                userId: String(userId),
+                token: token,
+                queryParams:queryParams
+            }
+
+            // fetchAllQrScanedList({
+            //     token: token,
+            //     query_params: queryParams,
+            // });
+
+            fetchUserPointsHistoryFunc({
+                params:params,
+            })
+
+        })();
     }
 
     //Point category tab
@@ -271,7 +338,9 @@ const PointHistory = ({ navigation }) => {
                     <View>
                         <InputDate data="End Date" handleData={handleEndDate} />
                     </View>
-                    <TouchableOpacity onPress={() => { fetchDataAccToFilter() }} style={{ backgroundColor: ternaryThemeColor, marginHorizontal: 50, height: 40, alignItems: 'center', justifyContent: 'center', marginTop: 10, borderRadius: 10 }}>
+                    <TouchableOpacity onPress={() => {
+                        fetchDataAccToFilter(startDate, endDate)
+                    }} style={{ backgroundColor: ternaryThemeColor, marginHorizontal: 50, height: 40, alignItems: 'center', justifyContent: 'center', marginTop: 10, borderRadius: 10 }}>
                         <PoppinsTextMedium content="SUBMIT" style={{ color: 'white', fontSize: 20, borderRadius: 10, }}></PoppinsTextMedium>
                     </TouchableOpacity>
 
@@ -322,7 +391,7 @@ const PointHistory = ({ navigation }) => {
     const ListItem = (props) => {
         const description = props.description
         const productCode = props.productCode
-     
+
         const time = props.time
         const amount = props.amount
         const status = props.status
@@ -337,7 +406,7 @@ const PointHistory = ({ navigation }) => {
         return (
             <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center", margin: 8, borderBottomWidth: 1, borderColor: '#DDDDDD', paddingBottom: 10, width: '100%', height: 100, backgroundColor: 'white' }}>
                 <View style={{ height: 60, width: '14%', alignItems: "center", justifyContent: "center", borderRadius: 10, borderWidth: 1, borderColor: '#DDDDDD', position: 'absolute', left: 10, }}>
-                    {image ? <Image style={{ height: 40, width: 40, resizeMode: "contain" }} source={{ uri:  image }}></Image> : <Image style={{ height: 40, width: 40, resizeMode: "contain" }} source={require('../../../assets/images/batalogo.png')}></Image>}
+                    {image ? <Image style={{ height: 40, width: 40, resizeMode: "contain" }} source={{ uri: image }}></Image> : <Image style={{ height: 40, width: 40, resizeMode: "contain" }} source={require('../../../assets/images/batalogo.png')}></Image>}
                 </View>
                 <View style={{ alignItems: "flex-start", justifyContent: "center", position: 'absolute', left: 80, width: '60%' }}>
                     {type !== "registration_bonus" && <PoppinsTextMedium style={{ fontWeight: '700', fontSize: 14, color: 'black' }} content={description}></PoppinsTextMedium>}
@@ -423,9 +492,9 @@ const PointHistory = ({ navigation }) => {
                 contentContainerStyle={{ backgroundColor: "white", paddingBottom: 200 }}
                 showsVerticalScrollIndicator={false}
                 renderItem={({ item, index }) => {
-                    console.log("item of displaylist",index + 1, item)
+                    console.log("item of displaylist", index + 1, item)
                     return (
-                        <ListItem  type={item?.cause?.type} image={item?.images === undefined ? undefined : item?.images?.[0]} description={item?.product_name} productCode={item?.product_code} amount={item?.points} status={item?.status} points={item?.points} is_reverted={item?.is_reverted}mrp={item.mrp} date={moment(item?.created_at).format("DD-MMM-YYYY")} time={moment(item?.created_at).format("HH:mm a")} />
+                        <ListItem type={item?.cause?.type} image={item?.images === undefined ? undefined : item?.images?.[0]} description={item?.product_name} productCode={item?.product_code} amount={item?.points} status={item?.status} points={item?.points} is_reverted={item?.is_reverted} mrp={item.mrp} date={moment(item?.created_at).format("DD-MMM-YYYY")} time={moment(item?.created_at).format("HH:mm a")} />
                     )
                 }}
                 keyExtractor={(item, index) => index}

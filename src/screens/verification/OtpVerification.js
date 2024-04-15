@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState,useCallback } from "react";
 import {
   View,
   StyleSheet,
@@ -21,30 +21,24 @@ import { useRedeemCashbackMutation } from "../../apiServices/cashback/CashbackRe
 import { useGetLoginOtpForVerificationMutation } from "../../apiServices/otp/GetOtpApi";
 import { useAddCashToBankMutation } from "../../apiServices/cashback/CashbackRedeemApi";
 import Geolocation from '@react-native-community/geolocation';
-import FastImage from "react-native-fast-image";
+// import { useCreateCouponRequestMutation } from "../../apiServices/coupons/getAllCouponsApi";
 import {GoogleMapsKey} from "@env"
 
 
-
-const OtpVerification = ({ navigation, route }) => {
+const OtpVerification = ({navigation,route}) => {
   const [message, setMessage] = useState();
   const [otp, setOtp] = useState()
   const [error, setError] = useState(false);
   const [success, setSuccess] = useState(false);
   const [mobile, setMobile] = useState();
   const [timer, setTimer] = useState(60)
-  const [showRedeemButton, setShowRedeemButton] = useState(false)
-  const [location, setLocation] = useState()
-  const [verifiedOtp, setOtpVerified] = useState(false)
-  const[loading, setIsLoading] = useState(false)
+  const [showRedeemButton,setShowRedeemButton] = useState(false)
+  const [location,setLocation] = useState()
   const timeOutCallback = useCallback(() => setTimer(currTimer => currTimer - 1), []);
 
-  const gifUri = Image.resolveAssetSource(require('../../../assets/gif/loader.gif')).uri;
-
-
-  const pointsConversion = useSelector(state => state.redemptionData.pointConversion)
-  const cashConversion = useSelector(state => state.redemptionData.cashConversion)
-  // console.log("Point conversion and cash conversion data", pointsConversion, cashConversion)
+  const pointsConversion = useSelector(state=>state.redemptionData.pointConversion)
+  const cashConversion = useSelector(state=>state.redemptionData.cashConversion)
+console.log("Point conversion and cash conversion data",pointsConversion,cashConversion)
   const [
     verifyOtpForNormalUseFunc,
     {
@@ -54,7 +48,7 @@ const OtpVerification = ({ navigation, route }) => {
       isError: verifyOtpForNormalUseIsError,
     },
   ] = useVerifyOtpForNormalUseMutation();
-
+  
   const [redeemGiftsFunc, {
     data: redeemGiftsData,
     error: redeemGiftsError,
@@ -71,11 +65,11 @@ const OtpVerification = ({ navigation, route }) => {
     },
   ] = useRedeemCashbackMutation();
 
-  const [addCashToBankFunc, {
-    data: addCashToBankData,
-    error: addCashToBankError,
-    isError: addCashToBankIsError,
-    isLoading: addCashToBankIsLoading
+  const [addCashToBankFunc,{
+    data:addCashToBankData,
+    error:addCashToBankError,
+    isError:addCashToBankIsError,
+    isLoading:addCashToBankIsLoading
   }] = useAddCashToBankMutation()
 
   const [
@@ -88,38 +82,41 @@ const OtpVerification = ({ navigation, route }) => {
     },
   ] = useGetLoginOtpForVerificationMutation();
 
+  // const [createCouponRequestFunc,{
+  //   data:createCouponRequestData,
+  //   error:createCouponRequestError,
+  //   isLoading:createCouponRequestIsLoading,
+  //   isError:createCouponRequestIsError
+  // }] = useCreateCouponRequestMutation()
+  
   const type = route.params.type
   const selectedAccount = route.params?.selectedAccount
-
-  const handleCashbackRedemption = async () => {
-    setIsLoading(true)
-    console.log(
-      'Location ', location
-    );
-
+  const brand_product_code = route.params?.brand_product_code
+  const handleCashbackRedemption=async()=>{
     const credentials = await Keychain.getGenericPassword();
-    console.log("credentials97", credentials)
-  
-   
+    if (credentials) {
+      console.log(
+        'Credentials successfully loaded for user ' + credentials.username
+      );
       const token = credentials.username
       const params = {
         token: token,
         body: {
-          platform_id: "1",
+          platform_id: 1,
           platform: "mobile",
-          cash: String(cashConversion),
+          cash: cashConversion,
           remarks: "demo",
-          state: location?.state === undefined ? "N/A" : location.state,
-          district: location?.district  === undefined ? "N/A" : location.district,
-          city: location?.city=== undefined ? "N/A" : location.city,
-          lat: location?.lat == undefined ? "N/A" : location.lat,
-          log: location?.lon == undefined ? "N/A" : location.lon,
+          state: location.state===undefined ? "N/A" : location.state,
+          district: location.district===undefined ? "N/A" : location.district,
+          city: location.city===undefined ? "N/A" : location.city,
+          lat: location.lat,
+          log: location.lon,
           active_beneficiary_account_id: selectedAccount
         },
       }
-      console.log("addCashToBankFunc params116", params, location.state)
+      console.log("addCashToBankFunc",params)
       addCashToBankFunc(params)
-    
+    }
 
   }
 
@@ -131,18 +128,18 @@ const OtpVerification = ({ navigation, route }) => {
     let lat = ''
     let lon = ''
     Geolocation.getCurrentPosition((res) => {
-      // console.log("res", res)
+      console.log("res", res)
       lat = res.coords.latitude
       lon = res.coords.longitude
       // getLocation(JSON.stringify(lat),JSON.stringify(lon))
-      // console.log("latlong", lat, lon)
+      console.log("latlong", lat, lon)
       var url = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${res.coords.latitude},${res.coords.longitude}
         &location_type=ROOFTOP&result_type=street_address&key=${GoogleMapsKey}`
 
       fetch(url).then(response => response.json()).then(json => {
         console.log("location address=>", JSON.stringify(json));
         const formattedAddress = json.results[0].formatted_address
-        const formattedAddressArray = formattedAddress.split(',')
+        const formattedAddressArray = formattedAddress?.split(',')
 
         let locationJson = {
 
@@ -198,55 +195,73 @@ const OtpVerification = ({ navigation, route }) => {
   }, [])
 
 
-  useEffect(() => {
-    if (redeemCashbackData) {
-      console.log("redeemCashbackData", redeemCashbackData)
-      if (redeemCashbackData) {
-        handleCashbackRedemption()
-      }
-      // setSuccess(true)
-      // setMessage(redeemCashbackData.message)
-
-
-
+  useEffect(()=>{
+    if(redeemCashbackData)
+    {
+      setShowRedeemButton(true)
+        console.log("redeemCashbackData",redeemCashbackData)
+        if(redeemCashbackData.success)
+        {
+          handleCashbackRedemption()
+        }
+        // setSuccess(true)
+        // setMessage(redeemCashbackData.message)
+       
+        
+        
     }
-    else if (redeemCashbackError) {
-      console.log("redeemCashbackError", redeemCashbackError)
-
-      setError(true)
-      setMessage(redeemCashbackError.data.message)
-
-
+    else if(redeemCashbackError){
+      console.log("redeemCashbackError",redeemCashbackError)
+      setShowRedeemButton(true)
+        setError(true)
+        setMessage(redeemCashbackError.data.message)
+      
+        
     }
-  }, [redeemCashbackData, redeemCashbackError])
+  },[redeemCashbackData,redeemCashbackError])
 
-  useEffect(() => {
-    if (addCashToBankData) {
-      console.log("addCashToBankData", addCashToBankData)
+  // useEffect(()=>{
+  //   if(createCouponRequestData)
+  //   {
+  //     console.log("createCouponRequestData",createCouponRequestData)
+  //     setSuccess(true)
+  //     setMessage(createCouponRequestData.message)
+  //   }
+  //   else if(createCouponRequestError)
+  //   {
+  //     console.log("createCouponRequestError",createCouponRequestError)
+  //     setError(true)
+  //     setMessage(createCouponRequestError.data?.message)
+  //   }
+  // },[createCouponRequestData,createCouponRequestError])
+
+  useEffect(()=>{
+    if(addCashToBankData)
+    {
+      console.log("addCashToBankData",addCashToBankData)
       setSuccess(true)
       setMessage(addCashToBankData.message)
-      setIsLoading(false)
     }
-    else if (addCashToBankError) {
-      console.log("addCashToBankError", addCashToBankError)
+    else if(addCashToBankError)
+    {
+      console.log("addCashToBankError",addCashToBankError)
       setError(true)
-      setIsLoading(false)
-      setMessage(addCashToBankError.data.message+"")
+      setMessage(addCashToBankError.data?.message)
     }
-  }, [addCashToBankData, addCashToBankError])
+  },[addCashToBankData,addCashToBankError])
 
   useEffect(() => {
     if (verifyOtpForNormalUseData) {
       console.log("Verify Otp", verifyOtpForNormalUseData)
       if (verifyOtpForNormalUseData.success) {
-        setOtpVerified(true)
-
+        
+       
       }
     } else if (verifyOtpForNormalUseError) {
       console.log("verifyOtpForNormalUseError", verifyOtpForNormalUseError)
       setError(true)
       setMessage("Please Enter The Correct OTP")
-
+      
     }
   }, [verifyOtpForNormalUseData, verifyOtpForNormalUseError]);
 
@@ -255,13 +270,14 @@ const OtpVerification = ({ navigation, route }) => {
       console.log("redeemGiftsData", redeemGiftsData)
       setSuccess(true)
       setMessage(redeemGiftsData.message)
-      setIsLoading(false)
+      setShowRedeemButton(true)
     }
     else if (redeemGiftsError) {
       console.log("redeemGiftsError", redeemGiftsError)
       setMessage(redeemGiftsError.data.message)
       setError(true)
-      setIsLoading(false)
+      setShowRedeemButton(true)
+
     }
   }, [redeemGiftsError, redeemGiftsData])
 
@@ -271,20 +287,22 @@ const OtpVerification = ({ navigation, route }) => {
     ? useSelector((state) => state.apptheme.ternaryThemeColor)
     : "grey";
   const cart = useSelector((state) => state.cart.cart);
-  const address = useSelector(state => state.address.address)
+    const address = useSelector(state=>state.address.address)
   const userData = useSelector((state) => state.appusersdata.userData);
 
-  // console.log("cart and address", cart, address);
+  console.log("cart and address", cart,address,userData);
   useEffect(() => {
     if (getOtpforVerificationData) {
       console.log("getOtpforVerificationData", getOtpforVerificationData);
-
+      
     } else if (getOtpforVerificationError) {
       console.log("getOtpforVerificationError", getOtpforVerificationError);
+      setError(true)
+      setMessage(getOtpforVerificationError?.data?.message)
     }
   }, [getOtpforVerificationData, getOtpforVerificationError]);
 
-
+  
 
   const getOtpFromComponent = (value) => {
     if (value.length === 6) {
@@ -295,76 +313,100 @@ const OtpVerification = ({ navigation, route }) => {
     }
   };
 
-  const handleOtpSubmission = (otp) => {
+  const handleOtpSubmission=(otp)=>{
     const mobile = userData.mobile;
-    const name = userData.name;
-    const user_type_id = userData.user_type_id;
-    const user_type = userData.user_type;
-    const type = "redemption"
-
-    verifyOtpForNormalUseFunc({ mobile, name, otp, user_type_id, user_type, type });
-
+      const name = userData.name;
+      const user_type_id = userData.user_type_id;
+      const user_type = userData.user_type;
+      const type = "redemption"
+      
+      verifyOtpForNormalUseFunc({ mobile, name, otp, user_type_id, user_type , type});
+      
   }
   const modalClose = () => {
     setError(false);
     setSuccess(false)
   };
-  const finalGiftRedemption = async () => {
-    setIsLoading(true)
-    console.log("Cashback type", type)
+  const finalGiftRedemption=async()=>{
+    setShowRedeemButton(false)
     const credentials = await Keychain.getGenericPassword();
     if (credentials) {
       console.log(
         'Credentials successfully loaded for user ' + credentials.username
       );
       const token = credentials.username
-      if (type === "Gift") {
-        let tempID = []
-        cart && cart.map((item, index) => {
-          tempID.push(((item.gift_id)))
-        })
-        console.log("tempID", tempID)
+    if(type==="Gift")
+    {
+      let tempID = []
+    cart && cart.map((item, index) => {
+      tempID.push(((item.gift_id)))
+    })
+    console.log("tempID", tempID)
 
-        const data = {
-          "user_type_id": String(userData.user_type_id),
-          "user_type": userData.user_type,
-          "platform_id": 1,
-          "platform": "mobile",
-          "gift_ids": tempID,
-          "approved_by_id": "1",
-          "app_user_id": String(userData.id),
-          "remarks": "demo",
-          "type": "point",
-          "address_id": address.data.id
-        }
-        const params = {
-          token: token,
-          data: data
-        }
-        redeemGiftsFunc(params)
-
+    
+      const data = {
+        "user_type_id": String(userData.user_type_id),
+        "user_type": userData.user_type,
+        "platform_id": 1,
+        "platform": "mobile",
+        "gift_ids": tempID,
+        "approved_by_id": "1",
+        "app_user_id": String(userData.id),
+        "remarks": "demo",
+        "type": "point",
+        "address_id": address.data.id
       }
-      else if (type === "Cashback") {
-        const params = {
-          data: {
-            user_type_id: String(userData.user_type_id),
-            user_type: userData.user_type,
-            platform_id: "1",
-            platform: 'mobile',
-            points: String(pointsConversion),
-            app_user_id: String(userData.id),
-            remarks: 'demo'
-          },
-          token: token
-        };
-        redeemCashbackFunc(params)
-        console.log("params cashback", params)
+      const params = {
+        token: token,
+        data: data
       }
+      redeemGiftsFunc(params)
+    
     }
+    else if(type==="Cashback"){
+      const params = {
+        data :{ user_type_id: userData.user_type_id,
+         user_type: userData.user_type,
+         platform_id: 1,
+         platform: 'mobile',
+         points: Number(pointsConversion),
+         approved_by_id: 1,
+         app_user_id: userData.id,
+         remarks: 'demo'},
+         token:token
+       };
+       redeemCashbackFunc(params)
+       console.log("params",params)
+    }
+    else if(type==="Coupon"){
+      
+      const params = {
+        data :{ 
+        name: userData.name,
+        email: userData.email == null ? "appgenuinemark@gmail.com" : userData.email == undefined ? "appgenuinemark@gmail.com" : userData.email,
+        mobile: userData.mobile,
+        brand_product_code:brand_product_code,
+         user_type_id: userData.user_type_id,
+         user_type: userData.user_type,
+         platform_id: 1,
+         platform: 'mobile',
+         app_user_id: userData.id,
+         state: location.state,
+         district: location.district,
+         city:location.city,
+         lat: location.lat,
+         log: location.lon
+        },
+         token:token,
+       };
+      //  createCouponRequestFunc(params)
+       console.log("Coupon params",params)
+    }
+  }
 
   }
 
-  const handleOtpResend = () => {
+  const handleOtpResend=()=>{
     if (!timer) {
       setTimer(60);
       getMobile(mobile)
@@ -446,19 +488,18 @@ const OtpVerification = ({ navigation, route }) => {
             title={"Thanks"}
             message={message}
             openModal={success}
-            params={"Redeem"}
-            navigateTo="CashbackHistory"
+            navigateTo="RedeemedHistory"
           ></MessageModal>
         )}
       </View>
-      <View style={{ alignItems: 'center', justifyContent: "center", width: '100%', backgroundColor: ternaryThemeColor, padding: 20, marginBottom: 60, marginTop: 20 }}>
-        <PoppinsTextMedium style={{ color: 'white', fontSize: 16 }} content="OTP has been sent to your registered mobile number"></PoppinsTextMedium>
+      <View style={{alignItems:'center',justifyContent:"center",width:'100%',backgroundColor:ternaryThemeColor,padding:20,marginBottom:60,marginTop:20}}>
+        <PoppinsTextMedium style={{color:'white',fontSize:16}} content="OTP has been sent to your registered mobile number"></PoppinsTextMedium>
       </View>
       <TextInputRectangularWithPlaceholder
         placeHolder="Mobile No"
         handleData={getMobile}
         maxLength={10}
-        editable={false}
+        editable = {false}
         value={userData.mobile}
       ></TextInputRectangularWithPlaceholder>
 
@@ -469,66 +510,41 @@ const OtpVerification = ({ navigation, route }) => {
           justifyContent: "center",
         }}
       >
-        {!verifiedOtp &&
-          <View>
-            <OtpInput
-              getOtpFromComponent={getOtpFromComponent}
-              color={"white"}
-            ></OtpInput>
-            <PoppinsTextMedium content="Enter OTP" style={{ color: 'black', fontSize: 20, fontWeight: '800' }}></PoppinsTextMedium>
-            <View style={{ alignItems: 'center', justifyContent: 'center' }}>
-              <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginTop: 4 }}>
-                <Image
+        <OtpInput
+          getOtpFromComponent={getOtpFromComponent}
+          color={"white"}
+        ></OtpInput>
+        <PoppinsTextMedium content = "Enter OTP" style={{color:'black',fontSize:20,fontWeight:'800'}}></PoppinsTextMedium>
+        <View style={{alignItems:'center',justifyContent:'center'}}>
+              <View style={{flexDirection:'row',justifyContent:'center',alignItems:'center',marginTop:4}}>
+              <Image
                   style={{
                     height: 20,
                     width: 20,
                     resizeMode: 'contain',
-
+                    
                   }}
                   source={require('../../../assets/images/clock.png')}></Image>
-                <Text style={{ color: ternaryThemeColor, marginLeft: 4 }}>{timer}</Text>
+                  <Text style={{color:ternaryThemeColor,marginLeft:4}}>{timer}</Text>
               </View>
-              <View style={{ alignItems: 'center', justifyContent: 'center' }}>
-                <Text style={{ color: ternaryThemeColor, marginTop: 10 }}>Didn't recieve any Code?</Text>
-
-                {timer === 0 &&
-                  <Text onPress={() => { handleOtpResend() }} style={{ color: ternaryThemeColor, marginTop: 6, fontWeight: '600', fontSize: 16 }}>Resend Code</Text>
-
-                }
+              <View style={{alignItems:'center',justifyContent:'center'}}>
+                <Text style={{color:ternaryThemeColor,marginTop:10}}>Didn't recieve any Code?</Text>
+                
+                  {timer===0 &&
+                                  <Text onPress={()=>{handleOtpResend()}} style={{color:ternaryThemeColor,marginTop:6,fontWeight:'600',fontSize:16}}>Resend Code</Text>
+                  }                
               </View>
             </View>
-          </View>
-
-        }
-
-
-
+        
 
       </View>
-
-
-      {
-        (loading) && <View style={{ backgroundColor: 'white' }}>
-          <FastImage
-            style={{ width: 100, height: 100, alignSelf: 'center', marginTop: '20%' }}
-            source={{
-              uri: gifUri, // Update the path to your GIF
-              priority: FastImage.priority.normal,
-            }}
-            resizeMode={FastImage.resizeMode.contain}
-          />
-        </View>
-      }
-
-
-      {showRedeemButton && <View style={{ alignItems: 'center', justifyContent: 'center', width: '100%', position: 'absolute', bottom: 20 }}>
-        <TouchableOpacity onPress={() => {
+      {showRedeemButton && <View style={{alignItems:'center',justifyContent:'center',width:'100%',position: 'absolute',bottom:20}}>
+        <TouchableOpacity onPress={()=>{
           finalGiftRedemption()
-        }} style={{ height: 50, width: 140, alignItems: 'center', justifyContent: 'center', backgroundColor: ternaryThemeColor, borderRadius: 4 }}>
-          <PoppinsTextMedium content="Redeem" style={{ color: 'white', fontSize: 20, fontWeight: '700' }}></PoppinsTextMedium>
+        }} style={{height:50,width:140,alignItems:'center',justifyContent:'center',backgroundColor:ternaryThemeColor,borderRadius:4}}>
+          <PoppinsTextMedium content = "Redeem" style ={{color:'white',fontSize:20,fontWeight:'700'}}></PoppinsTextMedium>
         </TouchableOpacity>
       </View>}
-
     </View>
   );
 };

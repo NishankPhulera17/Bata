@@ -376,7 +376,7 @@ console.log("deleteBankError",deleteBankError)
                   marginLeft: 10,
                   textDecorationLine: 'underline',
                 }}
-                content="add acount details"></PoppinsTextMedium>
+                content="add account details"></PoppinsTextMedium>
             </TouchableOpacity>
           </View>
         </View>

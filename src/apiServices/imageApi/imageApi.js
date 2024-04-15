@@ -28,7 +28,7 @@ export const imageApi = baseApi.injectEndpoints({
     }),
     uploadSingleFile: builder.mutation({
       query: (params) => {
-        console.log("uploadSingleFile",params)
+        console.log("uploadSingleFile",JSON.stringify(params))
         return {
           method: "POST",
           url: "api/file/single",
