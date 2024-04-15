@@ -1,5 +1,5 @@
 import React, { Component, useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity, KeyboardAvoidingView, Platform } from 'react-native';
+import { View, Text, StyleSheet, Image, TouchableOpacity, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
 import { useSelector } from 'react-redux';
 import FeedbackTextArea from '../../components/feedback/FeedbackTextArea';
 import PoppinsTextMedium from '../../components/electrons/customFonts/PoppinsTextMedium';
@@ -99,7 +99,7 @@ const Feedback = ({ navigation }) => {
    
 
     return (
-        <View style={[styles.container, { backgroundColor: ternaryThemeColor }]}>
+        <ScrollView style={[styles.container, { backgroundColor: ternaryThemeColor }]}>
 
 
             {/* Navigator */}
@@ -166,7 +166,7 @@ const Feedback = ({ navigation }) => {
                     enabled
                 >
 
-                    <View>
+                    <View style={{marginBottom:20}}>
                         <FeedbackTextArea onFeedbackChange={handleFeedbackChange} placeholder="Write your feedback here" />
                         <View style={{ marginHorizontal: '20%' }}>
                             <ButtonWithPlane title="Submit" navigate="" parmas={{}} type={"feedback"} onModalPress={showSuccessModal}></ButtonWithPlane>
@@ -181,7 +181,7 @@ const Feedback = ({ navigation }) => {
 
             {error && <ErrorModal modalClose={()=>{setError(false)}} message={message} openModal={error}></ErrorModal>}
 
-        </View>
+        </ScrollView>
     );
 };
 

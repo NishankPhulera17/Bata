@@ -94,12 +94,13 @@ const EditProfile = ({ navigation, route }) => {
 
   useEffect(() => {
     if (uploadImageData) {
-      console.log(uploadImageData);
+      console.log("uploadImageData",uploadImageData);
       if (uploadImageData.success) {
-        setFilename(uploadImageData.body[0].filename)
+        setFilename(uploadImageData?.body?.fileLink)
         setModalVisible(false)
         //  setMessage(uploadImageData.message)
         //  setSuccess(true)
+        
 
       }
     } else {
@@ -201,10 +202,10 @@ const EditProfile = ({ navigation, route }) => {
       const imageData = {
         uri: profileImage.uri,
         name: profileImage.uri.slice(0, 10),
-        type: 'jpg/png',
+        type: 'image/png',
       };
       const uploadFile = new FormData();
-      uploadFile.append('images', imageData);
+      uploadFile.append('image', imageData);
       const getToken = async () => {
         const credentials = await Keychain.getGenericPassword();
         const token = credentials.username;

@@ -32,6 +32,8 @@
 		D6E44A13696D485083EFABC2 /* Poppins-ExtraLight.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 8DB51198E9EA4355BC888C2C /* Poppins-ExtraLight.ttf */; };
 		DA5D18081DF44D2E90FAD56A /* Poppins-LightItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2DDCCDBC21DE445887EF6F40 /* Poppins-LightItalic.ttf */; };
 		E947139B2B7CA018008071F4 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = E947139A2B7CA018008071F4 /* GoogleService-Info.plist */; };
+		E9A4A5C62BB9405D00BE7E23 /* main.jsbundle in Resources */ = {isa = PBXBuildFile; fileRef = E9A4A5C52BB9405D00BE7E23 /* main.jsbundle */; };
+		E9A4A5C82BB9406500BE7E23 /* assets in Resources */ = {isa = PBXBuildFile; fileRef = E9A4A5C72BB9406500BE7E23 /* assets */; };
 		E9B14AB22A8CDED1004DE909 /* Fontisto.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9B14A9F2A8CDED1004DE909 /* Fontisto.ttf */; };
 		E9B14AB32A8CDED1004DE909 /* Octicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9B14AA02A8CDED1004DE909 /* Octicons.ttf */; };
 		E9B14AB42A8CDED1004DE909 /* Feather.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9B14AA12A8CDED1004DE909 /* Feather.ttf */; };
@@ -104,6 +106,8 @@
 		E92D737A2B3C2773009D7BC1 /* libReact-hermes.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = "libReact-hermes.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		E947139A2B7CA018008071F4 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		E97F37B52B3AE9B500D662DB /* Bata.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = Bata.entitlements; path = Bata/Bata.entitlements; sourceTree = "<group>"; };
+		E9A4A5C52BB9405D00BE7E23 /* main.jsbundle */ = {isa = PBXFileReference; lastKnownFileType = text; path = main.jsbundle; sourceTree = "<group>"; };
+		E9A4A5C72BB9406500BE7E23 /* assets */ = {isa = PBXFileReference; lastKnownFileType = folder; path = assets; sourceTree = "<group>"; };
 		E9B14A9F2A8CDED1004DE909 /* Fontisto.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Fontisto.ttf; sourceTree = "<group>"; };
 		E9B14AA02A8CDED1004DE909 /* Octicons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Octicons.ttf; sourceTree = "<group>"; };
 		E9B14AA12A8CDED1004DE909 /* Feather.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Feather.ttf; sourceTree = "<group>"; };
@@ -233,6 +237,8 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
+				E9A4A5C72BB9406500BE7E23 /* assets */,
+				E9A4A5C52BB9405D00BE7E23 /* main.jsbundle */,
 				E947139A2B7CA018008071F4 /* GoogleService-Info.plist */,
 				13B07FAE1A68108700A75B9A /* Bata */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
@@ -392,6 +398,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E9A4A5C82BB9406500BE7E23 /* assets in Resources */,
+				E9A4A5C62BB9405D00BE7E23 /* main.jsbundle in Resources */,
 				E9B14AB32A8CDED1004DE909 /* Octicons.ttf in Resources */,
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
 				E9B14ABD2A8CDED1004DE909 /* FontAwesome5_Regular.ttf in Resources */,

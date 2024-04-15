@@ -125,7 +125,26 @@ const PointHistory = ({ navigation }) => {
             setIsLoading(false)
         }
     }, [getPointSharingIsLoading, fetchUserPointsHistoryLoading])
+    const fetchPointHistoryData=(start,end)=>{
 
+        (async () => {
+          const credentials = await Keychain.getGenericPassword();
+          const token = credentials.username;
+          const startDate = moment(start).format(
+            "YYYY-MM-DD"
+          )
+          const endDate = moment(end).format("YYYY-MM-DD")
+          console.log("Start End",startDate,endDate)
+    
+          fetchUserPointsHistoryFunc({
+            startDate:startDate,
+            endDate:endDate,
+            token: token,
+            userId:userId
+          });
+        })();
+      }
+    
     const fetchDataAccToFilter = () => {
 
         console.log("fetchDataAccToFilter", startDate, endDate)
@@ -136,7 +155,8 @@ const PointHistory = ({ navigation }) => {
                 endDate = undefined
             }
             else {
-                fetchScannedHistoryData(startDate, endDate)
+                fetchPointHistoryData(startDate,endDate)
+
             }
 
         }
