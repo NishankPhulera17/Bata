@@ -1,6 +1,6 @@
 //import liraries
 import React, { Component, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Image, FlatList, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Image, FlatList } from 'react-native';
 import { useSelector } from 'react-redux';
 import { useGetAllMediaMutation, useGetMediaByIdQuery } from '../../apiServices/mediaApi/GetMediaApi';
 import * as Keychain from 'react-native-keychain';
@@ -10,7 +10,6 @@ import PoppinsTextMedium from '../../components/electrons/customFonts/PoppinsTex
 import PoppinsTextLeftMedium from '../../components/electrons/customFonts/PoppinsTextLeftMedium';
 import Plus from 'react-native-vector-icons/AntDesign';
 import PoppinsText from '../../components/electrons/customFonts/PoppinsText';
-import moment from 'moment';
 // create a component
 const QueryList = ({ navigation }) => {
     const ternaryThemeColor = useSelector(
@@ -75,6 +74,8 @@ const QueryList = ({ navigation }) => {
                     <PoppinsTextLeftMedium style={{ color: ternaryThemeColor, fontWeight: '800', fontSize: 18 }} content={item?.data?.type}></PoppinsTextLeftMedium>
 
                 </View>
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between',width:'100%' }}>
+                <View style={{width:'70%' }}>
 
                 <View style={{ marginTop: 10, flexDirection: 'row', }}>
                     <PoppinsTextLeftMedium style={{ color: 'black', fontSize: 15, fontWeight: '800' }} content={"Name:  "}></PoppinsTextLeftMedium>
@@ -90,38 +91,32 @@ const QueryList = ({ navigation }) => {
                     <PoppinsTextLeftMedium style={{ color: 'black', fontSize: 15, fontWeight: '800' }} content={"Description: "}></PoppinsTextLeftMedium>
                     <PoppinsTextLeftMedium style={{ color: 'black', fontSize: 15, fontWeight: '600' }} content={item?.data?.long_description}></PoppinsTextLeftMedium>
                 </View>
+                </View>
+                {item?.data?.status =="2" && <View style={{alignItems:'center',justifyContent:'center',width:'30%'}}>
+                <Image style={{ height: 40, width: 40, marginTop: 30 }} source={require('../../../assets/images/greenTick.png')} />
+                <PoppinsTextLeftMedium style={{ color: 'black', fontSize: 15, fontWeight: '800' }} content="Resolved"></PoppinsTextLeftMedium>
 
-                <Image
-                        style={{
-                            height: 80,
-                            width: 80,
-                            position:'absolute', 
-                            right:40,
-                            top:70,
-                            resizeMode: 'contain'
-                        }}
-                        source={{ uri:  item.data?.images[0] }}></Image>
+                    </View>}
+                {item?.data?.status =="1" &&
+                <View style={{alignItems:'center',justifyContent:'center'}}>
+                                 <Image style={{ height: 32, width: 32, marginTop: 30 }} source={require('../../../assets/images/cancel.png')} />
+                <PoppinsTextLeftMedium style={{ color: 'black', fontSize: 15, fontWeight: '800' }} content="Active"></PoppinsTextLeftMedium>
 
-                    {/* <Image style={{  height: 20,
-                            width: 20,
-                            position:'absolute', 
-                            right:10,
-                            bottom:20,
-                            resizeMode: 'contain' }} source={require('../../../assets/images/info_icon.png')} /> */}
+                    </View>
+    }
+</View>
+
+               
 
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                     <View style={{ marginTop: 10, flexDirection: 'row' }}>
                         <PoppinsTextLeftMedium style={{ color: 'black', fontSize: 15, fontWeight: '800' }} content={"User Type: "}></PoppinsTextLeftMedium>
                         <PoppinsTextLeftMedium style={{ color: 'black', fontSize: 15, fontWeight: '600' }} content={item?.data?.user_type}></PoppinsTextLeftMedium>
                     </View>
+
+                   
+
                 </View>
-{/* 
-                <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                    <View style={{ marginTop: 10, flexDirection: 'row' }}>
-                        <PoppinsTextLeftMedium style={{ color: 'black', fontSize: 15, fontWeight: '800' }} content={"Date of Query:"}></PoppinsTextLeftMedium>
-                        <PoppinsTextLeftMedium style={{ color: 'black', fontSize: 15, fontWeight: '600' }} content={moment( item?.data?.created_at).format("DD-MMM-YYYY") }></PoppinsTextLeftMedium>
-                    </View>
-                </View> */}
 
 
 
@@ -152,13 +147,13 @@ const QueryList = ({ navigation }) => {
                         source={require('../../../assets/images/blackBack.png')}></Image>
                 </TouchableOpacity>
 
-                <PoppinsTextMedium style={{ fontSize: 20, color: '#ffffff', marginTop: "3%", position: 'absolute', left: 50 }} content={"Report List"}></PoppinsTextMedium>
+                <PoppinsTextMedium style={{ fontSize: 20, color: '#ffffff', marginTop: "3%", position: 'absolute', left: 50 }} content={"Query List"}></PoppinsTextMedium>
 
 
             </View>
             {/* navigator */}
 
-            <ScrollView style={{height:'100%'}}>
+            <View>
                 {getQueryData?.body?.supportQueriesList &&
                     <FlatList
                         data={getQueryData?.body?.supportQueriesList}
@@ -171,20 +166,20 @@ const QueryList = ({ navigation }) => {
                         )}
                         keyExtractor={(item, index) => index}
                     />
-
+                   
                 }
                 {
-                    getQueryData?.body?.supportQueriesList?.length === 0 && <DataNotFound></DataNotFound>
+                    getQueryData?.body?.supportQueriesList?.length===0 && <DataNotFound></DataNotFound>
                 }
 
-            </ScrollView>
-            <View style={{ flexDirection: "row", alignItems: 'center', justifyContent: 'center', position: 'absolute', bottom: 10, right: 20 }}>
-                <PoppinsText content="Add Issue" style={{ color: ternaryThemeColor, fontSize: 16 }}></PoppinsText>
-                <TouchableOpacity onPress={() => { navigation.navigate('SupportQueries') }} style={{ backgroundColor: '#DDDDDD', height: 60, width: 60, borderRadius: 30, alignItems: "center", justifyContent: 'center', marginLeft: 10 }}>
-
-                    <Plus name="pluscircle" size={50} color={ternaryThemeColor}></Plus>
-                </TouchableOpacity>
             </View>
+            <View style={{ flexDirection: "row", alignItems: 'center', justifyContent: 'center', position: 'absolute', bottom: 10, right: 20 }}>
+          <PoppinsText content="Add Issue" style={{ color: ternaryThemeColor, fontSize: 16 }}></PoppinsText>
+          <TouchableOpacity onPress={() => { navigation.navigate('SupportQueries') }} style={{ backgroundColor: '#DDDDDD', height: 60, width: 60, borderRadius: 30, alignItems: "center", justifyContent: 'center', marginLeft: 10 }}>
+
+            <Plus name="pluscircle" size={50} color={ternaryThemeColor}></Plus>
+          </TouchableOpacity>
+        </View>
         </View>
     );
 };
