@@ -1,5 +1,5 @@
 import React,{useEffect, useId, useState} from 'react';
-import {View, StyleSheet,TouchableOpacity,Image,FlatList,ScrollView,Dimensions} from 'react-native';
+import {View, StyleSheet,TouchableOpacity,Image,FlatList,ScrollView,Dimensions, Alert} from 'react-native';
 import PoppinsText from '../../components/electrons/customFonts/PoppinsText';
 import PoppinsTextMedium from '../../components/electrons/customFonts/PoppinsTextMedium';
 import { useSelector } from 'react-redux';
@@ -11,11 +11,15 @@ import RectangularUnderlinedDropDown from '../../components/atoms/dropdown/Recta
 import RectanglarUnderlinedTextInput from '../../components/atoms/input/RectanglarUnderlinedTextInput';
 import ShowLoadingButton from '../../components/atoms/buttons/ShowLoadingButton';
 import MessageModal from '../../components/modals/MessageModal';
+import { useIsFocused } from '@react-navigation/native';
+import ErrorModal from '../../components/modals/ErrorModal';
 
 const AddBankDetails = ({navigation}) => {
     const [message, setMessage] = useState();
     const [success, setSuccess] = useState(false);
+    const [hideButton, setHideButton] = useState(false)
   const [error, setError] = useState(false);
+  const focused = useIsFocused()
     const ternaryThemeColor = useSelector(
         state => state.apptheme.ternaryThemeColor,
       )
@@ -30,10 +34,15 @@ const AddBankDetails = ({navigation}) => {
     }] = useAddBankDetailsMutation()    
 
     useEffect(()=>{
+        setHideButton(false)
+      },[focused])
+      
+    useEffect(()=>{
         if(addBankDetailsData){
             console.log("addBankDetailsData",addBankDetailsData)
             if(addBankDetailsData.message==="Bank Account Created")
             {
+                setHideButton(false)
                 setSuccess(true)
                 setMessage("Account Added Successfully")
                 setTimeout(() => {
@@ -46,6 +55,7 @@ const AddBankDetails = ({navigation}) => {
         {
             console.log("addBankDetailsError",addBankDetailsError)
             setError(true)
+            setHideButton(false)
             setMessage(addBankDetailsError.data.message)
             setTimeout(() => {
                 setError(false)
@@ -136,18 +146,27 @@ const AddBankDetails = ({navigation}) => {
             'Credentials successfully loaded for user ' + credentials.username,
           );
           const token = credentials.username;
-          const data = {
-            "bank" : selectedBankName,
-            "account_no": selectedAccountNumber,
-            "account_holder_name":selectedBeneficiaryName,
-            "ifsc": selectedIfscCode,
-            "transfer_mode":"banktransfer"
-        }
-        console.log(data)
-        const params = {token:token,
-        data:data}
-        console.log(params)
-        addBankDetailsFunc(params)
+          if(selectedAccountNumber==confirmAccountNumber)
+          {
+            const data = {
+                "bank" : selectedBankName,
+                "account_no": selectedAccountNumber,
+                "account_holder_name":selectedBeneficiaryName,
+                "ifsc": selectedIfscCode,
+                "transfer_mode":"banktransfer"
+            }
+            console.log(data)
+            const params = {token:token,
+            data:data}
+            console.log(params)
+            addBankDetailsFunc(params)
+            setHideButton(true)
+          }
+          else{
+            alert("Account number and selected account number can't be different")
+          }
+          
+            
         }
         
     }
@@ -186,11 +205,10 @@ const AddBankDetails = ({navigation}) => {
     return (
         <View style={{alignItems:"center",justifyContent:"center",width:'100%',backgroundColor:ternaryThemeColor,height:'100%'}}>
             {error && (
-            <MessageModal
+            <ErrorModal
               modalClose={modalClose}
-              title="Error"
               message={message}
-              openModal={error}></MessageModal>
+              openModal={error}></ErrorModal>
           )}
            {success && (
             <MessageModal
@@ -216,7 +234,7 @@ const AddBankDetails = ({navigation}) => {
                 <BankDetails></BankDetails>
                 <AccountDetails></AccountDetails>
                  {/* <TransferDetails></TransferDetails> */}
-                <ShowLoadingButton handleData={submitData} title="Proceed"></ShowLoadingButton>
+               {!hideButton && <ShowLoadingButton handleData={submitData} title="Proceed"></ShowLoadingButton>}
             </View>
             </ScrollView>
             

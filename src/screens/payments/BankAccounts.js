@@ -9,7 +9,8 @@ import {
   TouchableWithoutFeedback,
   Dimensions,
   Modal,
-  Pressable
+  Pressable,
+  Platform
 } from 'react-native';
 import MessageModal from '../../components/modals/MessageModal';
 import { useSelector } from 'react-redux';
@@ -73,10 +74,14 @@ const BankAccounts = ({ navigation, route }) => {
 
       const params = {
         token: token,
-        id: id
+        id: Number(id)
       }
+      console.log(params)
       if(deleteAccountId!=='')
-      deleteBankFunc(params)
+      {
+        deleteBankFunc(params)
+
+      }
       refetchData()
     }
   }
@@ -434,7 +439,7 @@ const BankAccounts = ({ navigation, route }) => {
           borderTopLeftRadius: 40,
           backgroundColor: '#F6F6F6',
           width: '100%',
-          height: height - 100,
+          height: '90%',
           marginTop: 30
         }}>
         <PoppinsTextMedium
@@ -446,7 +451,7 @@ const BankAccounts = ({ navigation, route }) => {
 
           }}
           content="Preferred Method"></PoppinsTextMedium>
-        <ScrollView style={{ width: '100%' }}>
+        <ScrollView contentContainerStyle={{width: '100%',height:'80%'}} style={{ width: '100%',height:'70%' }}>
           <View style={{ alignItems: "center", justifyContent: "center" }}>
 
             {listAccountData?.body?.length !== 0 &&
@@ -489,21 +494,21 @@ const BankAccounts = ({ navigation, route }) => {
             }
 
             {(listAccountData?.body?.length == 0  || listAccountData == undefined ) && <View style={{ alignItems: 'center', marginTop:"60%"}}>
-              <PoppinsTextMedium style ={{fontSize:16}}content="No Bank Account has been added yet !"></PoppinsTextMedium>
+              <PoppinsTextMedium style ={{fontSize:16,color:'black'}}content="No Bank Account has been added yet !"></PoppinsTextMedium>
             </View>}
 
 
           </View>
-
+          
         </ScrollView>
-        <View style={{ flexDirection: "row", alignItems: 'center', justifyContent: 'center', position: 'absolute', bottom: 20, right: 20 }}>
+        <View style={{ flexDirection: "row", alignItems: 'center', justifyContent: 'center', position: 'absolute', bottom: 14, right: 20 }}>
           <PoppinsText content="Add Account" style={{ color: ternaryThemeColor, fontSize: 16 }}></PoppinsText>
           <TouchableOpacity onPress={() => { navigation.navigate('AddBankAccountAndUpi') }} style={{ backgroundColor: '#DDDDDD', height: 60, width: 60, borderRadius: 30, alignItems: "center", justifyContent: 'center', marginLeft: 10 }}>
 
             <Plus name="pluscircle" size={50} color={ternaryThemeColor}></Plus>
           </TouchableOpacity>
         </View>
-           {
+        {
            type==="Cashback" && <TouchableOpacity onPress={()=>{
             if(hasSelectedPaymentMethod)
             {
@@ -513,6 +518,14 @@ const BankAccounts = ({ navigation, route }) => {
               <PoppinsText content ="Get OTP" style={{color:'white',fontSize:16}}></PoppinsText>
             </TouchableOpacity>
             }
+        {/* {Platform.OS=='android'  && <View style={{ flexDirection: "row", alignItems: 'center', justifyContent: 'center', position: 'absolute', bottom: 10, right: 20 }}>
+          <PoppinsText content="Add Account" style={{ color: ternaryThemeColor, fontSize: 16 }}></PoppinsText>
+          <TouchableOpacity onPress={() => { navigation.navigate('AddBankAccountAndUpi') }} style={{ backgroundColor: '#DDDDDD', height: 60, width: 60, borderRadius: 30, alignItems: "center", justifyContent: 'center', marginLeft: 10 }}>
+
+            <Plus name="pluscircle" size={50} color={ternaryThemeColor}></Plus>
+          </TouchableOpacity>
+        </View>} */}
+          
 
 
       </View>
