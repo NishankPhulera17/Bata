@@ -47,9 +47,9 @@ export const store = configureStore({
     dashboard:dashboardSlice
   },
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(baseApi.middleware, internetMiddleware,), 
+    getDefaultMiddleware().concat(baseApi.middleware, internetMiddleware), 
 });
 
 setupListeners(store.dispatch);
 
-export default store;
+

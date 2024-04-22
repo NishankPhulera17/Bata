@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, StyleSheet, ScrollView, Platform, TouchableOpacity, Image } from 'react-native';
+import { View, StyleSheet, ScrollView, Platform, TouchableOpacity, Image,Text } from 'react-native';
 import MenuItems from '../../components/atoms/MenuItems';
 import { BaseUrl } from '../../utils/BaseUrl';
 import { useGetAppDashboardDataMutation } from '../../apiServices/dashboard/AppUserDashboardApi';
@@ -42,7 +42,7 @@ import ModalWithBorder from '../../components/modals/ModalWithBorder';
 import Bell from 'react-native-vector-icons/FontAwesome';
 import Close from 'react-native-vector-icons/Ionicons';
 import {GoogleMapsKey} from "@env"
-
+import InternetModal from '../../components/modals/InternetModal';
 
 
 const Dashboard = ({ navigation }) => {
@@ -55,6 +55,7 @@ const Dashboard = ({ navigation }) => {
   const [scanningDetails, seScanningDetails] = useState()
   const [notifModal, setNotifModal] = useState(false)
   const [notifData, setNotifData] = useState(null)
+  const [connected, setConnected] = useState(true)
 
   const focused = useIsFocused()
   const dispatch = useDispatch()
@@ -63,7 +64,7 @@ const Dashboard = ({ navigation }) => {
 
   const isDistributor = userData?.user_type_id == 3
 
-
+  const isConnected = useSelector(state => state.internet.isConnected);
   const pointSharingData = useSelector(state => state.pointSharing.pointSharing)
   const ternaryThemeColor = useSelector(
     state => state.apptheme.ternaryThemeColor,
@@ -156,6 +157,18 @@ const Dashboard = ({ navigation }) => {
     userPointFunc(params)
 
   }
+
+
+  useEffect(()=>{
+    if(isConnected)
+    {
+      console.log("internet status",isConnected)
+    
+        setConnected(isConnected.isConnected)
+        console.log("is connected",isConnected)
+      
+      }
+  },[isConnected])
 
   useEffect(() => {
     const unsubscribe = messaging().onMessage(async remoteMessage => {
@@ -473,6 +486,14 @@ import {GoogleMapsKey} from "@env"
     console.log("hello")
   };
 
+  const NoInternetComp = ()=>{
+    return (
+      <View style={{alignItems:'center',justifyContent:'center',width:'90%'}}>
+        <Text style={{color:'black'}}>No Internet Connection</Text>
+          <Text style={{color:'black'}}>Please check your internet connection and try again.</Text>
+      </View>
+    )
+  }
   const notifModalFunc = () => {
     return (
       <View style={{height:130  }}>
@@ -501,6 +522,7 @@ import {GoogleMapsKey} from "@env"
 
 
       <ScrollView style={{ width: '100%', marginBottom: platformMarginScroll, height: '100%' }}>
+      {!connected &&  <InternetModal comp = {NoInternetComp} />}
         <DrawerHeader></DrawerHeader>
         <View style={{ width: '100%', alignItems: 'center', justifyContent: 'flex-start', flexDirection: 'row', marginBottom: 10 }}>
           <PoppinsTextLeftMedium style={{ color: ternaryThemeColor, fontWeight: 'bold', fontSize: 19, marginLeft: 20 }} content={`Welcome ${userData?.name}`}></PoppinsTextLeftMedium>

@@ -65,12 +65,7 @@ const Splash = ({ navigation }) => {
   ] = useGetAppUsersDataMutation();
 
 
-  useEffect(() => {
-    // Dispatch your action when the component mounts or whenever appropriate
-    dispatch({ type: 'NETWORK_REQUEST' });
-
-    // Don't forget to specify dependencies if necessary
-  }, [dispatch]);
+  
 
   useEffect(() => {
    
@@ -107,9 +102,7 @@ const Splash = ({ navigation }) => {
         console.log("is connected",isConnected)
       
       }
-     
-
-  },[isConnected,dispatch])
+  },[isConnected])
 
   useEffect(() => {
     getUsers();
@@ -153,7 +146,7 @@ const Splash = ({ navigation }) => {
       }
     };
     requestLocationPermission()
-  }, [])
+  }, [isConnected])
 
   // fetching data and checking for errors from the API-----------------------
 
@@ -390,7 +383,7 @@ const Splash = ({ navigation }) => {
       {isSlowInternet && <InternetModal comp = {SlowInternetComp} /> }
       {/* <Image style={{ width: 300, height: 100, }} source={require('../../../assets/images/batalogo.png')} /> */}
       <FastImage
-        style={{ width: 250, height: "100%", marginTop: 'auto', alignSelf: 'center', }}
+        style={{ width: 250, height:400, marginTop: 'auto', alignSelf: 'center', }}
         source={{
           uri: gifUri, // Update the path to your GIF
           priority: FastImage.priority.normal,

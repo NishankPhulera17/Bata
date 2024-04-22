@@ -4,6 +4,7 @@ import NetInfo from '@react-native-community/netinfo';
 
 const internetMiddleware = store => {
   const handleConnectivityChange = isConnected => {
+    console.log("handleConnectivityChange",isConnected)
     store.dispatch(setInternetConnection(isConnected));
   };
 
