@@ -79,9 +79,13 @@ import SupportQueries from '../screens/helpAndSupport/SupportQueries';
 import QueryList from '../screens/queryList/QueryList';
 import ReturnPointHistory from '../screens/historyPages/ReturnPointHistory';
 import VisionCamera from '../screens/camera/VisionCamera';
+
+
 const Stack = createNativeStackNavigator()
 
 const StackNavigator = () => {
+   
+      
     return (
         <NavigationContainer>
             <Stack.Navigator>

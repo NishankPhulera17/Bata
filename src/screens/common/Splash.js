@@ -17,17 +17,23 @@ import { useGetAppUsersDataMutation } from '../../apiServices/appUsers/AppUsersA
 import Geolocation from '@react-native-community/geolocation';
 import { user_type_option } from '../../utils/usertTypeOption';
 import { request, PERMISSIONS } from 'react-native-permissions';
+import InternetModal from '../../components/modals/InternetModal';
+
 
 
 const Splash = ({ navigation }) => {
   const dispatch = useDispatch()
   const focused = useIsFocused()
-
+  const [connected, setConnected] = useState(true)
+  const [isSlowInternet, setIsSlowInternet] = useState(false)
+  const [locationEnabled, setLocationEnabled] = useState(false)
   const [isAlreadyIntroduced, setIsAlreadyIntroduced] = useState(null);
   const [gotLoginData, setGotLoginData] = useState()
   const [listUsers, setListUsers] = useState([]);
   const [isUserLoggedIn, setIsUserLoggedIn] = useState(null)
   const [hasPermission, setHasPermission] = useState(null);
+
+  const isConnected = useSelector(state => state.internet.isConnected);
 
 
 
@@ -60,6 +66,14 @@ const Splash = ({ navigation }) => {
 
 
   useEffect(() => {
+    // Dispatch your action when the component mounts or whenever appropriate
+    dispatch({ type: 'NETWORK_REQUEST' });
+
+    // Don't forget to specify dependencies if necessary
+  }, [dispatch]);
+
+  useEffect(() => {
+   
     checkCameraPermission();
   }, []);
 
@@ -83,7 +97,19 @@ const Splash = ({ navigation }) => {
     }
   };
 
+  useEffect(()=>{
+    if(isConnected)
+    {
+      console.log("internet status",isConnected)
+    
+        setConnected(isConnected.isConnected)
+        setIsSlowInternet(isConnected.isInternetReachable ? false : true)
+        console.log("is connected",isConnected)
+      
+      }
+     
 
+  },[isConnected,dispatch])
 
   useEffect(() => {
     getUsers();
@@ -131,7 +157,7 @@ const Splash = ({ navigation }) => {
 
   // fetching data and checking for errors from the API-----------------------
 
-
+  
 
 
   useEffect(() => {
@@ -328,7 +354,23 @@ const Splash = ({ navigation }) => {
   };
 
 
+  const NoInternetComp = ()=>{
+    return (
+      <View style={{alignItems:'center',justifyContent:'center',width:'90%'}}>
+        <Text style={{color:'black'}}>No Internet Connection</Text>
+          <Text style={{color:'black'}}>Please check your internet connection and try again.</Text>
+      </View>
+    )
+  }
 
+  const SlowInternetComp  = ()=>{
+    return (
+      <View style={{alignItems:'center',justifyContent:'center',width:'90%'}}>
+        <Text style={{color:'black'}}>Slow Internet Connection Detected</Text>
+          <Text style={{color:'black'}}>Please check your internet connection. </Text>
+      </View>
+    )
+  }
 
 
 
@@ -344,7 +386,8 @@ const Splash = ({ navigation }) => {
   return (
     <View style={{ flex: 1, alignItems: 'center', width: '100%', height: '100%', justifyContent: 'center', backgroundColor: 'white' }}>
       {/* <ImageBackground resizeMode='stretch' style={{ flex: 1, height: '100%', width: '100%', }} source={require('../../../assets/images/batalogo.png')}> */}
-
+      {!connected &&  <InternetModal comp = {NoInternetComp} />}
+      {isSlowInternet && <InternetModal comp = {SlowInternetComp} /> }
       {/* <Image style={{ width: 300, height: 100, }} source={require('../../../assets/images/batalogo.png')} /> */}
       <FastImage
         style={{ width: 250, height: "100%", marginTop: 'auto', alignSelf: 'center', }}

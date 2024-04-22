@@ -6,7 +6,7 @@ import { addEventListener } from "@react-native-community/netinfo";
     // Subscribe
     const unsubscribe = addEventListener(state => {
       console.log("Connection type", state.type);
-      console.log("Is connected?", state.isConnected);
+      // console.log("Is connected?", state.isConnected);
     if(state.isConnected===false)
     {
        return false

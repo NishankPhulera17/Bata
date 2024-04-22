@@ -75,7 +75,7 @@ const QueryList = ({ navigation }) => {
                     <PoppinsTextLeftMedium style={{ color: ternaryThemeColor, fontWeight: '800', fontSize: 18 }} content={item?.data?.type}></PoppinsTextLeftMedium>
 
                 </View>
-
+                <View>
                 <View style={{ marginTop: 10, flexDirection: 'row', }}>
                     <PoppinsTextLeftMedium style={{ color: 'black', fontSize: 15, fontWeight: '800' }} content={"Name:  "}></PoppinsTextLeftMedium>
                     <PoppinsTextLeftMedium style={{ color: 'black', fontSize: 15, fontWeight: '600' }} content={item?.data?.name}></PoppinsTextLeftMedium>
@@ -90,8 +90,8 @@ const QueryList = ({ navigation }) => {
                     <PoppinsTextLeftMedium style={{ color: 'black', fontSize: 15, fontWeight: '800' }} content={"Description: "}></PoppinsTextLeftMedium>
                     <PoppinsTextLeftMedium style={{ color: 'black', fontSize: 15, fontWeight: '600' }} content={item?.data?.long_description}></PoppinsTextLeftMedium>
                 </View>
-
-                <Image
+                </View>
+                {item.data?.images[0]!=null &&<Image
                         style={{
                             height: 80,
                             width: 80,
@@ -100,7 +100,7 @@ const QueryList = ({ navigation }) => {
                             top:70,
                             resizeMode: 'contain'
                         }}
-                        source={{ uri:  item.data?.images[0] }}></Image>
+                        source={{ uri:  item.data?.images[0] }}></Image>}
 
                     {/* <Image style={{  height: 20,
                             width: 20,
