@@ -102,8 +102,8 @@ const SupportQueries = ({ navigation }) => {
     if (uploadImageData?.success) {
       console.log("uploadImageData", uploadImageData);
       const uploadArray = []
-      uploadArray.push(uploadImageData?.body[0]?.filename)
-      setSelectedImage(uploadImageData?.body[0]?.filename)
+      uploadArray.push(uploadImageData?.body?.fileLink)
+      setSelectedImage(uploadImageData?.body?.fileLink)
     } else {
       console.log(uploadImageError);
     }
@@ -114,8 +114,13 @@ const SupportQueries = ({ navigation }) => {
 
   const handleChildComponentData = (uri) => {
     console.log("the uri====>", uri);
+    const imageData = {
+      uri:uri?.uri,
+      name:uri?.uri.slice(0, 10),
+      type: 'image/png',
+    };
     const uploadFile = new FormData();
-    uploadFile.append('images', uri);
+    uploadFile.append('image', imageData);
     // console.log("invoice data",item.value)
     const getToken = async () => {
       const credentials = await Keychain.getGenericPassword();
@@ -212,6 +217,7 @@ const SupportQueries = ({ navigation }) => {
       }
 
       const params = { body, token }
+      console.log("query submission", JSON.stringify(body))
       submitQueriesTypeFunc(params)
     }
   }

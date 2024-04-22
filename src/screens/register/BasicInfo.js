@@ -74,8 +74,6 @@ const BasicInfo = ({ navigation, route }) => {
 
 
 
-
-
   const dispatch = useDispatch()
 
   const ternaryThemeColor = useSelector(
@@ -518,11 +516,22 @@ const BasicInfo = ({ navigation, route }) => {
     inputFormData["name"] = name;
     inputFormData["mobile"] = mobile;
 
+    let isFormValid = true; // Flag to track form validity
+    let missingParam = ""
 
 
     for (var i = 0; i < responseArray.length; i++) {
 
       inputFormData[responseArray[i].name] = responseArray[i].value
+
+      if (responseArray[i].required && !responseArray[i].value) {
+        isFormValid = false;
+        // Optionally, you can show an error popup here
+        // setError(true);
+        // setMessage(`${responseArray[i].label} is required`);
+        missingParam = responseArray[i].label
+    }
+    
     }
     const body = inputFormData
     const keys = Object.keys(body)
@@ -546,7 +555,14 @@ const BasicInfo = ({ navigation, route }) => {
 
             const index2 = keys.indexOf('firm_id')
             if (isthisValid(values[index2])) {
-              registerUserFunc(body)
+              if(isFormValid){
+                registerUserFunc(body)
+              }
+              else{
+                
+                setError(true)
+                setMessage(`${missingParam} is Required`)
+              }
             }
             else {
               setError(true)
@@ -831,11 +847,12 @@ const BasicInfo = ({ navigation, route }) => {
                     </TextInputGST>
                   );
                 }
-                else if ((item.name).trim().toLowerCase() === "city") {
+                else if ((item.name).trim().toLowerCase() === "City") {
 
                   return (
                     <PrefilledTextInput
                       jsonData={item}
+                      required={item.required}
                       key={index}
                       handleData={handleChildComponentData}
                       placeHolder={item.name}
@@ -879,7 +896,7 @@ const BasicInfo = ({ navigation, route }) => {
                 //   )
                 // }
 
-                else if ((item.name).trim().toLowerCase() === "state") {
+                else if ((item.name).trim().toLowerCase() === "State") {
                   return (
                     <PrefilledTextInput
                       jsonData={item}

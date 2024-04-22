@@ -48,21 +48,21 @@ const ImageInputWithUpload = (props) => {
 
     console.log("imaggg", image)
     return (
-        <View style={{ width: '100%', alignItems: "center", justifyContent: "center", backgroundColor: '#EBF3FA',paddingVertical: !image ? 40 : 0, borderWidth: 1, borderColor: !image ?'#85BFF1':"white", borderStyle:'dotted' }}>
+        <TouchableOpacity onPress={() => {
+            handleOpenImageGallery()
+        }} style={{ width: '100%', alignItems: "center", justifyContent: "center", backgroundColor: '#EBF3FA',paddingVertical: !image ? 40 : 0, borderWidth: 1, borderColor: !image ?'#85BFF1':"white", borderStyle:'dotted' }}>
             <View style={{ alignItems: 'center' }}>
                 {!memoizedImage && <Image style={{ height: 33, width: 35, }} source={require('../../../../assets/images/uploadIcon.png')} />}
             </View>
 
             {memoizedImage && <Image style={{ width: 100, height: 100, resizeMode: "center", marginTop: 40 }} source={{ uri: image.uri }}></Image>}
 
-            <TouchableOpacity onPress={() => {
-                handleOpenImageGallery()
-            }} style={{ width: '86%',  borderColor: '#DDDDDD', marginTop: 10,height:20 }}>
+            <View  style={{ width: '86%',  borderColor: '#DDDDDD', marginTop: 10,height:20 }}>
 
                 <PoppinsTextMedium style={{ color: 'black', alignSelf: 'center', }} content={"Upload the product Image"}></PoppinsTextMedium>
-            </TouchableOpacity>
+            </View>
             
-        </View>
+        </TouchableOpacity>
     );
 }
 

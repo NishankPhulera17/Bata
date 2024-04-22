@@ -228,7 +228,7 @@ const EditProfile = ({ navigation, route }) => {
         type: 'image/png',
       };
       const uploadFile = new FormData();
-      uploadFile.append('images', imageData);
+      uploadFile.append('image', imageData);
       const getToken = async () => {
         const credentials = await Keychain.getGenericPassword();
         const token = credentials.username;

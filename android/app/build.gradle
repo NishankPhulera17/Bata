@@ -80,8 +80,8 @@ android {
         applicationId "com.bata"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 3
-        versionName "8.0.3"
+        versionCode 4
+        versionName "8.0.4"
         missingDimensionStrategy 'react-native-camera', 'general'
         
     }
