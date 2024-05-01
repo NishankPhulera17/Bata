@@ -125,7 +125,7 @@ const ScannedHistory = ({ navigation }) => {
         query_params: queryParams,
       });
     })();
-  },[limit])
+  },[])
 
   useEffect(() => {
     if (fetchAllQrScanedListData) {
@@ -465,7 +465,7 @@ const ScannedHistory = ({ navigation }) => {
             borderColor: "#DDDDDD",
           }}
         >
-          {image !== null && (
+          {image != (null || undefined) && (
             <Image
               style={{ height: 60, width: 60, resizeMode: "contain" }}
               source={{ uri:  image }}

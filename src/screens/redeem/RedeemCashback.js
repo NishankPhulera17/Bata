@@ -66,25 +66,34 @@ const RedeemCashback = ({navigation}) => {
 
 
   const redeemCashback = async () => {
-if(Number(minPointsRedeemed)<=(pointsConversion))
-{
-  navigation.navigate('BankAccounts',{type:"Cashback"})
-}
-else{
-  setError(true)
-  setMessage("Min Points required to redeem is "+minPointsRedeemed)
-}
-   
-
-    // const credentials = await Keychain.getGenericPassword();
-    // if (credentials) {
-    //   console.log(
-    //     'Credentials successfully loaded for user ' + credentials.username,
-    //   );
-    //   const token = credentials.username;
-     
-    // }
-  };
+    if(Number(minPointsRedeemed)<=(pointsConversion))
+    {
+      console.log("shjadjhashgdhjgasjgd", pointsConversion,points)
+      if(Number(pointsConversion)>=Number(points))
+      {
+        setError(true)
+      setMessage("You only have "+points+" points")
+      }
+      else{
+        navigation.navigate('BankAccounts',{type:"Cashback"})
+    
+      }
+    }
+    else{
+      setError(true)
+      setMessage("Min Points required to redeem is "+minPointsRedeemed)
+    }
+       
+    
+        // const credentials = await Keychain.getGenericPassword();
+        // if (credentials) {
+        //   console.log(
+        //     'Credentials successfully loaded for user ' + credentials.username,
+        //   );
+        //   const token = credentials.username;
+         
+        // }
+      };
   useEffect(()=>{
     if(cashPerPointData)
     {
