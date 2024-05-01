@@ -24,6 +24,7 @@ import ErrorModal from '../../components/modals/ErrorModal';
 import SuccessModal from '../../components/modals/SuccessModal';
 import MessageModal from '../../components/modals/MessageModal';
 import PointHistory from '../historyPages/PointHistory';
+import { useTranslation } from 'react-i18next';
 
 const RedeemGifts = ({navigation,route}) => {
   const [search, setSearch] = useState();
@@ -35,6 +36,8 @@ const RedeemGifts = ({navigation,route}) => {
   const [error, setError] = useState(false);
   const [success, setSuccess] = useState(false)
   const action = route.params?.action
+
+  const {t} = useTranslation()
   const ternaryThemeColor = useSelector(
     state => state.apptheme.ternaryThemeColor,
   )
@@ -147,6 +150,7 @@ const RedeemGifts = ({navigation,route}) => {
           )
         })
         setDisplayContent(filteredData)
+        setCart([])
       }}
         style={{
           marginLeft: 30,
@@ -182,33 +186,42 @@ const RedeemGifts = ({navigation,route}) => {
     let tempCount=0
     let temp=cart
     console.log("data",data)
-   
-    if(operation==="plus")
+    if(cart.length<=1)
     {
-      
-      temp.push(data)
-      setCart(temp)
-      
-    }
-    else {
-      // setPointBalance(pointBalance+Number(data.points))
-      for(var i =0;i<temp.length;i++)
+      if(operation==="plus")
       {
-        if(temp[i].id===data.id)
-        {
-        tempCount++
-        if(tempCount===1)
-        {
-          temp.splice(i,1)
-        }
         
-        }       
+        temp.push(data)
+        setCart(temp)
         
       }
-      
-      setCart(temp)
-
+      else  {
+        // setPointBalance(pointBalance+Number(data.points))
+        for(var i =0;i<temp.length;i++)
+        {
+          if(temp[i].id===data.id)
+          {
+          tempCount++
+          if(tempCount===1)
+          {
+            temp.splice(i,1)
+          }
+          
+          }       
+          
+        }
+        
+        setCart(temp)
+  
+      }
     }
+    else{
+      alert("You can redeem one gift at a time")
+    }
+
+      
+    
+    console.log("cart issahdashdghashgd",cart)
     
     console.log(temp)
 
@@ -238,11 +251,14 @@ const RedeemGifts = ({navigation,route}) => {
     {
       if(Number(pointBalance)>=Number(data.points))
     {
-      tempPoints =  tempPoints+data.points
-      let temp =count
-      temp++
-      setCount(temp)
-      props.handleOperation(data,operation,temp)
+      if(count ==0 && cart.length==0)
+      {
+        tempPoints =  tempPoints+data.points
+        let temp =count
+        temp++
+        setCount(temp)
+        props.handleOperation(data,operation,temp)
+      }
       
     }
     else{
@@ -250,16 +266,23 @@ const RedeemGifts = ({navigation,route}) => {
       setMessage("Sorry you don't have enough points.")
     }
     }
-      
+      // else{
+      //   setError(true)
+      //   setMessage("You don't have enough points")
+      // }
 
      
     }
     else{
-      let temp =count
+      if(count ==1)
+      {
+        let temp =count
       temp--
       setCount(temp)
       props.handleOperation(data,operation,temp)
       tempPoints = tempPoints-data.points
+      }
+      
 
       // setPointBalance(pointBalance+data.points)
 
@@ -269,7 +292,7 @@ const RedeemGifts = ({navigation,route}) => {
    
 
     return (
-      <View
+      <TouchableOpacity
         onPress={()=>{console.log("Pressed")}}
         style={{
           height: 120,
@@ -306,7 +329,7 @@ const RedeemGifts = ({navigation,route}) => {
             }}>
             <Image
               style={{height: 40, width: 40, resizeMode: 'contain'}}
-              source={{uri:  image}}></Image>
+              source={{uri:image}}></Image>
           </View>
           <LinearGradient
             style={{
@@ -380,7 +403,7 @@ const RedeemGifts = ({navigation,route}) => {
             style={{color: '#919191', fontSize: 13, width: '90%'}}
             content={category}></PoppinsTextMedium>
         </View>
-      </View>
+      </TouchableOpacity>
     );
   };
 
@@ -430,7 +453,7 @@ const RedeemGifts = ({navigation,route}) => {
         </TouchableOpacity>
         <View style={{alignItems: 'center', justifyContent: 'center'}}>
           <PoppinsTextMedium
-            content="Redeem Points"
+            content={t("Redeem Points")}
             style={{
               marginLeft: 10,
               fontSize: 16,
@@ -438,7 +461,7 @@ const RedeemGifts = ({navigation,route}) => {
               color: 'white',
             }}></PoppinsTextMedium>
           <PoppinsTextMedium
-            content={`${pointBalance} pts available`}
+            content={`${pointBalance} ${t("pts available")}`}
             style={{
               marginLeft: 10,
               fontSize: 16,
@@ -492,7 +515,7 @@ const RedeemGifts = ({navigation,route}) => {
                 size={30}
                 color={ternaryThemeColor}></Icon>
               <TextInput
-                style={{marginLeft: 20,width:'70%'}}
+                style={{marginLeft: 20,width:'70%',color:'black'}}
                 placeholder="Type Product Name"
                 value={search}
                 onChangeText={text => {
@@ -522,6 +545,7 @@ const RedeemGifts = ({navigation,route}) => {
           <TouchableOpacity
           onPress={()=>{
             setDisplayContent(giftCatalogueData.body)
+            setCart([])
           }}
             style={{
               height: 70,
@@ -567,7 +591,7 @@ const RedeemGifts = ({navigation,route}) => {
               marginTop: 10,
               marginBottom: 10,
             }}
-            content="Rewards"></PoppinsTextMedium>
+            content={t("Rewards")}></PoppinsTextMedium>
           {displayContent && (
             <FlatList
               data={displayContent}
@@ -601,7 +625,7 @@ const RedeemGifts = ({navigation,route}) => {
           )
           
         }} style={{alignItems:"center",borderRadius:10,justifyContent:'center',height:50,width:'60%',backgroundColor:ternaryThemeColor,position:'absolute',bottom:20}}>
-            <PoppinsTextMedium style={{color:'white',fontSize:16,fontWeight:'700'}} content = "Continue"></PoppinsTextMedium>
+            <PoppinsTextMedium style={{color:'white',fontSize:16,fontWeight:'700'}} content = {t("continue")}></PoppinsTextMedium>
         </TouchableOpacity>
       </View>
     </View>
