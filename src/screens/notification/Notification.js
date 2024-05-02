@@ -4,7 +4,8 @@ import { useSelector } from "react-redux";
 import { useFetchAllPushNotificationDumpListByAppUserIdMutation } from "../../apiServices/pushNotification/fetchAllPushNotificationDumpListByAppUserId";
 import PoppinsTextLeftMedium from "../../components/electrons/customFonts/PoppinsTextLeftMedium";
 import HyperlinkText from "../../components/electrons/customFonts/HyperlinkText";
-
+import DataNotFound from "../data not found/DataNotFound";
+import { useTranslation } from "react-i18next";
 
 const Notification = ({ navigation }) => {
 
@@ -18,6 +19,8 @@ const Notification = ({ navigation }) => {
     const userData = useSelector(state => state.appusersdata.userData)
 
     console.log("userData", userData)
+
+    const {t} = useTranslation()
 
 
     useEffect(() => {
@@ -46,6 +49,7 @@ const Notification = ({ navigation }) => {
     const height = Dimensions.get('window').height
 
     const Notificationbar = (props) => {
+        console.log("Notificationbar",props.notification)
         return (
             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
                 <View style={{ height: 40, width: 40, borderRadius: 20, alignItems: 'center', justifyContent: 'center', backgroundColor: "#FFE7E7", marginLeft: 20 }}>
@@ -71,16 +75,21 @@ const Notification = ({ navigation }) => {
                 }}>
                     <Image style={{ height: 30, width: 30, resizeMode: 'contain', marginRight: 8 }} source={require('../../../assets/images/blackBack.png')}></Image>
                 </TouchableOpacity>
-                <Text style={{ color: 'white', marginLeft: 10, fontWeight: '500' }}>Notification</Text>
+                <Text style={{ color: 'white', marginLeft: 10, fontWeight: '500' }}>{t("Notification")}</Text>
             </View>
-         <ScrollView style={{ height: '90%', backgroundColor: buttonThemeColor }}>
+            <ScrollView style={{ height: '90%', backgroundColor: buttonThemeColor, width:'100%' }}>
             
             <View style={{ paddingBottom: 120, height: height, backgroundColor: 'white', width: '100%', borderTopLeftRadius: 30, borderTopRightRadius: 30, marginTop: 20 }}>
                 {
                     notifData?.body?.data?.map((item, index) => {
-                        return <Notificationbar notification={item?.title} body={item?.body} key={item?.id} ></Notificationbar>
-
+                        return <Notificationbar notification={item?.title} body={item?.body} key={index} ></Notificationbar>
                     })
+                }
+                 {
+                  notifData?.body?.count == "0"  &&
+                     <View style={{height:'100%', backgroundColor:'white', }}>
+                     <DataNotFound></DataNotFound>
+                     </View>
                 }
             </View>
         </ScrollView>

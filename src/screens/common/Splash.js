@@ -195,6 +195,10 @@ if(Platform.OS=='android')
 
   }
 
+  if(__DEV__){
+    setLocationEnabled(true)
+  }
+
    
     if(!locationBoxEnabled)
     {

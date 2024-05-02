@@ -307,7 +307,7 @@ const QrCodeScanner = ({ navigation }) => {
         setMessage(verifyQDistributorrError?.data?.message);
 
       }
-      
+
       console.log('Verify qr error', verifyQDistributorrError);
 
     }
@@ -810,7 +810,7 @@ const QrCodeScanner = ({ navigation }) => {
   useEffect(() => {
     if (verifyBarData) {
       addQrDataToList(verifyBarData.body);
-      
+
 
       console.log('Verify bar data', verifyBarData);
       if (verifyBarData.body?.status === "1") {
@@ -839,7 +839,7 @@ const QrCodeScanner = ({ navigation }) => {
           setMessage(JSON.stringify(verifyBarError));
         }
 
-        else{
+        else {
           setError(true)
           setMessage(verifyBarError?.data?.message);
         }
@@ -1355,10 +1355,10 @@ const QrCodeScanner = ({ navigation }) => {
               </View>
             )}
             {
-              productDataData && productDataData.body.products.length !== 0 &&
+              productDataData && productDataData.body.proaducts.length !== 0 &&
               <ButtonProceed
                 handleOperation={handleAddQr}
-                style={{ color: 'white' , marginBottom:30}}
+                style={{ color: 'white', marginBottom: 30 }}
                 content={isDistributor ? "Revert Bar & Points" : "Proceed"}
                 navigateTo={'QrCodeScanner'}></ButtonProceed>
             }
@@ -1488,7 +1488,7 @@ const QrCodeScanner = ({ navigation }) => {
                     style={{ height: 16, width: 16, resizeMode: 'contain', alignSelf: 'center' }}
                     source={require('../../../assets/images/qrQuestionMark.png')}></Image>
                 </TouchableOpacity>
-               
+
               </View>
             </View>
           </View>
@@ -1517,112 +1517,113 @@ const QrCodeScanner = ({ navigation }) => {
                 style={{ height: 44, width: 44, resizeMode: 'contain', }}
                 source={require('../../../assets/images/qrTorch.png')}></Image>
             </TouchableOpacity>
-           
+
           </View>
         </View>
 
 
-          <View
-            style={{
-              height: '60%',
-              backgroundColor: 'white',
-              width: '100%',
-              // top: platformMargin,
-              borderRadius: 30,
-              alignItems: 'center',
-              justifyContent: 'flex-start',
-            }}>
-            {error && verifyQrData && (
-              <ErrorModal
-                modalClose={modalClose}
-                productData={verifyQrData.body?.qr}
-                message={message}
-                isReportable={isReportable}
-                openModal={error}></ErrorModal>
-            )}
-            {error && (
-              <ErrorModal
-                modalClose={modalClose}
-                isReportable={isReportable}
-                message={message}
+        <View
+          style={{
+            height: '60%',
+            backgroundColor: 'white',
+            width: '100%',
+            // top: platformMargin,
+            borderRadius: 30,
+            alignItems: 'center',
+            justifyContent: 'flex-start',
+          }}>
+          {error && verifyQrData && (
+            <ErrorModal
+              modalClose={modalClose}
+              productData={verifyQrData.body?.qr}
+              message={message}
+              isReportable={isReportable}
+              openModal={error}></ErrorModal>
+          )}
+          {error && (
+            <ErrorModal
+              modalClose={modalClose}
+              isReportable={isReportable}
+              message={message}
 
-                openModal={error}></ErrorModal>
-            )}
-            {
-              success && (
-                <MessageModal
-                  modalClose={modalClose}
-                  title="Success"
-                  message={message}
-                  openModal={success}></MessageModal>
-              )
-            }
-            {addedQrList.length === 0 ? (
-              <View
-                style={{
-                  height: '100%',
-                  width: '100%',
-                  alignItems: 'center',
-                  justifyContent: 'flex-start',
-                }}>
-                {console.log("addede QRLIST", addedQrList)}
-                <ScrollView contentContainerStyle={{ alignItems: "center", justifyContent: 'center', width: '80%', marginTop: 60 }}>
-                  <Image
-                    style={{ height: 300, width: 300, resizeMode: 'contain' }}
-                    source={require('../../../assets/images/barHowTo.png')}></Image>
-                  
-                </ScrollView>
-              </View>
-            ) : (
-              <View
-                style={{
-                  width: '100%',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  height:'100%',
+              openModal={error}></ErrorModal>
+          )}
+          {
+            success && (
+              <MessageModal
+                modalClose={modalClose}
+                title="Success"
+                message={message}
+                openModal={success}></MessageModal>
+            )
+          }
+          {addedQrList.length === 0 ? (
+            <View
+              style={{
+                height: '100%',
+                width: '100%',
+                alignItems: 'center',
+                justifyContent: 'flex-start',
+              }}>
+              {console.log("addede QRLIST", addedQrList)}
+              <ScrollView contentContainerStyle={{ alignItems: "center", justifyContent: 'center', width: '80%', marginTop: 60 }}>
+                <Image
+                  style={{ height: 300, width: 300, resizeMode: 'contain' }}
+                  source={require('../../../assets/images/barHowTo.png')}></Image>
+
+              </ScrollView>
+            </View>
+          ) : (
+            <View
+              style={{
+                width: '100%',
+                alignItems: 'center',
+                justifyContent: 'center',
+                height: '100%',
                 // backgroundColor:'red'
-                }}>
-                {console.log("addede QRLIST", addedQrList)}
-                <FlatList
-                  style={{ width: '100%', height: '80%' }}
-                  data={addedQrList}
-                  renderItem={({ item, index }) => (
-                    <View
-                      style={{
-                        width: '100%',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                      }}>
-                      {!error && (
-                        <ScannedListItem
-                          handleDelete={deleteQrFromList}
-                          unique_code={item.unique_code}
-                          index={index}
-                          serialNo={item.batch_code}
-                          productName={item.product_name}
-                          productCode={item.product_code}
-                          mrp={item.mrp}
-                          barcode={item.unique_code}
-                          batchCode={item.batch_code}></ScannedListItem>
-                      )}
-                    </View>
-                  )}
-                  keyExtractor={item => item.id}
-                />
-                {
-              
-              <ButtonProceed
-                handleOperation={isDistributor ? handleReturnBar : handleAddBar}
-                style={{ color: 'white', marginBottom:50 }}
-                // content="Proceed"
-                content={isDistributor ? "Revert Bar & Points" : "Proceed"}
+              }}>
+              {console.log("addede QRLIST", addedQrList)}
+              <FlatList
+                style={{ width: '100%', height: '80%' }}
+                data={addedQrList}
+                renderItem={({ item, index }) => (
+                  <View
+                    style={{
+                      width: '100%',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    }}>
+                    {!error && (
+                      <ScannedListItem
+                        handleDelete={deleteQrFromList}
+                        unique_code={item.unique_code}
+                        index={index}
+                        serialNo={item.batch_code}
+                        productName={item.product_name}
+                        productCode={item.product_code}
+                        mrp={item.mrp}
+                        barcode={item.unique_code}
+                        batchCode={item.batch_code}></ScannedListItem>
+                    )}
+                  </View>
+                )}
+                keyExtractor={item => item.id}
+              />
+              {
+                <View style={{marginBottom:60}}>
+                  <ButtonProceed
+                    handleOperation={isDistributor ? handleReturnBar : handleAddBar}
+                    style={{ color: 'white', }}
+                    // content="Proceed"
+                    content={isDistributor ? "Revert Bar & Points" : "Proceed"}
+                    navigateTo={'QrCodeScanner'}></ButtonProceed>
+                </View>
 
-                navigateTo={'QrCodeScanner'}></ButtonProceed>
-            }
-              </View>
-            )}
-            
-          </View>
+              }
+            </View>
+          )}
+
+        </View>
 
 
 

@@ -352,7 +352,7 @@ const Passbook = ({ navigation }) => {
                         }
                         {
                          
-                        !isDistributor && <NavigateTO title="Cashback Redeemed History" discription=" list of cashback claimed by you" image={require('../../../assets/images/cashbackBlack.png')}></NavigateTO>
+                        // !isDistributor && <NavigateTO title="Cashback Redeemed History" discription=" list of cashback claimed by you" image={require('../../../assets/images/cashbackBlack.png')}></NavigateTO>
 
                         }
 
@@ -422,7 +422,7 @@ const Passbook = ({ navigation }) => {
                             }
                             {
                          
-                              !isDistributor &&  <GridVIew title="Cashback Redeemed History" discription=" list of cashback redeemed by you" image={require('../../../assets/images/scannedHistory.png')}></GridVIew>
+                            //   !isDistributor &&  <GridVIew title="Cashback Redeemed History" discription=" list of cashback redeemed by you" image={require('../../../assets/images/scannedHistory.png')}></GridVIew>
 
                             }
 

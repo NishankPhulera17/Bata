@@ -82,7 +82,7 @@ const RedeemedDetails = ({ navigation, route }) => {
   const productName = data.gift.gift[0].name;
   const productImage = require("../../../assets/images/box.png");
   const walletPoints = data.points;
-  const expectedDeliveryDate = "23 Sep 2023";
+  const expectedDeliveryDate = "";
   const deliveryStatus = "Approved";
   const image = data.gift.gift[0].images[0];
   const deliveryAddress =
@@ -280,16 +280,16 @@ const RedeemedDetails = ({ navigation, route }) => {
                   content={walletPoints}
                 ></PoppinsTextMedium>
               </View>
-            )}
-            <PoppinsTextMedium
+            )}    
+            {/* <PoppinsTextMedium
               style={{
                 fontSize: 16,
                 fontWeight: "500",
                 color: "#171717",
                 marginTop: 10,
               }}
-              content={`Expected Delivery Date : ${expectedDeliveryDate}`}
-            ></PoppinsTextMedium>
+              content={`Expected Delivery Date`}  
+            ></PoppinsTextMedium> */}
             <View
               style={{
                 height: 50,
