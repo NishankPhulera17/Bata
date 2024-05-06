@@ -9,7 +9,8 @@ import {
   Image,
   ScrollView,
   FlatList,
-  Vibration
+  Vibration,
+  ToastAndroid
 } from 'react-native';
 import QRCodeScanner from 'react-native-qrcode-scanner';
 import { RNCamera } from 'react-native-camera';
@@ -222,6 +223,12 @@ const QrCodeScanner = ({ navigation }) => {
     isLoading: addBulkQrIsLoading,
     isError: addBulkQrIsError
   }] = useAddBulkQrMutation()
+
+  const showToast = () => {
+    ToastAndroid.show(message, ToastAndroid.SHORT)
+    setError(false)
+    setMessage("")
+  }
 
 
 
@@ -643,7 +650,6 @@ const QrCodeScanner = ({ navigation }) => {
       if (!existingObject) {
         setAddedQrList([...addedQrList, data]);
       } else {
-
         setError(true);
         setMessage('Sorry This Barcode is already added to the list');
       }
@@ -788,31 +794,30 @@ const QrCodeScanner = ({ navigation }) => {
     }
     else if (verifyQrError) {
 
-      if(verifyQrError.status == 401)
-        {
-          const handleLogout = async () => {
-            try {
-              
-              await AsyncStorage.removeItem('loginData');
-              navigation.navigate("Splash")
-              navigation.reset({ index: 0, routes: [{ name: 'Splash' }] }); // Navigate to Splash screen
-            } catch (e) {
-              console.log("error deleting loginData", e);
-            }
-          };
-          handleLogout();
-        }
-        else{
-          if (verifyQrError === undefined) {
-            setError(true)
-            setMessage("This QR is not activated yet")
+      if (verifyQrError.status == 401) {
+        const handleLogout = async () => {
+          try {
+
+            await AsyncStorage.removeItem('loginData');
+            navigation.navigate("Splash")
+            navigation.reset({ index: 0, routes: [{ name: 'Splash' }] }); // Navigate to Splash screen
+          } catch (e) {
+            console.log("error deleting loginData", e);
           }
-          else {
-            setError(true)
-            setMessage(verifyQrError.data?.message);
-          }
-          console.log('Verify qr error', verifyQrError.data.Error);
+        };
+        handleLogout();
+      }
+      else {
+        if (verifyQrError === undefined) {
+          setError(true)
+          setMessage("This QR is not activated yet")
         }
+        else {
+          setError(true)
+          setMessage(verifyQrError.data?.message);
+        }
+        console.log('Verify qr error', verifyQrError.data.Error);
+      }
 
 
     }
@@ -1557,14 +1562,32 @@ const QrCodeScanner = ({ navigation }) => {
               isReportable={isReportable}
               openModal={error}></ErrorModal>
           )}
-          {error && (
-            <ErrorModal
-              modalClose={modalClose}
-              isReportable={isReportable}
-              message={message}
+          {Platform.OS == "android" ?
+            <View>
+              {error && message == "Sorry This Barcode is already added to the list" ? showToast() :
+                <View>
+                  {
+                    error && (
+                      <ErrorModal
+                        modalClose={modalClose}
+                        isReportable={isReportable}
+                        message={message}
+                        openModal={error}></ErrorModal>
+                    )
+                  }
+                </View>
 
-              openModal={error}></ErrorModal>
-          )}
+
+              }
+            </View>
+            :
+            error && (
+              <ErrorModal
+                modalClose={modalClose}
+                isReportable={isReportable}
+                message={message}
+                openModal={error}></ErrorModal>
+            )}
           {
             success && (
               <MessageModal
@@ -1627,7 +1650,7 @@ const QrCodeScanner = ({ navigation }) => {
                 keyExtractor={item => item.id}
               />
               {
-                <View style={{marginBottom:60}}>
+                <View style={{ marginBottom: 60 }}>
                   <ButtonProceed
                     handleOperation={isDistributor ? handleReturnBar : handleAddBar}
                     style={{ color: 'white', }}
