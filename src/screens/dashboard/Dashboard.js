@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, StyleSheet, ScrollView, Platform, TouchableOpacity, Image,Text } from 'react-native';
+import { View, StyleSheet, ScrollView, Platform, TouchableOpacity, Image, Text } from 'react-native';
 import MenuItems from '../../components/atoms/MenuItems';
 import { BaseUrl } from '../../utils/BaseUrl';
 import { useGetAppDashboardDataMutation } from '../../apiServices/dashboard/AppUserDashboardApi';
@@ -41,8 +41,9 @@ import CustomModal from '../../components/modals/CustomModal';
 import ModalWithBorder from '../../components/modals/ModalWithBorder';
 import Bell from 'react-native-vector-icons/FontAwesome';
 import Close from 'react-native-vector-icons/Ionicons';
-import {GoogleMapsKey} from "@env"
+import { GoogleMapsKey } from "@env"
 import InternetModal from '../../components/modals/InternetModal';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 const Dashboard = ({ navigation }) => {
@@ -57,6 +58,8 @@ const Dashboard = ({ navigation }) => {
   const [notifModal, setNotifModal] = useState(false)
   const [notifData, setNotifData] = useState(null)
   const [connected, setConnected] = useState(true)
+  const[error, setError] = useState(false);
+  const[message, setMessage] = useState("")
 
   const focused = useIsFocused()
   const dispatch = useDispatch()
@@ -80,6 +83,7 @@ const Dashboard = ({ navigation }) => {
   console.log("user id is from dashboard", userId)
   console.log(focused)
   let startDate, endDate
+
   const [getActiveMembershipFunc, {
     data: getActiveMembershipData,
     error: getActiveMembershipError,
@@ -160,16 +164,15 @@ const Dashboard = ({ navigation }) => {
   }
 
 
-  useEffect(()=>{
-    if(isConnected)
-    {
-      console.log("internet status",isConnected)
-    
-        setConnected(isConnected.isConnected)
-        console.log("is connected",isConnected)
-      
-      }
-  },[isConnected])
+  useEffect(() => {
+    if (isConnected) {
+      console.log("internet status", isConnected)
+
+      setConnected(isConnected.isConnected)
+      console.log("is connected", isConnected)
+
+    }
+  }, [isConnected])
 
   useEffect(() => {
     const unsubscribe = messaging().onMessage(async remoteMessage => {
@@ -249,6 +252,23 @@ const Dashboard = ({ navigation }) => {
     }
     else if (getActiveMembershipError) {
       console.log("getActiveMembershipError", getActiveMembershipError)
+      if (getActiveMembershipError.status == 401) {
+        const handleLogout = async () => {
+          try {
+
+            await AsyncStorage.removeItem('loginData');
+            navigation.navigate("Splash")
+            navigation.reset({ index: 0, routes: [{ name: 'Splash' }] }); // Navigate to Splash screen
+          } catch (e) {
+            console.log("error deleting loginData", e);
+          }
+        };
+        handleLogout();
+      }
+      else {
+        setError(true)
+        setMessage("Unable to fetch user point history.")
+      }
     }
   }, [getActiveMembershipData, getActiveMembershipError])
 
@@ -269,6 +289,24 @@ const Dashboard = ({ navigation }) => {
     }
     else if (getKycStatusError) {
       console.log("getKycStatusError", getKycStatusError)
+      if(getKycStatusError.status == 401)
+        {
+          const handleLogout = async () => {
+            try {
+              
+              await AsyncStorage.removeItem('loginData');
+              navigation.navigate("Splash")
+              navigation.reset({ index: 0, routes: [{ name: 'Splash' }] }); // Navigate to Splash screen
+            } catch (e) {
+              console.log("error deleting loginData", e);
+            }
+          };
+          handleLogout();
+        }
+        else{
+        setError(true)
+        setMessage("Unable to fetch user point history.")
+        }
     }
   }, [getKycStatusData, getKycStatusError])
 
@@ -279,6 +317,23 @@ const Dashboard = ({ navigation }) => {
     }
     else if (getDashboardError) {
       console.log("getDashboardError", getDashboardError)
+      if (getDashboardError.status == 401) {
+        const handleLogout = async () => {
+          try {
+
+            await AsyncStorage.removeItem('loginData');
+            navigation.navigate("Splash")
+            navigation.reset({ index: 0, routes: [{ name: 'Splash' }] }); // Navigate to Splash screen
+          } catch (e) {
+            console.log("error deleting loginData", e);
+          }
+        };
+        handleLogout();
+      }
+      else {
+        setError(true)
+        setMessage("Unable to fetch user point history.")
+      }
     }
   }, [getDashboardData, getDashboardError])
 
@@ -305,185 +360,185 @@ const Dashboard = ({ navigation }) => {
         ],
       );
     };
-   const intervalId= setInterval(() => {
-    try{
-      Geolocation.getCurrentPosition((res) => {
-        setLocationEnabled(true)
-        console.log("res", res)
-        lat = res.coords.latitude
-        lon = res.coords.longitude
-        // getLocation(JSON.stringify(lat),JSON.stringify(lon))
-        console.log("latlong", lat, lon)
-        var url = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${res?.coords?.latitude},${res?.coords?.longitude}
+    const intervalId = setInterval(() => {
+      try {
+        Geolocation.getCurrentPosition((res) => {
+          setLocationEnabled(true)
+          console.log("res", res)
+          lat = res.coords.latitude
+          lon = res.coords.longitude
+          // getLocation(JSON.stringify(lat),JSON.stringify(lon))
+          console.log("latlong", lat, lon)
+          var url = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${res?.coords?.latitude},${res?.coords?.longitude}
             &location_type=ROOFTOP&result_type=street_address&key=${GoogleMapsKey}`
-  
-        fetch(url).then(response => response.json()).then(json => {
-          // console.log("location address=>", JSON.stringify(json));
-          const formattedAddress = json?.results[0]?.formatted_address
-          const formattedAddressArray = formattedAddress?.split(',')
-  
-          let locationJson = {
-  
-            lat: json?.results[0]?.geometry?.location?.lat === undefined ? "N/A" : json?.results[0]?.geometry?.location?.lat,
-            lon: json?.results[0]?.geometry?.location?.lng === undefined ? "N/A" : json?.results[0]?.geometry?.location?.lng,
-            address: formattedAddress === undefined ? "N/A" : formattedAddress
-  
-          }
-  
-          const addressComponent = json?.results[0]?.address_components
-          // console.log("addressComponent", addressComponent)
-          for (let i = 0; i <= addressComponent?.length; i++) {
-            if (i === addressComponent?.length) {
-              dispatch(setLocation(locationJson))
-              clearInterval(intervalId)
+
+          fetch(url).then(response => response.json()).then(json => {
+            // console.log("location address=>", JSON.stringify(json));
+            const formattedAddress = json?.results[0]?.formatted_address
+            const formattedAddressArray = formattedAddress?.split(',')
+
+            let locationJson = {
+
+              lat: json?.results[0]?.geometry?.location?.lat === undefined ? "N/A" : json?.results[0]?.geometry?.location?.lat,
+              lon: json?.results[0]?.geometry?.location?.lng === undefined ? "N/A" : json?.results[0]?.geometry?.location?.lng,
+              address: formattedAddress === undefined ? "N/A" : formattedAddress
+
             }
-            else {
-              if (addressComponent[i].types.includes("postal_code")) {
-                console.log("inside if")
-  
-                console.log(addressComponent[i]?.long_name)
-                locationJson["postcode"] = addressComponent[i]?.long_name
+
+            const addressComponent = json?.results[0]?.address_components
+            // console.log("addressComponent", addressComponent)
+            for (let i = 0; i <= addressComponent?.length; i++) {
+              if (i === addressComponent?.length) {
+                dispatch(setLocation(locationJson))
+                clearInterval(intervalId)
               }
-              else if (addressComponent[i]?.types.includes("country")) {
-                console.log(addressComponent[i]?.long_name)
-  
-                locationJson["country"] = addressComponent[i]?.long_name
+              else {
+                if (addressComponent[i].types.includes("postal_code")) {
+                  console.log("inside if")
+
+                  console.log(addressComponent[i]?.long_name)
+                  locationJson["postcode"] = addressComponent[i]?.long_name
+                }
+                else if (addressComponent[i]?.types.includes("country")) {
+                  console.log(addressComponent[i]?.long_name)
+
+                  locationJson["country"] = addressComponent[i]?.long_name
+                }
+                else if (addressComponent[i]?.types.includes("administrative_area_level_1")) {
+                  console.log(addressComponent[i]?.long_name)
+
+                  locationJson["state"] = addressComponent[i]?.long_name
+                }
+                else if (addressComponent[i]?.types.includes("administrative_area_level_3")) {
+                  console.log(addressComponent[i]?.long_name)
+
+                  locationJson["district"] = addressComponent[i]?.long_name
+                }
+                else if (addressComponent[i]?.types.includes("locality")) {
+                  console.log(addressComponent[i]?.long_name)
+
+                  locationJson["city"] = addressComponent[i]?.long_name
+                }
               }
-              else if (addressComponent[i]?.types.includes("administrative_area_level_1")) {
-                console.log(addressComponent[i]?.long_name)
-  
-                locationJson["state"] = addressComponent[i]?.long_name
-              }
-              else if (addressComponent[i]?.types.includes("administrative_area_level_3")) {
-                console.log(addressComponent[i]?.long_name)
-  
-                locationJson["district"] = addressComponent[i]?.long_name
-              }
-              else if (addressComponent[i]?.types.includes("locality")) {
-                console.log(addressComponent[i]?.long_name)
-  
-                locationJson["city"] = addressComponent[i]?.long_name
-              }
+
             }
-  
+
+
+            console.log("formattedAddressArray", locationJson)
+
+          })
+        }, (error) => {
+          setLocationEnabled(false)
+          console.log("error", error)
+          if (error.code === 1) {
+            // Permission Denied
+            Geolocation.requestAuthorization()
+
+          } else if (error.code === 2) {
+            // Position Unavailable
+            enableLocation()
+
+          } else {
+            // Other errors
+            Alert.alert(
+              "Error",
+              "An error occurred while fetching your location.",
+              [
+                { text: "OK", onPress: () => console.log("OK Pressed") }
+              ],
+              { cancelable: false }
+            );
           }
-  
-  
-          console.log("formattedAddressArray", locationJson)
-  
         })
-      },(error) => {
-        setLocationEnabled(false)
-        console.log("error", error)
-        if (error.code === 1) {
-          // Permission Denied
-          Geolocation.requestAuthorization()
 
-        } else if (error.code === 2) {
-          // Position Unavailable
-          enableLocation()
+      }
+      catch (e) {
+        console.log("error in fetching location", e)
+      }
+    }, 5000);
 
-        } else {
-          // Other errors
-          Alert.alert(
-            "Error",
-            "An error occurred while fetching your location.",
-            [
-              { text: "OK", onPress: () => console.log("OK Pressed") }
-            ],
-            { cancelable: false }
-          );
-        }
-      })
-  
-    }
-    catch(e){
-      console.log("error in fetching location",e)
-    }
-   }, 5000);
-      
-    
-   return ()=> clearInterval(intervalId)
-   
+
+    return () => clearInterval(intervalId)
+
   }, [navigation])
-//   useEffect(() => {
-//     let lat = ''
-//     let lon = ''
-//     try {
-//       Geolocation.getCurrentPosition((res) => {
-//         console.log("res", res)
-//         lat = res?.coords?.latitude
-//         lon = res?.coords?.longitude
-//         // getLocation(JSON.stringify(lat),JSON.stringify(lon))
-//         console.log("latlong", lat, lon)
-//         var url = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${res?.coords?.latitude},${res?.coords?.longitude}
-// import {GoogleMapsKey} from "@env"
-//             &location_type=ROOFTOP&result_type=street_address&key=${GoogleMapsKey}`
+  //   useEffect(() => {
+  //     let lat = ''
+  //     let lon = ''
+  //     try {
+  //       Geolocation.getCurrentPosition((res) => {
+  //         console.log("res", res)
+  //         lat = res?.coords?.latitude
+  //         lon = res?.coords?.longitude
+  //         // getLocation(JSON.stringify(lat),JSON.stringify(lon))
+  //         console.log("latlong", lat, lon)
+  //         var url = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${res?.coords?.latitude},${res?.coords?.longitude}
+  // import {GoogleMapsKey} from "@env"
+  //             &location_type=ROOFTOP&result_type=street_address&key=${GoogleMapsKey}`
 
-//         fetch(url).then(response => response.json()).then(json => {
-//           console.log("location address=>", JSON?.stringify(json));
-//           const formattedAddress = json?.results[0]?.formatted_address
-//           const formattedAddressArray = formattedAddress?.split(',')
+  //         fetch(url).then(response => response.json()).then(json => {
+  //           console.log("location address=>", JSON?.stringify(json));
+  //           const formattedAddress = json?.results[0]?.formatted_address
+  //           const formattedAddressArray = formattedAddress?.split(',')
 
-//           let locationJson = {
+  //           let locationJson = {
 
-//             lat: json?.results[0]?.geometry?.location?.lat === undefined ? "N/A" : json?.results[0]?.geometry?.location?.lat,
-//             lon: json?.results[0]?.geometry?.location?.lng === undefined ? "N/A" : json?.results[0]?.geometry?.location?.lng,
-//             address: formattedAddress === undefined ? "N/A" : formattedAddress
+  //             lat: json?.results[0]?.geometry?.location?.lat === undefined ? "N/A" : json?.results[0]?.geometry?.location?.lat,
+  //             lon: json?.results[0]?.geometry?.location?.lng === undefined ? "N/A" : json?.results[0]?.geometry?.location?.lng,
+  //             address: formattedAddress === undefined ? "N/A" : formattedAddress
 
-//           }
+  //           }
 
-//           const addressComponent = json?.results[0]?.address_components
-//           console.log("addressComponent", addressComponent)
-//           for (let i = 0; i <= addressComponent?.length; i++) {
-//             if (i === addressComponent.length) {
-//               dispatch(setLocation(locationJson))
+  //           const addressComponent = json?.results[0]?.address_components
+  //           console.log("addressComponent", addressComponent)
+  //           for (let i = 0; i <= addressComponent?.length; i++) {
+  //             if (i === addressComponent.length) {
+  //               dispatch(setLocation(locationJson))
 
-//             }
-//             else {
-//               if (addressComponent[i]?.types.includes("postal_code")) {
-//                 console.log("inside if")
+  //             }
+  //             else {
+  //               if (addressComponent[i]?.types.includes("postal_code")) {
+  //                 console.log("inside if")
 
-//                 console.log(addressComponent[i]?.long_name)
-//                 locationJson["postcode"] = addressComponent[i]?.long_name
-//               }
-//               else if (addressComponent[i]?.types.includes("country")) {
-//                 console.log(addressComponent[i]?.long_name)
+  //                 console.log(addressComponent[i]?.long_name)
+  //                 locationJson["postcode"] = addressComponent[i]?.long_name
+  //               }
+  //               else if (addressComponent[i]?.types.includes("country")) {
+  //                 console.log(addressComponent[i]?.long_name)
 
-//                 locationJson["country"] = addressComponent[i]?.long_name
-//               }
-//               else if (addressComponent[i]?.types.includes("administrative_area_level_1")) {
-//                 console.log(addressComponent[i]?.long_name)
+  //                 locationJson["country"] = addressComponent[i]?.long_name
+  //               }
+  //               else if (addressComponent[i]?.types.includes("administrative_area_level_1")) {
+  //                 console.log(addressComponent[i]?.long_name)
 
-//                 locationJson["state"] = addressComponent[i]?.long_name
-//               }
-//               else if (addressComponent[i]?.types.includes("administrative_area_level_3")) {
-//                 console.log(addressComponent[i]?.long_name)
+  //                 locationJson["state"] = addressComponent[i]?.long_name
+  //               }
+  //               else if (addressComponent[i]?.types.includes("administrative_area_level_3")) {
+  //                 console.log(addressComponent[i]?.long_name)
 
-//                 locationJson["district"] = addressComponent[i]?.long_name
-//               }
-//               else if (addressComponent[i]?.types.includes("locality")) {
-//                 console.log(addressComponent[i]?.long_name)
+  //                 locationJson["district"] = addressComponent[i]?.long_name
+  //               }
+  //               else if (addressComponent[i]?.types.includes("locality")) {
+  //                 console.log(addressComponent[i]?.long_name)
 
-//                 locationJson["city"] = addressComponent[i]?.long_name
-//               }
-//             }
+  //                 locationJson["city"] = addressComponent[i]?.long_name
+  //               }
+  //             }
 
-//           }
-
-
-//           console.log("formattedAddressArray", locationJson)
-
-//         })
-//       })
-
-//     }
-//     catch {
-//       console.log("error")
-//     }
+  //           }
 
 
-//   }, [])
+  //           console.log("formattedAddressArray", locationJson)
+
+  //         })
+  //       })
+
+  //     }
+  //     catch {
+  //       console.log("error")
+  //     }
+
+
+  //   }, [])
   useEffect(() => {
     if (pointSharingData) {
       const keys = Object.keys(pointSharingData.point_sharing_bw_user.user)
@@ -609,29 +664,29 @@ const Dashboard = ({ navigation }) => {
     console.log("hello")
   };
 
-  const NoInternetComp = ()=>{
+  const NoInternetComp = () => {
     return (
-      <View style={{alignItems:'center',justifyContent:'center',width:'90%'}}>
-        <Text style={{color:'black'}}>No Internet Connection</Text>
-          <Text style={{color:'black'}}>Please check your internet connection and try again.</Text>
+      <View style={{ alignItems: 'center', justifyContent: 'center', width: '90%' }}>
+        <Text style={{ color: 'black' }}>No Internet Connection</Text>
+        <Text style={{ color: 'black' }}>Please check your internet connection and try again.</Text>
       </View>
     )
   }
   const notifModalFunc = () => {
     return (
-      <View style={{height:130  }}>
-        <View style={{ height: '100%', width:'100%', alignItems:'center',}}>
+      <View style={{ height: 130 }}>
+        <View style={{ height: '100%', width: '100%', alignItems: 'center', }}>
           <View>
-          {/* <Bell name="bell" size={18} style={{marginTop:5}} color={ternaryThemeColor}></Bell> */}
+            {/* <Bell name="bell" size={18} style={{marginTop:5}} color={ternaryThemeColor}></Bell> */}
 
           </View>
-          <PoppinsTextLeftMedium content={notifData?.title ? notifData?.title : ""} style={{ color: ternaryThemeColor, fontWeight:'800', fontSize:20, marginTop:8 }}></PoppinsTextLeftMedium>
-      
-          <PoppinsTextLeftMedium content={notifData?.title ? notifData?.title : ""} style={{ color: '#000000', marginTop:10, padding:10, fontSize:15, fontWeight:'600' }}></PoppinsTextLeftMedium>
+          <PoppinsTextLeftMedium content={notifData?.title ? notifData?.title : ""} style={{ color: ternaryThemeColor, fontWeight: '800', fontSize: 20, marginTop: 8 }}></PoppinsTextLeftMedium>
+
+          <PoppinsTextLeftMedium content={notifData?.title ? notifData?.title : ""} style={{ color: '#000000', marginTop: 10, padding: 10, fontSize: 15, fontWeight: '600' }}></PoppinsTextLeftMedium>
         </View>
 
         <TouchableOpacity style={[{
-          backgroundColor: ternaryThemeColor, padding: 6, borderRadius: 5, position: 'absolute', top: -10,right:-130
+          backgroundColor: ternaryThemeColor, padding: 6, borderRadius: 5, position: 'absolute', top: -10, right: -130
         }]} onPress={() => setNotifModal(false)} >
           <Close name="close" size={17} color="#ffffff" />
         </TouchableOpacity>
@@ -645,7 +700,7 @@ const Dashboard = ({ navigation }) => {
 
 
       <ScrollView style={{ width: '100%', marginBottom: platformMarginScroll, height: '100%' }}>
-      {!connected &&  <InternetModal comp = {NoInternetComp} />}
+        {!connected && <InternetModal comp={NoInternetComp} />}
         <DrawerHeader></DrawerHeader>
         <View style={{ width: '100%', alignItems: 'center', justifyContent: 'flex-start', flexDirection: 'row', marginBottom: 10 }}>
           <PoppinsTextLeftMedium style={{ color: ternaryThemeColor, fontWeight: 'bold', fontSize: 19, marginLeft: 20 }} content={`Welcome ${userData?.name}`}></PoppinsTextLeftMedium>

@@ -44,6 +44,7 @@ import { useCameraDevice } from 'react-native-vision-camera';
 import { Camera } from 'react-native-vision-camera';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler'
 import { request, PERMISSIONS } from 'react-native-permissions';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 const QrCodeScanner = ({ navigation }) => {
@@ -786,17 +787,33 @@ const QrCodeScanner = ({ navigation }) => {
       }
     }
     else if (verifyQrError) {
-      if (verifyQrError === undefined) {
 
-        setError(true)
-        setMessage("This QR is not activated yet")
-      }
-      else {
-        setError(true)
-        setMessage(verifyQrError.data?.message);
+      if(verifyQrError.status == 401)
+        {
+          const handleLogout = async () => {
+            try {
+              
+              await AsyncStorage.removeItem('loginData');
+              navigation.navigate("Splash")
+              navigation.reset({ index: 0, routes: [{ name: 'Splash' }] }); // Navigate to Splash screen
+            } catch (e) {
+              console.log("error deleting loginData", e);
+            }
+          };
+          handleLogout();
+        }
+        else{
+          if (verifyQrError === undefined) {
+            setError(true)
+            setMessage("This QR is not activated yet")
+          }
+          else {
+            setError(true)
+            setMessage(verifyQrError.data?.message);
+          }
+          console.log('Verify qr error', verifyQrError.data.Error);
+        }
 
-      }
-      console.log('Verify qr error', verifyQrError.data.Error);
 
     }
   }, [verifyQrData, verifyQrError]);

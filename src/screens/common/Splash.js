@@ -535,8 +535,6 @@ if(Platform.OS=='android')
             setTimeout(()=>{
               // navigation.navigate('SelectUser');
            connected && locationEnabled && navigation.reset({ index: '0', routes: [{ name: 'SelectUser' }] })
-
-
             },1000)
           }
 

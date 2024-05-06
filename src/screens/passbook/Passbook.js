@@ -9,6 +9,7 @@ import * as Keychain from 'react-native-keychain';
 import PlatinumModal from '../../components/platinum/PlatinumModal';
 import { useGetPointSharingDataMutation } from '../../apiServices/pointSharing/pointSharingApi';
 import { useGetReturnPointListMutation } from '../../apiServices/returnPointList/ReturnPointListApi';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 const Passbook = ({ navigation }) => {
@@ -102,6 +103,25 @@ const Passbook = ({ navigation }) => {
         }
         else if (getPointSharingError) {
             console.log("getPointSharingError", getPointSharingError)
+
+            if(getPointSharingError.status == 401)
+                {
+                  const handleLogout = async () => {
+                    try {
+                      
+                      await AsyncStorage.removeItem('loginData');
+                      navigation.navigate("Splash")
+                      navigation.reset({ index: 0, routes: [{ name: 'Splash' }] }); // Navigate to Splash screen
+                    } catch (e) {
+                      console.log("error deleting loginData", e);
+                    }
+                  };
+                  handleLogout();
+                }
+                else{
+                setError(true)
+                setMessage("Unable to fetch user point history.")
+                }
         }
     }, [getPointSharingData, getPointSharingError])
 
