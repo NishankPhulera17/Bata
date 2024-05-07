@@ -124,14 +124,14 @@ const SelectUser = ({ navigation }) => {
             justifyContent: 'center',
           }}>
 
-          {/* <Image
+          <Image
             style={{
               height: 200,
               width: 240,
               resizeMode: 'contain',
               top: 60,
             }}
-            source={{ uri: icon }}></Image> */}
+            source={{ uri: icon }}></Image>
 
           <View style={{ width: '80%', alignItems: "center", justifyContent: 'center', borderColor: ternaryThemeColor, borderTopWidth: 1, borderBottomWidth: 1, height: 40, marginTop: 40 }}>
             <PoppinsTextMedium style={{ color: '#171717', fontSize: 20, fontWeight: '700' }} content="Choose your profile "></PoppinsTextMedium>
