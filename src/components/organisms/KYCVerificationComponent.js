@@ -73,8 +73,8 @@ import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 
 const KYCVerificationComponent = (props) => {
-    const title = props.title
-    const buttonTitle = props.buttonTitle
+    const title = props?.title
+    const buttonTitle = props?.buttonTitle
     const navigation = useNavigation()
     const secondaryThemeColor = useSelector(
         state => state.apptheme.secondaryThemeColor,

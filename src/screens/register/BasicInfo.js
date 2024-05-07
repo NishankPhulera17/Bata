@@ -42,10 +42,10 @@ import { useVerifyOtpForNormalUseMutation } from '../../apiServices/otp/VerifyOt
 import DropDownRegistration from '../../components/atoms/dropdown/DropDownRegistration';
 import EmailTextInput from '../../components/atoms/input/EmailTextInput';
 import { validatePathConfig } from '@react-navigation/native';
-import { user_type_option } from '../../utils/usertTypeOption';
+import { useIsFocused } from '@react-navigation/native';
 import FastImage from 'react-native-fast-image';
 import {GoogleMapsKey} from "@env"
-
+import { useTranslation } from 'react-i18next';
 
 
 const BasicInfo = ({ navigation, route }) => {
@@ -66,11 +66,12 @@ const BasicInfo = ({ navigation, route }) => {
   const [otpModal, setOtpModal] = useState(false)
   const [otpVisible, setOtpVisible] = useState(false)
   const [isValid, setIsValid] = useState(true)
-
+  const [hideButton, setHideButton] = useState(false)
   const [timer, setTimer] = useState(0)
+  const [aadhaarVerified, setAadhaarVerified] = useState(true)
 
   const timeOutCallback = useCallback(() => setTimer(currTimer => currTimer - 1), []);
-  const gifUri = Image.resolveAssetSource(require('../../../assets/gif/loader.gif')).uri;
+  const focused = useIsFocused()
 
 
 
@@ -95,13 +96,22 @@ const BasicInfo = ({ navigation, route }) => {
   const userTypeId = route.params.userId
   const needsApproval = route.params.needsApproval
   const navigatingFrom = route.params.navigatingFrom
+  const registrationRequired = route.params.registrationRequired
+  console.log("registration required basic info", registrationRequired)
+  // const navigationParams = { "needsApproval": needsApproval, "userId": userTypeId, "user_type": userType, "mobile": mobile, "name": name, "registrationRequired":registrationRequired}
+  const navigationParams = { "needsApproval": needsApproval, "userId": userTypeId, "userType": userType, "registrationRequired":registrationRequired}
+console.log("navigation params from basic info",navigationParams)
   const name = route.params?.name
   const mobile = route.params?.mobile
-  console.log("appUsers", userType, userTypeId, isManuallyApproved, name, mobile, navigatingFrom)
-  console.log("Navigation From", navigatingFrom)
-
+  console.log("appUsers", userType, userTypeId, isManuallyApproved, name, mobile)
   const width = Dimensions.get('window').width
   const height = Dimensions.get('window').height
+  const {t} = useTranslation()
+  const gifUri = Image.resolveAssetSource(
+    require("../../../assets/gif/loader.gif")
+  ).uri;
+
+  let timeoutId;
 
   const [getFormFunc, {
     data: getFormData,
@@ -153,7 +163,10 @@ const BasicInfo = ({ navigation, route }) => {
   ] = useVerifyOtpForNormalUseMutation();
 
   useEffect(() => {
-    timer > 0 && setTimeout(timeOutCallback, 1000);
+    if(timer > 0){
+      timeoutId = setTimeout(timeOutCallback, 1000);
+    } 
+    return () => clearTimeout(timeoutId);
   }, [timer, timeOutCallback]);
 
 
@@ -180,6 +193,10 @@ const BasicInfo = ({ navigation, route }) => {
     }
 
   }, [])
+
+  useEffect(()=>{
+    setHideButton(false)
+  },[focused])
 
   useEffect(() => {
     if (verifyOtpData?.success) {
@@ -210,7 +227,7 @@ const BasicInfo = ({ navigation, route }) => {
       fetch(url).then(response => response.json()).then(json => {
         console.log("location address=>", JSON.stringify(json));
         const formattedAddress = json.results[0].formatted_address
-        const formattedAddressArray = formattedAddress.split(',')
+        const formattedAddressArray = formattedAddress?.split(',')
 
         let locationJson = {
 
@@ -283,7 +300,7 @@ const BasicInfo = ({ navigation, route }) => {
 
 
         }
-        console.log("getLocationFormPincodeDataLocationJson", locationJson)
+        console.log("getLocationFormPincodeDataLocationJson",locationJson)
         setLocation(locationJson)
       }
     }
@@ -294,7 +311,7 @@ const BasicInfo = ({ navigation, route }) => {
     }
   }, [getLocationFormPincodeData, getLocationFormPincodeError])
 
-
+  
   useEffect(() => {
     if (getFormData) {
       if (getFormData.message !== "Not Found") {
@@ -319,9 +336,10 @@ const BasicInfo = ({ navigation, route }) => {
       console.log("data after submitting form", registerUserData)
       if (registerUserData.success) {
         setSuccess(true)
-        setMessage(registerUserData.message)
-        setModalTitle("WOW")
+        setMessage("Thank you for joining OZOSTARS Loyalty program, we will get back to you within 1-2 working days")
+        setModalTitle("Greetings")
       }
+      setHideButton(false)
 
       // const values = Object.values(registerUserData.body.template)
       // setRegistrationForm(values)
@@ -330,6 +348,7 @@ const BasicInfo = ({ navigation, route }) => {
       console.log("form submission error", registerUserError)
       setError(true)
       setMessage(registerUserError.data.message)
+      setHideButton(false)
 
     }
   }, [registerUserData, registerUserError])
@@ -364,36 +383,35 @@ const BasicInfo = ({ navigation, route }) => {
   }, [sendOtpData, sendOtpError])
 
   const handleTimer = () => {
-
-    if (userName != "" && userName != undefined && userName != null) {
-      if (timer === 60) {
-        getOTPfunc()
-        setOtpVisible(true)
+    if(userMobile)
+    {
+      if(userMobile.length==10)
+      {
+        if(timer===60)
+        {
+          getOTPfunc()
+          setOtpVisible(true)
+        }
+        if (timer===0 || timer===-1) {
+          setTimer(60);
+          getOTPfunc()
+          setOtpVisible(true)
+    
+         
+        }
       }
-      if (timer === 0 || timer === -1) {
-        setTimer(60);
-        getOTPfunc()
-        setOtpVisible(true)
-
-
+      else{
+        setError(true)
+        setMessage("Mobile number length must be 10")
       }
+     
     }
-    else {
+    else{
       setError(true)
-      setMessage("Please Enter Owner Name")
+        setMessage("Kindly enter mobile number")
     }
-
-
+    
   }
-
-  const isthisValid = (text) => {
-    if (text != "" && text != undefined && text != null) {
-      return true
-    }
-    else {
-      return false
-    }
-  };
 
 
   const isValidEmail = (text) => {
@@ -409,30 +427,66 @@ const BasicInfo = ({ navigation, route }) => {
 
 
   const handleChildComponentData = data => {
+    if(data?.name == "aadhar")
+    {
+      console.log("handleChildComponentData", data)
 
-    // setOtpVisible(true)
-    if (data.name === "name") {
-      setUserName(data.value)
     }
-    if (data.name == "mobile") {
-      setUserMobile(data.value)
+    // setOtpVisible(true)
+    if (data?.name === "name") {
+      setUserName(data?.value)
     }
     // console.log("isValidEmail", isValidEmail(data.value))
 
-    if (data.name === "email") {
-      console.log("from text input", data.name);
+    if (data?.name === "email") {
+      console.log("from text input", data?.name);
 
-      console.log("isValidEmail", isValidEmail(data.value), isValid)
+      console.log("isValidEmail", isValidEmail(data?.value), isValid)
 
     }
+    if(data?.name=== "aadhar")
+    {
+     
+        console.log("aadhar input returned", data?.value?.length)
+      
+        
+       
+      if(data?.value?.length==0 || data?.value==undefined)
+     {
+      setHideButton(false)
+     }
+     else if(data?.value.length<12)
+     {
+      setHideButton(true)
+     }
+    
+     
+     
+     
+      
+     
+      
+      
+    }
+    
 
 
 
 
+    if (data?.name === "mobile") {
+      const reg = '^([0|+[0-9]{1,5})?([6-9][0-9]{9})$';
+      const mobReg = new RegExp(reg)
+      if (data?.value?.length === 10) {
+        if(mobReg.test(data?.value))
+      {
+      setUserMobile(data?.value)
+      }
+      else{
+        setError(true)
+        setMessage("Please enter a valid mobile number")
+      }
+    }
 
-
-    if (data.name === "mobile") {
-      setUserMobile(data.value)
     }
     // Update the responseArray state with the new data
     setResponseArray(prevArray => {
@@ -445,7 +499,7 @@ const BasicInfo = ({ navigation, route }) => {
         const updatedArray = [...prevArray];
         updatedArray[existingIndex] = {
           ...updatedArray[existingIndex],
-          value: data.value,
+          value: data?.value,
         };
         return updatedArray;
       } else {
@@ -455,35 +509,36 @@ const BasicInfo = ({ navigation, route }) => {
     });
   };
 
-  // console.log("responseArray", responseArray)
+  console.log("responseArray", responseArray)
   const modalClose = () => {
     setError(false);
   };
 
-  const getLocationFromPinCode = (pin) => {
-    console.log("getting location from pincode", pin)
+  const getLocationFromPinCode =  (pin) => {
+    console.log("getting location from pincode",pin)
     var url = `http://postalpincode.in/api/pincode/${pin}`
 
-    fetch(url).then(response => response.json()).then(json => {
-      console.log("location address=>", JSON.stringify(json));
-      if (json.PostOffice === null) {
-        setError(true)
-        setMessage("Pincode data cannot be retrieved.")
+  fetch(url).then(response => response.json()).then(json => {
+    console.log("location address=>", JSON.stringify(json));
+    if(json.PostOffice===null)
+    {
+      setError(true)
+      setMessage("Pincode data cannot be retrieved.")
+    }
+    else{
+      const locationJson = {
+        "postcode":pin,
+        "district":json.PostOffice[0].District,
+        "state":json.PostOffice[0].State,
+        "country":json.PostOffice[0].Country,
+        "city":json.PostOffice[0].Region
       }
-      else {
-        const locationJson = {
-          "postcode": pin,
-          "district": json.PostOffice[0].District,
-          "state": json.PostOffice[0].State,
-          "country": json.PostOffice[0].Country,
-          "city": json.PostOffice[0].Region
-        }
-        setLocation(locationJson)
-      }
+      setLocation(locationJson)
+    }
+    
 
-
-    })
-  }
+  })
+}
 
   const getOtpFromComponent = value => {
     if (value.length === 6) {
@@ -491,7 +546,7 @@ const BasicInfo = ({ navigation, route }) => {
       setOtp(value);
 
 
-      const params = { mobile: userMobile, name: userName, otp: value, user_type_id: userTypeId, user_type: userType,type:"login" }
+      const params = { mobile: userMobile, name: userName, otp: value, user_type_id: userTypeId, user_type: userType,type:'login' }
 
 
       verifyOtpFunc(params);
@@ -503,21 +558,32 @@ const BasicInfo = ({ navigation, route }) => {
     console.log("get user data", userData)
 
     console.log("ooooooo->>>>>>>>", { userName, userMobile, userTypeId, userType })
-    const params = { mobile: userMobile, name: userName, user_type_id: userTypeId, user_type: userType, type:"login" }
+    const params = { mobile: userMobile, name: userName, user_type_id: userTypeId, user_type: userType,type:'login' }
     sendOtpFunc(params)
   }
 
+  const addharVerified = (bool)=>{
+    console.log("aadhar text input status", bool)
+    if(!bool)
+    {
+      setAadhaarVerified(false)
+      setHideButton(true)
+    }
+    else{
+      setHideButton(false)
+    }
+  }
 
   const handleRegistrationFormSubmission = () => {
     const inputFormData = {}
+    let isFormValid = true; 
+    let missingParam = ""
     inputFormData["user_type"] = userType;
     inputFormData["user_type_id"] = userTypeId;
     inputFormData["is_approved_needed"] = isManuallyApproved;
     inputFormData["name"] = name;
     inputFormData["mobile"] = mobile;
 
-    let isFormValid = true; // Flag to track form validity
-    let missingParam = ""
 
 
     for (var i = 0; i < responseArray.length; i++) {
@@ -531,17 +597,28 @@ const BasicInfo = ({ navigation, route }) => {
         // setMessage(`${responseArray[i].label} is required`);
         missingParam = responseArray[i].label
     }
+    console.log("missing params", missingParam)
     
     }
     const body = inputFormData
-    const keys = Object.keys(body)
-    const values = Object.values(body)
 
     if (otpVerified) {
+      const keys = Object.keys(body)
+      const values = Object.values(body)
+
       if (keys.includes('email')) {
         const index = keys.indexOf('email')
         if (isValidEmail(values[index])) {
+          if(isFormValid){
+          
           registerUserFunc(body)
+          setHideButton(true)
+          }
+          else{
+                
+            setError(true)
+            setMessage(`${missingParam} is Required`)
+          }
         }
         else {
           setError(true)
@@ -549,35 +626,14 @@ const BasicInfo = ({ navigation, route }) => {
         }
       }
       else {
-        if (keys.includes("firm_name")) {
-          const index = keys.indexOf('firm_name')
-          if (isthisValid(values[index])) {
-
-            const index2 = keys.indexOf('firm_id')
-            if (isthisValid(values[index2])) {
-              if(isFormValid){
-                registerUserFunc(body)
-              }
-              else{
-                
-                setError(true)
-                setMessage(`${missingParam} is Required`)
-              }
-            }
-            else {
-              setError(true)
-              setMessage("Firm id required")
-            }
-
-
-          }
-          else {
-            setError(true)
-            setMessage("Firm name required")
-          }
+        if(isFormValid){
+        registerUserFunc(body)
         }
-
-        // registerUserFunc(body)
+        else{
+                
+          setError(true)
+          setMessage(`${missingParam} is Required`)
+        }
       }
 
       // make request according to the login type of user-----------------------
@@ -598,9 +654,9 @@ const BasicInfo = ({ navigation, route }) => {
     }
     else {
       setError(true)
-      setMessage("Otp isn't verified yet")
+      setMessage(t("Otp isn't verified yet"))
     }
-    // console.log("responseArraybody", body)
+    console.log("responseArraybody", body)
   }
 
   return (
@@ -628,7 +684,7 @@ const BasicInfo = ({ navigation, route }) => {
           message={message}
           openModal={success}
           navigateTo={navigatingFrom === "PasswordLogin" ? "PasswordLogin" : "OtpLogin"}
-          params={{ needsApproval: needsApproval, userType: userType, userId: userTypeId }}></MessageModal>
+          params={{ needsApproval: needsApproval, userType: userType, userId: userTypeId, registrationRequired:registrationRequired }}></MessageModal>
       )}
 
       {otpModal && (
@@ -661,7 +717,7 @@ const BasicInfo = ({ navigation, route }) => {
             left: 10
           }}
           onPress={() => {
-            navigation.goBack();
+            navigation.navigate('OtpLogin',navigationParams);
           }}>
           <Image
             style={{
@@ -674,7 +730,7 @@ const BasicInfo = ({ navigation, route }) => {
         </TouchableOpacity>
         <View style={{ alignItems: 'center', justifyContent: 'center', position: "absolute", top: 20, left: 50 }}>
           <PoppinsTextMedium
-            content="Registration"
+            content={t("registration")}
             style={{
               marginLeft: 10,
               fontSize: 16,
@@ -686,7 +742,7 @@ const BasicInfo = ({ navigation, route }) => {
       <ScrollView style={{ width: '100%' }}>
 
         <View style={{ width: width, backgroundColor: "white", alignItems: "center", justifyContent: 'flex-start', paddingTop: 20 }}>
-          {formFound && <PoppinsTextMedium style={{ color: 'black', fontWeight: '700', fontSize: 18, marginBottom: 40 }} content="Please Fill The Following Form To Register"></PoppinsTextMedium>}
+          {formFound ? <PoppinsTextMedium style={{ color: 'black', fontWeight: '700', fontSize: 18, marginBottom: 40 }} content={t("Please Fill The Following Form To Register")}></PoppinsTextMedium> : <PoppinsTextMedium style={{ color: 'black', fontWeight: '700', fontSize: 18, marginBottom: 40 }} content="No Form Available !!"></PoppinsTextMedium>}
 
           {/* <RegistrationProgress data={["Basic Info","Business Info","Manage Address","Other Info"]}></RegistrationProgress> */}
           {registrationForm &&
@@ -727,11 +783,24 @@ const BasicInfo = ({ navigation, route }) => {
 
                         {otpVerified ? <View style={{ alignItems: 'center', justifyContent: 'center' }}>
                           <Image style={{ height: 30, width: 30, resizeMode: 'contain' }} source={require('../../../assets/images/greenTick.png')}></Image>
-                        </View> : <TouchableOpacity style={{ flex: 0.15, marginTop: 6, backgroundColor: ternaryThemeColor, alignItems: 'center', justifyContent: 'center', height: 50, borderRadius: 5 }} onPress={() => {
+                        </View> : <TouchableOpacity style={{ flex: 0.15, marginTop: 6, backgroundColor: ternaryThemeColor, alignItems: 'center', justifyContent: 'center', height: 50, borderRadius: 5 }} onPress={()=>{
                           handleTimer()
                         }}>
-                          <PoppinsTextLeftMedium style={{ color: 'white', fontWeight: '800', padding: 5 }} content="Get OTP"></PoppinsTextLeftMedium>
+                          <PoppinsTextLeftMedium style={{ color: 'white', fontWeight: '800', padding: 5 }}content={t("get otp")}></PoppinsTextLeftMedium>
                         </TouchableOpacity>}
+                        {sendOtpIsLoading && <FastImage
+                style={{
+                  width: 40,
+                  height: 40,
+                  alignSelf: "center",
+                  
+                }}
+                source={{
+                  uri: gifUri, // Update the path to your GIF
+                  priority: FastImage.priority.normal,
+                }}
+                resizeMode={FastImage.resizeMode.contain}
+              />}
                       </View>
 
 
@@ -761,7 +830,7 @@ const BasicInfo = ({ navigation, route }) => {
                             <View style={{ alignItems: 'center', justifyContent: 'center' }}>
                               <Text style={{ color: ternaryThemeColor, marginTop: 10 }}>Didn't recieve any Code?</Text>
 
-                              <Text onPress={() => { handleTimer() }} style={{ color: ternaryThemeColor, marginTop: 6, fontWeight: '600', fontSize: 16 }}>Resend Code</Text>
+                              <Text onPress={()=>{handleTimer()}} style={{ color: ternaryThemeColor, marginTop: 6, fontWeight: '600', fontSize: 16 }}>Resend Code</Text>
 
                             </View>
                           </View>
@@ -796,7 +865,7 @@ const BasicInfo = ({ navigation, route }) => {
                       key={index}
                       handleData={handleChildComponentData}
                       placeHolder={item.name}
-
+                      displayText = {t(item.name.trim())}
                       label={item.label}
                     // isValidEmail = {isValidEmail}
                     ></EmailTextInput>
@@ -805,14 +874,16 @@ const BasicInfo = ({ navigation, route }) => {
 
                 // } 
                 else if (item.name === 'aadhaar' || item.name === "aadhar") {
-                  // console.log("aadhar")
+                  console.log("aadhar")
                   return (
                     <TextInputAadhar
                       required={item.required}
                       jsonData={item}
                       key={index}
+                      notVerified={addharVerified}
                       handleData={handleChildComponentData}
                       placeHolder={item.name}
+                      displayText = {t(item.name.toLowerCase().trim())}
                       label={item.label}
                     >
                       {' '}
@@ -820,7 +891,7 @@ const BasicInfo = ({ navigation, route }) => {
                   );
                 }
                 else if (item.name === 'pan') {
-                  // console.log("pan")
+                  console.log("pan")
                   return (
                     <TextInputPan
                       required={item.required}
@@ -829,6 +900,7 @@ const BasicInfo = ({ navigation, route }) => {
                       handleData={handleChildComponentData}
                       placeHolder={item.name}
                       label={item.label}
+                      displayText={item.name}
                     >
                       {' '}
                     </TextInputPan>
@@ -847,16 +919,16 @@ const BasicInfo = ({ navigation, route }) => {
                     </TextInputGST>
                   );
                 }
-                else if ((item.name).trim().toLowerCase() === "City") {
+                else if ((item.name).trim().toLowerCase() === "city" ) {
 
                   return (
                     <PrefilledTextInput
                       jsonData={item}
-                      required={item.required}
                       key={index}
                       handleData={handleChildComponentData}
                       placeHolder={item.name}
                       value={location?.city}
+                      displayText = {item.name}
                       label={item.label}
                     ></PrefilledTextInput>
                   )
@@ -864,39 +936,40 @@ const BasicInfo = ({ navigation, route }) => {
 
 
                 }
-                else if ((item.name).trim().toLowerCase() === "pincode") {
+                else if ((item.name).trim().toLowerCase() === "pincode"   ) {
+                 
+                    return (
+                      <PincodeTextInput
+                        jsonData={item}
+                        key={index}
+                        handleData={handleChildComponentData}
+                        handleFetchPincode={handleFetchPincode}
+                        placeHolder={item.name}
+                        value={location?.postcode}
+                        label={item.label}
+                        displayText = {item.name}
+                        maxLength={6}
+                      ></PincodeTextInput>
+                    )
+                  }
+                
+                  // else if ((item.name).trim().toLowerCase() === "pincode" ) {
+                 
+                  //   return (
+                  //     <PincodeTextInput
+                  //       jsonData={item}
+                  //       key={index}
+                  //       handleData={handleChildComponentData}
+                  //       handleFetchPincode={handleFetchPincode}
+                  //       placeHolder={item.name}
 
-                  return (
-                    <PincodeTextInput
-                      jsonData={item}
-                      key={index}
-                      handleData={handleChildComponentData}
-                      handleFetchPincode={handleFetchPincode}
-                      placeHolder={item.name}
-                      value={location?.postcode}
-                      label={item.label}
-                      maxLength={6}
-                    ></PincodeTextInput>
-                  )
-                }
-
-                // else if ((item.name).trim().toLowerCase() === "pincode" ) {
-
-                //   return (
-                //     <PincodeTextInput
-                //       jsonData={item}
-                //       key={index}
-                //       handleData={handleChildComponentData}
-                //       handleFetchPincode={handleFetchPincode}
-                //       placeHolder={item.name}
-
-                //       label={item.label}
-                //       maxLength={6}
-                //     ></PincodeTextInput>
-                //   )
-                // }
-
-                else if ((item.name).trim().toLowerCase() === "State") {
+                  //       label={item.label}
+                  //       maxLength={6}
+                  //     ></PincodeTextInput>
+                  //   )
+                  // }
+                
+                else if ((item.name).trim().toLowerCase() === "state"  ) {
                   return (
                     <PrefilledTextInput
                       jsonData={item}
@@ -905,10 +978,11 @@ const BasicInfo = ({ navigation, route }) => {
                       placeHolder={item.name}
                       value={location?.state}
                       label={item.label}
+                      displayText = {item.name}
                     ></PrefilledTextInput>
                   )
                 }
-                else if ((item.name).trim().toLowerCase() === "district") {
+                else if ((item.name).trim().toLowerCase() === "district"  ) {
 
                   return (
                     <PrefilledTextInput
@@ -918,6 +992,8 @@ const BasicInfo = ({ navigation, route }) => {
                       placeHolder={item.name}
                       value={location?.district}
                       label={item.label}
+                      displayText = {item.name}
+
                     ></PrefilledTextInput>
                   )
 
@@ -931,7 +1007,6 @@ const BasicInfo = ({ navigation, route }) => {
                       key={index}
                       handleData={handleChildComponentData}
                       placeHolder={item.name}
-                      required={item.required}
                       label={item.label}>
                       {' '}
                     </TextInputRectangle>
@@ -971,25 +1046,11 @@ const BasicInfo = ({ navigation, route }) => {
               }
             })}
 
-          {getFormIsLoading &&
-            <View style={{ backgroundColor: 'white', height:"100%" }}>
-              <FastImage
-                style={{ width: 100, height: 100, alignSelf: 'center', marginTop: '50%' }}
-                source={{
-                  uri: gifUri, // Update the path to your GIF
-                  priority: FastImage.priority.normal,
-                }}
-                resizeMode={FastImage.resizeMode.contain}
-              />
-            </View>
-
-          }
-
-          {!getFormIsLoading && formFound && <ButtonOval
+          {formFound && !hideButton && <ButtonOval
             handleOperation={() => {
               handleRegistrationFormSubmission();
             }}
-            content="Submit"
+            content={t("submit")}
             style={{
               paddingLeft: 30,
               paddingRight: 30,
