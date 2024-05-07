@@ -5,21 +5,7 @@ export const AppUsersApi = baseApi.injectEndpoints({
         getAppUsersData : builder.mutation({
             query(){
                 return {
-                    url:`/api/app/appUserType`,
-                    method:'get',
-                    headers:{
-                        "Content-Type": "application/json",
-                        "slug":slug
-                    },
-                    
-                   
-                }
-            }
-        }),
-        getAppUsersDataById : builder.mutation({
-            query(params){
-                return {
-                    url:`/api/app/appUserType?appUserTypeId=${params.user_type_id}`,
+                    url:`/api/app/appUserType/only`,
                     method:'get',
                     headers:{
                         "Content-Type": "application/json",
@@ -34,5 +20,5 @@ export const AppUsersApi = baseApi.injectEndpoints({
 });
 
 
-export const {useGetAppUsersDataMutation, useGetAppUsersDataByIdMutation} = AppUsersApi
+export const {useGetAppUsersDataMutation} = AppUsersApi
 

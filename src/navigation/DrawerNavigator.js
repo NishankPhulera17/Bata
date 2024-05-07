@@ -296,10 +296,10 @@ const CustomDrawer = () => {
 
   useEffect(() => {
     if (getAppMenuData) {
-      console.log("usertype", userData.user_type)
+      console.log("usertype", userData?.user_type)
       console.log("getAppMenuData", JSON.stringify(getAppMenuData))
       const tempDrawerData = getAppMenuData.body.filter((item) => {
-        return item.user_type === userData.user_type
+        return item.user_type === userData?.user_type
       })
       console.log("tempDrawerData", JSON.stringify(tempDrawerData))
       setDrawerData(tempDrawerData[0])
@@ -537,9 +537,9 @@ const CustomDrawer = () => {
               fontWeight: '600',
               fontSize: 16,
             }}>
-            {userData.name}
+            {userData?.name}
           </Text>}
-          {userData && <Text style={{ color: 'white', margin: 0,textTransform:"capitalize" }}>{userData.user_type} Account</Text>}
+          {userData && <Text style={{ color: 'white', margin: 0,textTransform:"capitalize" }}>{userData?.user_type} Account</Text>}
 
           {!Object.values(kycData).includes(false) ? <View style={{ flexDirection: 'row', marginTop: 4 }}>
             <View

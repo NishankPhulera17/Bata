@@ -39,7 +39,7 @@ function BottomNavigator({navigation}) {
     <PoppinsTextMedium style={{marginTop:4,fontSize:12,fontWeight:platformFontWeight,color:'black'}} content="Home"></PoppinsTextMedium>
     </TouchableOpacity>
     {/* ozone change */}
-    { ((userData.user_type).toLowerCase()!=="dealer"  && (userData.user_type).toLowerCase()!=="sales") ? <TouchableOpacity onPress={()=>{navigation.navigate('QrCodeScanner')}} style={{alignItems:"center",justifyContent:"center",}}>
+    { ((userData?.user_type)?.toLowerCase()!=="dealer"  && (userData?.user_type)?.toLowerCase()!=="sales") ? <TouchableOpacity onPress={()=>{navigation.navigate('QrCodeScanner')}} style={{alignItems:"center",justifyContent:"center",}}>
     <Barcode name="barcode" size={24} color={ternaryThemeColor}></Barcode>
     <PoppinsTextMedium style={{marginTop:4,fontSize:12,fontWeight:platformFontWeight,color:'black'}} content="Scan Bar Code"></PoppinsTextMedium>
     </TouchableOpacity>

@@ -665,7 +665,6 @@ const Splash = ({ navigation }) => {
   // const [isAlreadyIntroduced, setIsAlreadyIntroduced] = useState(null);
   // const [gotLoginData, setGotLoginData] = useState()
   const isConnected = useSelector(state => state.internet.isConnected);
-  const currentVersion = VersionCheck.getCurrentVersion();
   
   const gifUri = Image.resolveAssetSource(require('../../../assets/gif/ozoStars.gif')).uri;
   // generating functions and constants for API use cases---------------------
@@ -708,6 +707,7 @@ const Splash = ({ navigation }) => {
 
   useEffect(() => {
     getUsers();
+    const currentVersion = VersionCheck.getCurrentVersion();
     
     console.log("currentVersion",currentVersion)
     getMinVersionSupportFunc(currentVersion)
@@ -722,12 +722,12 @@ const Splash = ({ navigation }) => {
   useEffect(() => {
     if (getDashboardData) {
       console.log("getDashboardData", getDashboardData)
-      console.log("Trying to dispatch", parsedJsonValue.user_type_id)
-      dispatch(setAppUserId(parsedJsonValue.user_type_id))
-      dispatch(setAppUserName(parsedJsonValue.name))
-      dispatch(setAppUserType(parsedJsonValue.user_type))
+      console.log("Trying to dispatch", parsedJsonValue?.user_type_id)
+      dispatch(setAppUserId(parsedJsonValue?.user_type_id))
+      dispatch(setAppUserName(parsedJsonValue?.name))
+      dispatch(setAppUserType(parsedJsonValue?.user_type))
       dispatch(setUserData(parsedJsonValue))
-      dispatch(setId(parsedJsonValue.id))
+      dispatch(setId(parsedJsonValue?.id))
       dispatch(setDashboardData(getDashboardData?.body?.app_dashboard))
       Platform.OS == 'android' && locationEnabled && minVersionSupport && navigation.navigate('Dashboard');
       Platform.OS == 'ios' && minVersionSupport && navigation.navigate('Dashboard');
@@ -948,7 +948,7 @@ const Splash = ({ navigation }) => {
 
   useEffect(() => {
     getUsers();
-    getAppTheme("ozone")
+    getAppTheme("bata")
     const checkToken = async () => {
       const fcmToken = await messaging().getToken();
       if (fcmToken) {
@@ -1012,13 +1012,14 @@ const Splash = ({ navigation }) => {
   useEffect(() => {
     if (isConnected) {
       console.log("internet status", isConnected)
+      const currentVersion = VersionCheck.getCurrentVersion();
 
       setConnected(isConnected.isConnected)
       setIsSlowInternet(isConnected.isInternetReachable ? false : true)
       console.log("is connected", isConnected.isInternetReachable)
-      getUsers();
+        getUsers();
         getMinVersionSupportFunc(currentVersion)
-        getAppTheme("ozone")
+        getAppTheme("bata")
         getData()
 
     }
@@ -1028,19 +1029,24 @@ const Splash = ({ navigation }) => {
   
   useEffect(() => {
     if (getUsersData) {
-      console.log("type of users", getUsersData?.body);
-      const appUsers = getUsersData?.body.map((item, index) => {
-        return item.name
-      })
-      const appUsersData = getUsersData?.body.map((item, index) => {
-        return {
-          "name": item.name,
-          "id": item.user_type_id
-        }
-      })
-      // console.log("appUsers",appUsers,appUsersData)
-      dispatch(setAppUsers(appUsers))
-      dispatch(setAppUsersData(appUsersData))
+      if(getUsersData.status == 200)
+      {
+        console.log("type of users", getUsersData?.body);
+        const appUsers = getUsersData?.body.map((item, index) => {
+          return item.name
+        })
+        const appUsersData = getUsersData?.body.map((item, index) => {
+          return {
+            "name": item.name,
+            "id": item.user_type_id
+          }
+        })
+        // console.log("appUsers",appUsers,appUsersData)
+        dispatch(setAppUsers(appUsers))
+        dispatch(setAppUsersData(appUsersData))
+        getData()
+      }
+     
 
     } else if (getUsersError) {
       console.log("getUsersError", getUsersError);
@@ -1078,13 +1084,13 @@ const Splash = ({ navigation }) => {
     else {
       if (value === "Yes") 
       {
-        Platform.OS == 'android' && locationEnabled && minVersionSupport && navigation.navigate('SelectUser');
-        Platform.OS == 'ios' && minVersionSupport && navigation.navigate('SelectUser');
+        Platform.OS == 'android' && locationEnabled && minVersionSupport && getUsersData && getAppThemeData  && navigation.navigate('SelectUser');
+        Platform.OS == 'ios' && minVersionSupport && getUsersData && navigation.navigate('SelectUser');
       }
       else 
       {
-        Platform.OS == 'android' && locationEnabled && minVersionSupport && navigation.navigate('Introduction')
-        Platform.OS == 'ios' && minVersionSupport && navigation.navigate('Introduction')
+        Platform.OS == 'android' && locationEnabled && getUsersData && minVersionSupport && navigation.navigate('Introduction')
+        Platform.OS == 'ios' && minVersionSupport && getUsersData && navigation.navigate('Introduction')
       }
       // console.log("isAlreadyIntroduced",isAlreadyIntroduced,gotLoginData)
 
