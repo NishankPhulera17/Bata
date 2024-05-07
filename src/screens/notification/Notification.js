@@ -5,7 +5,6 @@ import { useFetchAllPushNotificationDumpListByAppUserIdMutation } from "../../ap
 import PoppinsTextLeftMedium from "../../components/electrons/customFonts/PoppinsTextLeftMedium";
 import HyperlinkText from "../../components/electrons/customFonts/HyperlinkText";
 import DataNotFound from "../data not found/DataNotFound";
-import { useTranslation } from "react-i18next";
 
 const Notification = ({ navigation }) => {
 

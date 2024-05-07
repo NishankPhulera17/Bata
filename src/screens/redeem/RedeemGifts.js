@@ -24,7 +24,6 @@ import ErrorModal from '../../components/modals/ErrorModal';
 import SuccessModal from '../../components/modals/SuccessModal';
 import MessageModal from '../../components/modals/MessageModal';
 import PointHistory from '../historyPages/PointHistory';
-import { useTranslation } from 'react-i18next';
 
 const RedeemGifts = ({navigation,route}) => {
   const [search, setSearch] = useState();

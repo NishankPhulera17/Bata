@@ -56,12 +56,12 @@ const SelectUser = ({ navigation }) => {
   const saveUserDetails = (data) => {
 
     try {
-      console.log("Saving user details", data.name)
-      dispatch(setAppUserId(data.user_type_id))
-      dispatch(setAppUserName(data.name))
-      dispatch(setAppUserType(data.user_type))
+      console.log("Saving user details", data?.name)
+      dispatch(setAppUserId(data?.user_type_id))
+      dispatch(setAppUserName(data?.name))
+      dispatch(setAppUserType(data?.user_type))
       dispatch(setUserData(data))
-      dispatch(setId(data.id))
+      dispatch(setId(data?.id))
       handleNavigation()
     }
     catch (e) {
@@ -94,7 +94,7 @@ const SelectUser = ({ navigation }) => {
     ? useSelector(state => state.apptheme.ternaryThemeColor)
     : '#FFB533';
 
-  const icon = useSelector(state => state.apptheme.icon)
+  const icon = useSelector(state => state.apptheme.icon) == (null || undefined)
     ? useSelector(state => state.apptheme.icon)
     : require('../../../assets/images/demoIcon.png');
 
@@ -124,14 +124,14 @@ const SelectUser = ({ navigation }) => {
             justifyContent: 'center',
           }}>
 
-          <Image
+          {/* <Image
             style={{
               height: 200,
               width: 240,
               resizeMode: 'contain',
               top: 60,
             }}
-            source={{ uri: icon }}></Image>
+            source={{ uri: icon }}></Image> */}
 
           <View style={{ width: '80%', alignItems: "center", justifyContent: 'center', borderColor: ternaryThemeColor, borderTopWidth: 1, borderBottomWidth: 1, height: 40, marginTop: 40 }}>
             <PoppinsTextMedium style={{ color: '#171717', fontSize: 20, fontWeight: '700' }} content="Choose your profile "></PoppinsTextMedium>

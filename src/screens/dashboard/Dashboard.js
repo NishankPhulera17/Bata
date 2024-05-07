@@ -198,7 +198,7 @@ const Dashboard = ({ navigation }) => {
     (async () => {
       const credentials = await Keychain.getGenericPassword();
       const token = credentials.username;
-      let queryParams = `?user_type_id=${userData.user_type_id}&app_user_id=${userData.id}&limit=${1}`;
+      let queryParams = `?user_type_id=${userData?.user_type_id}&app_user_id=${userData?.id}&limit=${1}`;
       if (startDate && endDate) {
         queryParams += `&from_date=${moment(startDate).format(
           "YYYY-MM-DD"
@@ -550,12 +550,12 @@ const Dashboard = ({ navigation }) => {
       let percentage;
       let index;
       for (var i = 0; i < values.length; i++) {
-        if (values[i].includes(userData.user_type)) {
+        if (values[i].includes(userData?.user_type)) {
           eligibleUser = keys[i]
           index = percentageKeys.includes(eligibleUser) ? percentageKeys.indexOf(eligibleUser) : undefined
           const pointSharingPercent = percentageValues[index]
           // console.log(pointSharingPercent)
-          console.log("On", userData.user_type, "scan", pointSharingPercent, "% Points would be shared with", eligibleUser)
+          console.log("On", userData?.user_type, "scan", pointSharingPercent, "% Points would be shared with", eligibleUser)
           dispatch(setPercentagePoints(pointSharingPercent))
           dispatch(setShouldSharePoints())
 
@@ -739,7 +739,7 @@ const Dashboard = ({ navigation }) => {
           </View>
           {/* Ozone specific change do not show for sales */}
           {
-            userData.user_type_id !== 13 && !isDistributor &&
+            userData?.user_type_id !== 13 && !isDistributor &&
             <View style={{ width: "90%", height: 50, backgroundColor: 'white', marginBottom: 20, flexDirection: 'row', alignItems: 'center', borderColor: '#808080', borderWidth: 0.3, borderRadius: 10 }}>
 
               <View style={{ backgroundColor: 'white', width: '42%', marginHorizontal: 20 }}>
@@ -770,7 +770,7 @@ const Dashboard = ({ navigation }) => {
           <View style={{ width: '100%', alignItems: "center", justifyContent: "center", marginBottom: 20 }}>
             {showKyc && <KYCVerificationComponent buttonTitle="Complete Your KYC" title="Your KYC is not completed"></KYCVerificationComponent>}
           </View>
-          {(userData.user_type).toLowerCase() !== "dealer" && (userData.user_type).toLowerCase() !== "sales" && <View style={{ flexDirection: "row", width: '100%', alignItems: "center", justifyContent: "center" }}>
+          {(userData?.user_type)?.toLowerCase() !== "dealer" && (userData?.user_type)?.toLowerCase() !== "sales" && <View style={{ flexDirection: "row", width: '100%', alignItems: "center", justifyContent: "center" }}>
             <DashboardSupportBox text="Rewards" backgroundColor="#D9C7B6" borderColor="#FEE8D4" image={require('../../../assets/images/reward_dashboard.png')} ></DashboardSupportBox>
             <DashboardSupportBox text="Customer Support" backgroundColor="#BCB5DC" borderColor="#E4E0FC" image={require('../../../assets/images/support.png')} ></DashboardSupportBox>
             <DashboardSupportBox text="Feedback" backgroundColor="#D8C8C8" borderColor="#FDDADA" image={require('../../../assets/images/feedback.png')} ></DashboardSupportBox>
