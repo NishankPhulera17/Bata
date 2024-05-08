@@ -1350,6 +1350,7 @@ const QrCodeScanner = ({ navigation }) => {
                 <FlatList
                   style={{ width: '100%', height: 400 }}
                   data={addedQrList}
+                  inverted= {true}
                   renderItem={({ item, index }) => (
                     <View
                       style={{
