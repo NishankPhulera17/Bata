@@ -30,7 +30,7 @@ const DeleteModal = (props) => {
     
         try {
           await AsyncStorage.removeItem('loginData')
-          navigation.reset({ index: '0', routes: [{ name: 'Splash' }] })
+          navigation.reset({ index: '0', routes: [{ name: 'OtpLogin' }] })
         } catch(e) {
           console.log("error deleting loginData",e)
         }

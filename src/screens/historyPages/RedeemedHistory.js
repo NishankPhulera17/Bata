@@ -319,7 +319,7 @@ const RedeemedHistory = ({ navigation }) => {
               <Image style={{ height: 80, width: 80, marginTop: 20 }} source={require('../../../assets/images/gift1.png')}></Image>
               <PoppinsTextMedium style={{ color: 'black', width: 300, marginTop: 20 }} content="Do you want redeem your point with amazing gift"></PoppinsTextMedium>
               <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: "center", marginTop: 20 }}>
-                <TouchableOpacity onPress={() => {
+                {/* <TouchableOpacity onPress={() => {
                   console.log("gift")
                   setModalVisible(false)
                   navigation.navigate('RedeemGifts')
@@ -327,15 +327,15 @@ const RedeemedHistory = ({ navigation }) => {
                 }} style={{ alignItems: "center", justifyContent: "center", backgroundColor: '#0E2659', flexDirection: "row", height: 40, width: 100, borderRadius: 10 }}>
                   <Image style={{ height: 20, width: 20, resizeMode: "contain" }} source={require('../../../assets/images/giftWhite.png')}></Image>
                   <PoppinsTextMedium style={{ color: 'white', marginLeft: 10 }} content="Gift"></PoppinsTextMedium>
-                </TouchableOpacity>
-                {/* <TouchableOpacity onPress={() => {
+                </TouchableOpacity> */}
+                <TouchableOpacity onPress={() => {
                   console.log("cashback")
                   setModalVisible(false)
                   navigation.navigate('RedeemCashback')
                 }} style={{ alignItems: "center", justifyContent: "center", backgroundColor: ternaryThemeColor, flexDirection: "row", marginLeft: 40, height: 40, width: 120, borderRadius: 10 }}>
                   <Image style={{ height: 20, width: 20, resizeMode: "contain" }} source={require('../../../assets/images/giftWhite.png')}></Image>
                   <PoppinsTextMedium style={{ color: 'white', marginLeft: 10 }} content="Cashback"></PoppinsTextMedium>
-                </TouchableOpacity> */}
+                </TouchableOpacity>
               </View>
 
             </View>

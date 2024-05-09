@@ -53,7 +53,7 @@ const TextInputGST = (props) => {
     else if (verifyGstError) {
       console.log("verifyGstError", verifyGstError)
       setErrorModal(true)
-      setMessage(verifyGstError.data.message)
+      setMessage(verifyGstError?.data?.message)
     }
   }, [verifyGstData, verifyGstError])
 
@@ -103,6 +103,7 @@ const TextInputGST = (props) => {
       {gstVerified && <View style={{ alignItems: 'center', justifyContent: 'center', width: '20%', position: 'absolute', right: 0 }}>
         <Image style={{ height: 30, width: 30, resizeMode: 'contain' }} source={require('../../../../assets/images/greenTick.png')}></Image>
       </View>}
+      
 
       {verifyGstIsLoading && <FastImage
         style={{ width: 30, height: 30, alignSelf: 'center', position: 'absolute', right: 10 }}
@@ -116,9 +117,12 @@ const TextInputGST = (props) => {
       {errorModal && (
         <ErrorModal
           modalClose={modalClose}
+          modalVisible={errorModal}
           message={message}
           openModal={error}></ErrorModal>
       )}
+
+     { verifyGstError && <Text style={{color:'red', position:'absolute', left:10,bottom:-22,zIndex:1}}>{verifyGstError.data.message}</Text>} 
     </View>
   );
 }

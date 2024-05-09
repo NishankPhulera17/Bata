@@ -24,7 +24,7 @@ const RedeemCashback = ({navigation}) => {
   const [message, setMessage] = useState();
   const [error, setError] = useState(false);
   const [success, setSuccess] = useState(false)
-  const [cashConversion,setCashConversion] = useState()
+  const [cashConversion,setCashConversion] = useState(1)
   const [pointsConversion, setPointsConversion] = useState(1)
   const dispatch = useDispatch()
   const ternaryThemeColor = useSelector(

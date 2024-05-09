@@ -21,8 +21,9 @@ const SelectUser = ({navigation}) => {
   const [listUsers, setListUsers] = useState();
   const [showSplash, setShowSplash] = useState(true)
   const [connected, setConnected] = useState(true)
+  const[error,setError] = useState(false)
+  const[message,setMessage] = useState("")
   
-
  
 
   const [
@@ -152,7 +153,7 @@ const SelectUser = ({navigation}) => {
 
             <View style={{width:'80%',alignItems:"center",justifyContent:'center',borderColor:ternaryThemeColor,borderTopWidth:1,borderBottomWidth:1,height:60,marginTop:40}}>
               {/* <PoppinsTextMedium style={{color:'#171717',fontSize:20,fontWeight:'700'}} ></PoppinsTextMedium> */}
-              <PoppinsTextMedium style={{ color: '#171717', fontSize: 20, fontWeight: '700' }} content={t('choose profile')} />
+              <PoppinsTextMedium style={{ color: '#171717', fontSize: 20, fontWeight: '700' }} content={'Choose Your Profile'} />
 
             </View>
         {/* </View> */}

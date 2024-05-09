@@ -20,7 +20,8 @@ const Passbook = ({ navigation }) => {
     const [pointsOptionEnabled, setPointsOptionEnabled] = useState(false)
     const [PlatinumModalOpen, setPlatinumModal] = useState(false)
     const [listView, setListView] = useState(true)
-
+    const [error, setError] = useState(false)
+    const [message, setMessage] = useState()
     const shouldSharePoints = useSelector(state => state.pointSharing.shouldSharePoints)
 
     const [getPointSharingFunc, {

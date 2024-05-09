@@ -37,7 +37,7 @@ import Error from "react-native-vector-icons/MaterialIcons"
 import { useGetActiveMembershipMutation } from '../../apiServices/membership/AppMembershipApi';
 import ErrorModal from "../../components/modals/ErrorModal";
 import { useGetAppThemeDataMutation } from "../../apiServices/appTheme/AppThemeApi";
-import { useGetAppUsersDataByIdMutation } from "../../apiServices/appUsers/AppUsersApi";
+// import { useGetAppUsersDataByIdMutation } from "../../apiServices/appUsers/AppUsersApi";
 
 
 const CongratulateOnScan = ({ navigation, route }) => {
@@ -185,6 +185,7 @@ const CongratulateOnScan = ({ navigation, route }) => {
       isError: createWheelHistoryIsError,
     },
   ] = useCreateWheelHistoryMutation();
+
   const [getActiveMembershipFunc, {
     data: getActiveMembershipData,
     error: getActiveMembershipError,
@@ -211,22 +212,22 @@ const CongratulateOnScan = ({ navigation, route }) => {
     },
   ] = useAddCashbackEnteriesMutation();
 
-  const [
-    getUsersByIdFunc,
-    {
-      data: getUsersByIdData,
-      error: getUsersByIdError,
-      isLoading: getUsersByIdDataIsLoading,
-      isError: getUsersDataByIdIsError,
-    },
-  ] = useGetAppUsersDataByIdMutation();
+  // const [
+  //   getUsersByIdFunc,
+  //   {
+  //     data: getUsersByIdData,
+  //     error: getUsersByIdError,
+  //     isLoading: getUsersByIdDataIsLoading,
+  //     isError: getUsersDataByIdIsError,
+  //   },
+  // ] = useGetAppUsersDataByIdMutation();
 
-  useEffect(() => {
-    const params = {
-      user_type_id: userData?.user_type_id
-    }
-    getUsersByIdFunc(params);
-  }, [])
+  // useEffect(() => {
+  //   const params = {
+  //     user_type_id: userData?.user_type_id
+  //   }
+  //   getUsersByIdFunc(params);
+  // }, [])
 
 
   useEffect(() => {
@@ -240,14 +241,14 @@ const CongratulateOnScan = ({ navigation, route }) => {
 
 
 
-  useEffect(() => {
-    if (getUsersByIdData) {
-      console.log("getUsersByIdData", getUsersByIdData)
-    }
-    else {
-      console.log("getUsersByIdError", getUsersByIdError)
-    }
-  }, [getUsersByIdData, getUsersByIdError])
+  // useEffect(() => {
+  //   if (getUsersByIdData) {
+  //     console.log("getUsersByIdData", getUsersByIdData)
+  //   }
+  //   else {
+  //     console.log("getUsersByIdError", getUsersByIdError)
+  //   }
+  // }, [getUsersByIdData, getUsersByIdError])
 
 
   useEffect(() => {
@@ -674,7 +675,7 @@ const CongratulateOnScan = ({ navigation, route }) => {
         log: location.lon === undefined ? "N/A" : String(location.lon),
         method_id: "1",
         method: "Cashback",
-        cashback: getUsersByIdData?.body?.cashback,
+        cashback: "",
       },
 
       token: token,
@@ -1179,7 +1180,7 @@ const CongratulateOnScan = ({ navigation, route }) => {
               {addCashbackEnteriesData && (
                 <Win
                   data="Cashback"
-                  title={addCashbackEnteriesData.body.cashback}
+                  title={addCashbackEnteriesData?.body?.cashback}
                 ></Win>
               )}
               {/* {getCouponOnCategoryError && (
