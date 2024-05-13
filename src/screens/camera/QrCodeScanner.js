@@ -1436,7 +1436,7 @@ const QrCodeScanner = ({ navigation }) => {
           style={{ height: '60%' }}
         > */}
 
-        <Camera
+        {hasPermission &&<Camera
           codeScanner={codeScanner}
           focusable={true}
           // frameProcessor={frameProcessor}
@@ -1448,7 +1448,7 @@ const QrCodeScanner = ({ navigation }) => {
         // format={}
         >
 
-        </Camera>
+        </Camera>}
 
 
         <View style={{ width: '100%', flexDirection: 'row', position: 'absolute', top: 0, right: 0 }}>
