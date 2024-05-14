@@ -25,6 +25,9 @@ import ButtonOval from '../../components/atoms/buttons/ButtonOval';
 import Checkbox from '../../components/atoms/checkbox/Checkbox';
 import PoppinsTextLeftMedium from '../../components/electrons/customFonts/PoppinsTextLeftMedium';
 import { useFetchLegalsMutation } from '../../apiServices/fetchLegal/FetchLegalApi';
+import { useGetAppDashboardDataMutation } from '../../apiServices/dashboard/AppUserDashboardApi';
+import { setDashboardData } from '../../../redux/slices/dashboardDataSlice';
+import { useCheckSalesBoosterMutation } from '../../apiServices/salesBooster/salesBoosterApi';
 // import * as Keychain from 'react-native-keychain';  
 
 const PasswordLogin = ({ navigation, route }) => {
@@ -78,6 +81,12 @@ const PasswordLogin = ({ navigation, route }) => {
 
   // initializing mutations --------------------------------
 
+  const [getDashboardFunc, {
+    data: getDashboardData,
+    error: getDashboardError,
+    isLoading: getDashboardIsLoading,
+    isError: getDashboardIsError
+  }] = useGetAppDashboardDataMutation()
 
   const [passwordLoginfunc, {
     data: passwordLoginData,
@@ -93,6 +102,13 @@ const PasswordLogin = ({ navigation, route }) => {
     isError: termsIsError
   }] = useFetchLegalsMutation()
 
+  const [getSalesBoosterFunc,{
+    data:getSalesBoosterData,
+    error:getSalesBoosterError,
+    isLoading:getSalesBoosterIsLoading,
+    isError:getSalesBoosterIsError
+  }] = useCheckSalesBoosterMutation()
+
   // ------------------------------------------
 
   // retrieving data from api calls--------------------------
@@ -100,11 +116,13 @@ const PasswordLogin = ({ navigation, route }) => {
   useEffect(() => {
     if (passwordLoginData) {
       console.log("Password Login Data", passwordLoginData)
-      if (passwordLoginData.success) {
-        storeData(passwordLoginData.body)
-        saveUserDetails(passwordLoginData.body)
-        saveToken(passwordLoginData.body.token)
-        setMessage(passwordLoginData.message)
+      if (passwordLoginData?.success) {
+        storeData(passwordLoginData?.body)
+        saveUserDetails(passwordLoginData?.body)
+        getDashboardFunc(passwordLoginData?.body?.token)
+        getSalesBoosterFunc(passwordLoginData?.body?.token)
+        saveToken(passwordLoginData?.body?.token)
+        setMessage(passwordLoginData?.message)
         setModalWithBorder(true)
       }
     }
@@ -154,6 +172,43 @@ const PasswordLogin = ({ navigation, route }) => {
   useEffect(() => {
     fetchTerms();
   }, [])
+
+
+  useEffect(()=>{
+    if(getSalesBoosterData)
+    {
+      console.log("getSalesBoosterData",getSalesBoosterData)
+    }
+    else if(getSalesBoosterError)
+    {
+      console.log("getSalesBoosterError",getSalesBoosterError)
+      if(getSalesBoosterError?.data?.message =="Invalid JWT" && getSalesBoosterError?.status == 401 )
+      {
+        removerTokenData()
+      }
+    }
+  },[getSalesBoosterData,getSalesBoosterError])
+
+  useEffect(() => {
+    if (getDashboardData) {
+      console.log("getDashboardData", getDashboardData)
+      console.log("Trying to dispatch", parsedJsonValue?.user_type_id)
+      dispatch(setAppUserId(parsedJsonValue?.user_type_id))
+      dispatch(setAppUserName(parsedJsonValue?.name))
+      dispatch(setAppUserType(parsedJsonValue?.user_type))
+      dispatch(setUserData(parsedJsonValue))
+      dispatch(setId(parsedJsonValue?.id))
+      dispatch(setDashboardData(getDashboardData?.body?.app_dashboard))
+    }
+    else if (getDashboardError) {
+
+      console.log("getDashboardError", getDashboardError)
+      if(getDashboardError?.data?.message =="Invalid JWT" && getDashboardError?.status == 401 )
+      {
+        removerTokenData()
+      }
+    }
+  }, [getDashboardData, getDashboardError])
 
 
   useEffect(() => {

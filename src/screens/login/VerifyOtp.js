@@ -16,6 +16,7 @@ import PoppinsTextMedium from '../../components/electrons/customFonts/PoppinsTex
 import PoppinsText from '../../components/electrons/customFonts/PoppinsText';
 import ButtonNavigateArrow from '../../components/atoms/buttons/ButtonNavigateArrow';
 import { useGetLoginOtpMutation } from '../../apiServices/login/otpBased/SendOtpApi';
+import { setPrimaryThemeColor, setSecondaryThemeColor, setIcon, setIconDrawer, setTernaryThemeColor, setOptLogin, setPasswordLogin, setButtonThemeColor, setColorShades, setKycOptions, setIsOnlineVeriification, setSocials, setWebsite, setCustomerSupportMail, setCustomerSupportMobile, setExtraFeatures } from '../../../redux/slices/appThemeSlice';
 import { useGetAppLoginMutation } from '../../apiServices/login/otpBased/OtpLoginApi';
 import { useVerifyOtpMutation } from '../../apiServices/login/otpBased/VerifyOtpApi';
 import { setAppUserId, setAppUserName, setAppUserType, setUserData, setId } from '../../../redux/slices/appUserDataSlice';
@@ -29,6 +30,9 @@ import ModalWithBorder from '../../components/modals/ModalWithBorder';
 import Icon from 'react-native-vector-icons/Feather';
 import Close from 'react-native-vector-icons/Ionicons';
 import ButtonOval from '../../components/atoms/buttons/ButtonOval';
+import { useCheckSalesBoosterMutation } from '../../apiServices/salesBooster/salesBoosterApi';
+import { useGetAppDashboardDataMutation } from '../../apiServices/dashboard/AppUserDashboardApi';
+import { setDashboardData } from '../../../redux/slices/dashboardDataSlice';
 
 const VerifyOtp = ({ navigation, route }) => {
   const [mobile, setMobile] = useState(route.params.navigationParams.mobile);
@@ -111,6 +115,20 @@ const VerifyOtp = ({ navigation, route }) => {
     },
   ] = useVerifyOtpMutation();
 
+  const [getDashboardFunc, {
+    data: getDashboardData,
+    error: getDashboardError,
+    isLoading: getDashboardIsLoading,
+    isError: getDashboardIsError
+  }] = useGetAppDashboardDataMutation()
+
+
+  const [getSalesBoosterFunc,{
+    data:getSalesBoosterData,
+    error:getSalesBoosterError,
+    isLoading:getSalesBoosterIsLoading,
+    isError:getSalesBoosterIsError
+  }] = useCheckSalesBoosterMutation()
   // -----------------------------------------
 
   // fetching navigation route params ------------------------
@@ -177,9 +195,11 @@ const VerifyOtp = ({ navigation, route }) => {
         console.log(verifyOtpData.body.user_type_id, verifyOtpData.body.name, verifyOtpData.body.user_type)
 
         console.log("successfullyLoggedIn")
-        saveToken(verifyOtpData.body.token)
+        saveToken(verifyOtpData?.body?.token)
         storeData(verifyOtpData.body)
-        saveUserDetails(verifyOtpData.body)
+        saveUserDetails(verifyOtpData?.body)
+        getSalesBoosterFunc(verifyOtpData?.body?.token)
+        getDashboardFunc(verifyOtpData?.body?.token)
         setMessage("Successfully Logged In")
         setSuccess(true)
         setModalWithBorder(true)
@@ -191,6 +211,42 @@ const VerifyOtp = ({ navigation, route }) => {
       console.log(verifyOtpError)
     }
   }, [verifyOtpData, verifyOtpError]);
+
+  useEffect(() => {
+    if (getDashboardData) {
+      console.log("getDashboardData", getDashboardData)
+      console.log("Trying to dispatch", parsedJsonValue?.user_type_id)
+      dispatch(setAppUserId(parsedJsonValue?.user_type_id))
+      dispatch(setAppUserName(parsedJsonValue?.name))
+      dispatch(setAppUserType(parsedJsonValue?.user_type))
+      dispatch(setUserData(parsedJsonValue))
+      dispatch(setId(parsedJsonValue?.id))
+      dispatch(setDashboardData(getDashboardData?.body?.app_dashboard))
+    }
+    else if (getDashboardError) {
+
+      console.log("getDashboardError", getDashboardError)
+      if(getDashboardError?.data?.message =="Invalid JWT" && getDashboardError?.status == 401 )
+      {
+        removerTokenData()
+      }
+    }
+  }, [getDashboardData, getDashboardError])
+
+  useEffect(()=>{
+    if(getSalesBoosterData)
+    {
+      console.log("getSalesBoosterData",getSalesBoosterData)
+    }
+    else if(getSalesBoosterError)
+    {
+      console.log("getSalesBoosterError",getSalesBoosterError)
+      if(getSalesBoosterError?.data?.message =="Invalid JWT" && getSalesBoosterError?.status == 401 )
+      {
+        removerTokenData()
+      }
+    }
+  },[getSalesBoosterData,getSalesBoosterError])
 
   useEffect(() => {
     if (verifyLoginOtpData) {

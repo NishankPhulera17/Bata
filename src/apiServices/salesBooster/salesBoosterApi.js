@@ -5,6 +5,7 @@ export const salesBoosterApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
         checkSalesBooster: builder.mutation({
         query: (token) => {
+            console.log("salesBooster check", token)
         return {
         method: "GET",
         url: `/api/app/salesBooster/check`,

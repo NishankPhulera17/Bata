@@ -80,7 +80,7 @@ const AddAddress = ({ navigation }) => {
       lat = res?.coords?.latitude;
       lon = res?.coords?.longitude;
       // getLocation(JSON.stringify(lat),JSON.stringify(lon))
-      console.log("latlong", lat, lon);
+      console.log("latlongsdasd", lat, lon);
       var url = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${res?.coords?.latitude},${res?.coords?.longitude}
             &location_type=ROOFTOP&result_type=street_address&key=${GoogleMapsKey}`;
 

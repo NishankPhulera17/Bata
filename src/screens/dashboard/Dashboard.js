@@ -360,7 +360,7 @@ const Dashboard = ({ navigation }) => {
         ],
       );
     };
-    const intervalId = setInterval(() => {
+    
       try {
         Geolocation.getCurrentPosition((res) => {
           setLocationEnabled(true)
@@ -368,7 +368,7 @@ const Dashboard = ({ navigation }) => {
           lat = res.coords.latitude
           lon = res.coords.longitude
           // getLocation(JSON.stringify(lat),JSON.stringify(lon))
-          console.log("latlong", lat, lon)
+          console.log("latlongasdasds", lat, lon)
           var url = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${res?.coords?.latitude},${res?.coords?.longitude}
             &location_type=ROOFTOP&result_type=street_address&key=${GoogleMapsKey}`
 
@@ -455,7 +455,7 @@ const Dashboard = ({ navigation }) => {
       catch (e) {
         console.log("error in fetching location", e)
       }
-    }, 5000);
+   
 
 
     return () => clearInterval(intervalId)
