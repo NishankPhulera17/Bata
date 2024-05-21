@@ -3,7 +3,6 @@ import { View, StyleSheet, ScrollView, Platform, TouchableOpacity, Image, Text }
 import MenuItems from '../../components/atoms/MenuItems';
 import { BaseUrl } from '../../utils/BaseUrl';
 import { useGetAppDashboardDataMutation } from '../../apiServices/dashboard/AppUserDashboardApi';
-import { useGetAppUserBannerDataMutation } from '../../apiServices/dashboard/AppUserBannerApi';
 import * as Keychain from 'react-native-keychain';
 import DashboardMenuBox from '../../components/organisms/DashboardMenuBox';
 import Banner from '../../components/organisms/Banner';
@@ -11,18 +10,13 @@ import DrawerHeader from '../../components/headers/DrawerHeader';
 import DashboardDataBox from '../../components/molecules/DashboardDataBox';
 import KYCVerificationComponent from '../../components/organisms/KYCVerificationComponent';
 import DashboardSupportBox from '../../components/molecules/DashboardSupportBox';
-import { useGetWorkflowMutation } from '../../apiServices/workflow/GetWorkflowByTenant';
-import { useGetFormMutation } from '../../apiServices/workflow/GetForms';
 import { useSelector, useDispatch } from 'react-redux';
-import { setProgram, setWorkflow, setIsGenuinityOnly } from '../../../redux/slices/appWorkflowSlice';
-import { setWarrantyForm, setWarrantyFormId } from '../../../redux/slices/formSlice';
 import { setLocation } from '../../../redux/slices/userLocationSlice';
 import Geolocation from '@react-native-community/geolocation';
 import { useGetkycStatusMutation } from '../../apiServices/kyc/KycStatusApi';
 import { setKycData } from '../../../redux/slices/userKycStatusSlice';
 import { useIsFocused } from '@react-navigation/native';
 import { setPercentagePoints, setShouldSharePoints } from '../../../redux/slices/pointSharingSlice';
-import { useExtraPointEnteriesMutation } from '../../apiServices/pointSharing/pointSharingApi';
 import PoppinsText from '../../components/electrons/customFonts/PoppinsText';
 import { useFetchUserPointsMutation } from '../../apiServices/workflow/rewards/GetPointsApi';
 import PoppinsTextLeftMedium from '../../components/electrons/customFonts/PoppinsTextLeftMedium';
@@ -47,8 +41,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 const Dashboard = ({ navigation }) => {
-  const [dashboardItems, setDashboardItems] = useState()
-  const [bannerArray, setBannerArray] = useState()
   const [showKyc, setShowKyc] = useState(true)
   const [locationEnabled, setLocationEnabled] = useState(false)
   const [CampainVideoVisible, setCmpainVideoVisible] = useState(true);
@@ -63,6 +55,7 @@ const Dashboard = ({ navigation }) => {
 
   const focused = useIsFocused()
   const dispatch = useDispatch()
+  const dashboardItems = useSelector(state=>state.dashboardData.dashboardData)
   const userId = useSelector((state) => state.appusersdata.userId)
   const userData = useSelector(state => state.appusersdata.userData);
 
@@ -70,6 +63,8 @@ const Dashboard = ({ navigation }) => {
 
   const isConnected = useSelector(state => state.internet.isConnected);
   const pointSharingData = useSelector(state => state.pointSharing.pointSharing)
+  const bannerArray = useSelector(state => state.dashboardData.banner)
+  console.log("Dashboard data bannerArray",bannerArray)
   const ternaryThemeColor = useSelector(
     state => state.apptheme.ternaryThemeColor,
   )
@@ -90,15 +85,7 @@ const Dashboard = ({ navigation }) => {
     isLoading: getActiveMembershipIsLoading,
     isError: getActiveMembershipIsError
   }] = useGetActiveMembershipMutation()
-
-
-  const [getDashboardFunc, {
-    data: getDashboardData,
-    error: getDashboardError,
-    isLoading: getDashboardIsLoading,
-    isError: getDashboardIsError
-  }] = useGetAppDashboardDataMutation()
-
+  
   const [
     fetchAllQrScanedList,
     {
@@ -123,33 +110,9 @@ const Dashboard = ({ navigation }) => {
     isError: userPointIsError
   }] = useFetchUserPointsMutation()
 
-  const [getBannerFunc, {
-    data: getBannerData,
-    error: getBannerError,
-    isLoading: getBannerIsLoading,
-    isError: getBannerIsError
-  }] = useGetAppUserBannerDataMutation()
+  
 
-  const [getWorkflowFunc, {
-    data: getWorkflowData,
-    error: getWorkflowError,
-    isLoading: getWorkflowIsLoading,
-    isError: getWorkflowIsError
-  }] = useGetWorkflowMutation()
-
-  const [getFormFunc, {
-    data: getFormData,
-    error: getFormError,
-    isLoading: getFormIsLoading,
-    isError: getFormIsError
-  }] = useGetFormMutation()
-
-  const [extraPointEntriesFunc, {
-    data: extraPointEntriesData,
-    error: extraPointEntriesError,
-    isError: extraPointEntriesIsError,
-    isLoading: extraPointEntriesIsLoading
-  }] = useExtraPointEnteriesMutation()
+  
   const id = useSelector(state => state.appusersdata.id);
 
   const fetchPoints = async () => {
@@ -218,15 +181,7 @@ const Dashboard = ({ navigation }) => {
       });
     })();
   }, [focused]);
-  useEffect(() => {
-    if (extraPointEntriesData) {
-      console.log("extraPointEntriesData", extraPointEntriesData)
-
-    }
-    else if (extraPointEntriesError) {
-      console.log("extraPointEntriesError", extraPointEntriesError)
-    }
-  }, [extraPointEntriesData, extraPointEntriesError])
+  
 
   useEffect(() => {
     if (fetchAllQrScanedListData) {
@@ -310,32 +265,7 @@ const Dashboard = ({ navigation }) => {
     }
   }, [getKycStatusData, getKycStatusError])
 
-  useEffect(() => {
-    if (getDashboardData) {
-      console.log("getDashboardData", getDashboardData)
-      setDashboardItems(getDashboardData.body.app_dashboard)
-    }
-    else if (getDashboardError) {
-      console.log("getDashboardError", getDashboardError)
-      if (getDashboardError.status == 401) {
-        const handleLogout = async () => {
-          try {
-
-            await AsyncStorage.removeItem('loginData');
-            navigation.navigate("Splash")
-            navigation.reset({ index: 0, routes: [{ name: 'Splash' }] }); // Navigate to Splash screen
-          } catch (e) {
-            console.log("error deleting loginData", e);
-          }
-        };
-        handleLogout();
-      }
-      else {
-        setError(true)
-        setMessage("Unable to fetch user point history.")
-      }
-    }
-  }, [getDashboardData, getDashboardError])
+  
 
 
   useEffect(() => {
@@ -597,50 +527,12 @@ const Dashboard = ({ navigation }) => {
 
 
 
-  useEffect(() => {
-    if (getBannerData) {
-      console.log("getBannerData", getBannerData.body)
-      const images = Object.values(getBannerData.body).map((item) => {
-        return item.image[0]
-      })
-      console.log("images", images)
-      setBannerArray(images)
-    }
-    else {
-      console.log(getBannerError)
-    }
-  }, [getBannerError, getBannerData])
+  
 
   // ozone change
 
-  useEffect(() => {
-    if (getWorkflowData) {
-      if (getWorkflowData.length === 1 && getWorkflowData[0] === "Genuinity") {
-        dispatch(setIsGenuinityOnly())
-      }
-      const removedWorkFlow = getWorkflowData.body[0]?.program.filter((item, index) => {
-        return item !== "Warranty"
-      })
-      console.log("getWorkflowData", getWorkflowData.body[0])
-      dispatch(setProgram(removedWorkFlow))
-      dispatch(setWorkflow(getWorkflowData.body[0]?.workflow_id))
-
-    }
-    else {
-      console.log(getWorkflowError)
-    }
-  }, [getWorkflowData, getWorkflowError])
-  useEffect(() => {
-    if (getFormData) {
-      console.log("Form Fields", getFormData.body)
-      dispatch(setWarrantyForm(getFormData.body.template))
-      dispatch(setWarrantyFormId(getFormData.body.form_template_id))
-
-    }
-    else {
-      console.log("Form Field Error", getFormError)
-    }
-  }, [getFormData, getFormError])
+  
+  
 
   const platformMarginScroll = Platform.OS === 'ios' ? 0 : 0
 

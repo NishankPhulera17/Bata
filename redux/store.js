@@ -21,6 +21,9 @@ import scanningSlice from './slices/scanningSlice';
 import pointWalletSlice from './slices/pointWalletSlice';
 import dashboardSlice from './slices/dashboardSlice';
 import internetMiddleware from './middleware/internetMiddleware';
+import termsPolicySlice from './slices/termsPolicySlice';
+import dashboardDataSlice from './slices/dashboardDataSlice';
+import drawerDataSlice from './slices/drawerDataSlice';
 
 
 export const store = configureStore({
@@ -44,7 +47,10 @@ export const store = configureStore({
     internet: internetSlice,
     scanning : scanningSlice,
     pointWallet:pointWalletSlice,
-    dashboard:dashboardSlice
+    dashboard:dashboardSlice,
+    termsPolicy:termsPolicySlice,
+    dashboardData:dashboardDataSlice,
+    drawerData:drawerDataSlice
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(baseApi.middleware, internetMiddleware), 

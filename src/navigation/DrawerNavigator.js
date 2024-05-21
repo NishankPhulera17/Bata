@@ -10,7 +10,6 @@ import { useIsFocused, useNavigation } from '@react-navigation/native';
 import { useSelector } from 'react-redux';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { useGetAppDashboardDataMutation } from '../apiServices/dashboard/AppUserDashboardApi';
-import { useGetAppMenuDataMutation } from '../apiServices/dashboard/AppUserDashboardMenuAPi.js';
 import * as Keychain from 'react-native-keychain';
 import { SvgUri } from 'react-native-svg';
 import { ScrollView } from 'react-native-gesture-handler';
@@ -29,7 +28,6 @@ import VersionCheck from 'react-native-version-check';
 const Drawer = createDrawerNavigator();
 const CustomDrawer = () => {
   const [profileImage, setProfileImage] = useState()
-  const [drawerData, setDrawerData] = useState()
   const [myProgramVisible, setMyProgramVisibile] = useState(false);
   const [ozoneProductVisible, setOzoneProductVisible] = useState(false);
   const [communityVisible, setCommunityVisible] = useState(false);
@@ -38,7 +36,7 @@ const CustomDrawer = () => {
 
 
 
-
+const drawerData = useSelector(state=>state.drawerData.drawerData)
   const ternaryThemeColor = useSelector(
     state => state.apptheme.ternaryThemeColor,
   )
@@ -92,14 +90,8 @@ const CustomDrawer = () => {
     },
   ] = useFetchProfileMutation();
 
-  const [getAppMenuFunc, {
-    data: getAppMenuData,
-    error: getAppMenuError,
-    isLoading: getAppMenuIsLoading,
-    isError: getAppMenuIsError
-  }] = useGetAppMenuDataMutation()
+  
 
-  console.log("getAppMenuData", getAppMenuData)
 
   const [getActiveMembershipFunc, {
     data: getActiveMembershipData,
@@ -268,21 +260,7 @@ const CustomDrawer = () => {
     }
   }, [getActiveMembershipData, getActiveMembershipError])
 
-  useEffect(() => {
-    const fetchMenu = async () => {
-      const credentials = await Keychain.getGenericPassword();
-      if (credentials) {
-        console.log(
-          'Credentials successfully loaded for user ' + credentials.username
-        );
-        const token = credentials.username
-        getAppMenuFunc(token)
-      }
-
-    }
-    fetchMenu()
-    // fetchTerms();
-  }, [])
+  
 
   useEffect(()=>{
     if(getTermsData){
@@ -293,21 +271,6 @@ const CustomDrawer = () => {
     }
   },[getTermsData,getTermsError]);
 
-
-  useEffect(() => {
-    if (getAppMenuData) {
-      console.log("usertype", userData?.user_type)
-      console.log("getAppMenuData", JSON.stringify(getAppMenuData))
-      const tempDrawerData = getAppMenuData.body.filter((item) => {
-        return item.user_type === userData?.user_type
-      })
-      console.log("tempDrawerData", JSON.stringify(tempDrawerData))
-      setDrawerData(tempDrawerData[0])
-    }
-    else if (getAppMenuError) {
-      console.log("getAppMenuError", getAppMenuError)
-    }
-  }, [getAppMenuData, getAppMenuError])
 
   const DrawerItems = (props) => {
     const image =  props.image

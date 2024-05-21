@@ -32,7 +32,13 @@ import Close from 'react-native-vector-icons/Ionicons';
 import ButtonOval from '../../components/atoms/buttons/ButtonOval';
 import { useCheckSalesBoosterMutation } from '../../apiServices/salesBooster/salesBoosterApi';
 import { useGetAppDashboardDataMutation } from '../../apiServices/dashboard/AppUserDashboardApi';
-import { setDashboardData } from '../../../redux/slices/dashboardDataSlice';
+import { setBannerData, setDashboardData } from '../../../redux/slices/dashboardDataSlice';
+import { useGetAppUserBannerDataMutation } from '../../apiServices/dashboard/AppUserBannerApi';
+import { useGetWorkflowMutation } from '../../apiServices/workflow/GetWorkflowByTenant';
+import { useGetFormMutation } from '../../apiServices/workflow/GetForms';
+import { setProgram, setWorkflow, setIsGenuinityOnly } from '../../../redux/slices/appWorkflowSlice';
+import { setWarrantyForm, setWarrantyFormId } from '../../../redux/slices/formSlice';
+
 
 const VerifyOtp = ({ navigation, route }) => {
   const [mobile, setMobile] = useState(route.params.navigationParams.mobile);
@@ -40,7 +46,7 @@ const VerifyOtp = ({ navigation, route }) => {
   const [message, setMessage] = useState();
   const [error, setError] = useState(false);
   const [success, setSuccess] = useState(false)
-
+  const [parsedJsonValue, setParsedJsonValue] = useState()
   const [timer, setTimer] = useState(60)
 
   const timeOutCallback = useCallback(() => setTimer(currTimer => currTimer - 1), []);
@@ -85,6 +91,28 @@ const VerifyOtp = ({ navigation, route }) => {
   // ------------------------------------------------
 
   // initializing mutations --------------------------------
+
+  const [getBannerFunc, {
+    data: getBannerData,
+    error: getBannerError,
+    isLoading: getBannerIsLoading,
+    isError: getBannerIsError
+  }] = useGetAppUserBannerDataMutation()
+
+  const [getWorkflowFunc, {
+    data: getWorkflowData,
+    error: getWorkflowError,
+    isLoading: getWorkflowIsLoading,
+    isError: getWorkflowIsError
+  }] = useGetWorkflowMutation()
+
+  const [getFormFunc, {
+    data: getFormData,
+    error: getFormError,
+    isLoading: getFormIsLoading,
+    isError: getFormIsError
+  }] = useGetFormMutation()
+
   const [
     sendOtpFunc,
     {
@@ -144,7 +172,60 @@ const VerifyOtp = ({ navigation, route }) => {
 
   const width = Dimensions.get('window').width;
 
+  const removerTokenData =async()=>{
+    await AsyncStorage.removeItem('loginData');
+    navigation.navigate("SelectUser")
+  } 
   // retrieving data from api calls--------------------------
+
+
+  useEffect(() => {
+    if (getBannerData) {
+      console.log("getBannerData", getBannerData.body)
+      const images = Object.values(getBannerData.body).map((item) => {
+        return item.image[0]
+      })
+      console.log("images", images)
+      dispatch(setBannerData(images))
+      parsedJsonValue && getSalesBoosterFunc(parsedJsonValue?.token)
+
+    }
+    else {
+      console.log(getBannerError)
+    }
+  }, [getBannerError, getBannerData])
+
+  useEffect(() => {
+    if (getWorkflowData) {
+      if (getWorkflowData.length === 1 && getWorkflowData[0] === "Genuinity") {
+        dispatch(setIsGenuinityOnly())
+      }
+      const removedWorkFlow = getWorkflowData.body[0]?.program.filter((item, index) => {
+        return item !== "Warranty"
+      })
+      console.log("getWorkflowData", getWorkflowData.body[0])
+      dispatch(setProgram(removedWorkFlow))
+      dispatch(setWorkflow(getWorkflowData.body[0]?.workflow_id))
+      const form_type = "2"
+      parsedJsonValue && getFormFunc({ form_type:form_type, token:parsedJsonValue?.token })
+
+    }
+    else {
+      console.log(getWorkflowError)
+    }
+  }, [getWorkflowData, getWorkflowError])
+
+  useEffect(() => {
+    if (getFormData) {
+      console.log("Form Fields", getFormData.body)
+      dispatch(setWarrantyForm(getFormData.body.template))
+      dispatch(setWarrantyFormId(getFormData.body.form_template_id))
+      setModalWithBorder(true)
+    }
+    else {
+      console.log("Form Field Error", getFormError)
+    }
+  }, [getFormData, getFormError])
 
   useEffect(() => {
     if (sendOtpData) {
@@ -196,9 +277,9 @@ const VerifyOtp = ({ navigation, route }) => {
 
         console.log("successfullyLoggedIn")
         saveToken(verifyOtpData?.body?.token)
+        setParsedJsonValue(verifyOtpData?.body)
         storeData(verifyOtpData.body)
         saveUserDetails(verifyOtpData?.body)
-        getSalesBoosterFunc(verifyOtpData?.body?.token)
         getDashboardFunc(verifyOtpData?.body?.token)
         setMessage("Successfully Logged In")
         setSuccess(true)
@@ -222,6 +303,7 @@ const VerifyOtp = ({ navigation, route }) => {
       dispatch(setUserData(parsedJsonValue))
       dispatch(setId(parsedJsonValue?.id))
       dispatch(setDashboardData(getDashboardData?.body?.app_dashboard))
+      parsedJsonValue && getBannerFunc(parsedJsonValue?.token)
     }
     else if (getDashboardError) {
 
@@ -237,6 +319,7 @@ const VerifyOtp = ({ navigation, route }) => {
     if(getSalesBoosterData)
     {
       console.log("getSalesBoosterData",getSalesBoosterData)
+      parsedJsonValue && getWorkflowFunc({"userId": parsedJsonValue?.user_type_id,"token":parsedJsonValue?.token})
     }
     else if(getSalesBoosterError)
     {

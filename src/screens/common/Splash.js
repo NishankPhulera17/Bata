@@ -24,10 +24,20 @@ import VideoGallery from '../video/VideoGallery';
 import VersionCheck from 'react-native-version-check';
 import LocationServicesDialogBox from "react-native-android-location-services-dialog-box";
 import { useGetAppDashboardDataMutation } from '../../apiServices/dashboard/AppUserDashboardApi';
-import { setDashboardData } from '../../../redux/slices/dashboardDataSlice';
+import { setBannerData, setDashboardData } from '../../../redux/slices/dashboardDataSlice';
 import * as Progress from 'react-native-progress';
-import { useCheckSalesBoosterMutation } from '../../apiServices/salesBooster/salesBoosterApi';
-
+import { useCheckSalesBoosterMutation, useCheckSalesBoosterOnEachScanMutation } from '../../apiServices/salesBooster/salesBoosterApi';
+import { useGetAppUserBannerDataMutation } from '../../apiServices/dashboard/AppUserBannerApi';
+import { useGetWorkflowMutation } from '../../apiServices/workflow/GetWorkflowByTenant';
+import { useGetFormMutation } from '../../apiServices/workflow/GetForms';
+import { setProgram, setWorkflow, setIsGenuinityOnly } from '../../../redux/slices/appWorkflowSlice';
+import { setWarrantyForm, setWarrantyFormId } from '../../../redux/slices/formSlice';
+import { useFetchLegalsMutation } from '../../apiServices/fetchLegal/FetchLegalApi';
+import { setPolicy, setTerms } from '../../../redux/slices/termsPolicySlice';
+import { setDashboardItems } from '../../../redux/slices/dashboardSlice';
+import * as Keychain from 'react-native-keychain';
+import { useGetAppMenuDataMutation } from '../../apiServices/dashboard/AppUserDashboardMenuAPi.js';
+import { setDrawerData } from '../../../redux/slices/drawerDataSlice';
 
 
 const Splash = ({ navigation }) => {
@@ -57,6 +67,21 @@ const Splash = ({ navigation }) => {
       isError: getAppThemeIsError,
     }
   ] = useGetAppThemeDataMutation();
+
+  const [getTermsAndCondition, {
+    data: getTermsData,
+    error: getTermsError,
+    isLoading: termsLoading,
+    isError: termsIsError
+  }] = useFetchLegalsMutation();
+
+  const [getAppMenuFunc, {
+    data: getAppMenuData,
+    error: getAppMenuError,
+    isLoading: getAppMenuIsLoading,
+    isError: getAppMenuIsError
+  }] = useGetAppMenuDataMutation()
+
   const [
     getUsers,
     {
@@ -82,6 +107,13 @@ const Splash = ({ navigation }) => {
     isError:getSalesBoosterIsError
   }] = useCheckSalesBoosterMutation()
 
+  const [checkSalesBoosterOnEachScanFunc,{
+    data:checkSalesBoosterOnEachScanData,
+    error:checkSalesBoosterOnEachScanError,
+    isLoading:checkSalesBoosterOnEachScanIsLoading,
+    isError:checkSalesBoosterOnEachScanIsError
+  }]= useCheckSalesBoosterOnEachScanMutation()
+
   const [
     getMinVersionSupportFunc,
     {
@@ -91,6 +123,34 @@ const Splash = ({ navigation }) => {
       isError: getMinVersionSupportIsError
     }
   ] = useCheckVersionSupportMutation()
+
+  const [getBannerFunc, {
+    data: getBannerData,
+    error: getBannerError,
+    isLoading: getBannerIsLoading,
+    isError: getBannerIsError
+  }] = useGetAppUserBannerDataMutation()
+
+  const [getWorkflowFunc, {
+    data: getWorkflowData,
+    error: getWorkflowError,
+    isLoading: getWorkflowIsLoading,
+    isError: getWorkflowIsError
+  }] = useGetWorkflowMutation()
+
+  const [getFormFunc, {
+    data: getFormData,
+    error: getFormError,
+    isLoading: getFormIsLoading,
+    isError: getFormIsError
+  }] = useGetFormMutation()
+
+  const [getPolicies, {
+    data: getPolicyData,
+    error: getPolicyError,
+    isLoading: policyLoading,
+    isError: policyIsError
+  }] = useFetchLegalsMutation();
 
 
   useEffect(() => {
@@ -102,16 +162,82 @@ const Splash = ({ navigation }) => {
   }, [])
 
 
+  useEffect(() => {
+    getUsers();
+    
+    // console.log("currentVersion",currentVersion)
+    
+    const fetchTerms = async () => {
+      // const credentials = await Keychain.getGenericPassword();
+      // const token = credentials.username;
+      const params = {
+        type: "term-and-condition"
+      }
+      getTermsAndCondition(params)
+    }
+    fetchTerms()
+
+
+    const fetchPolicies = async () => {
+      // const credentials = await Keychain.getGenericPassword();
+      // const token = credentials.username;
+      const params = {
+        type: "privacy-policy"
+      }
+      getPolicies(params)
+    }
+    fetchPolicies()
+    const fetchMenu = async () => {
+      // console.log("fetching app menu getappmenufunc")
+      const credentials = await Keychain.getGenericPassword();
+      if (credentials) {
+        // console.log(
+        //   'Credentials successfully loaded for user ' + credentials.username
+        // );
+        const token = credentials.username
+        getAppMenuFunc(token)
+      }
+  
+    }
+    
+    fetchMenu()
+
+  }, [])
   const removerTokenData =async()=>{
     await AsyncStorage.removeItem('loginData');
     navigation.navigate("SelectUser")
   } 
 
 
+  useEffect(() => {
+    if (getAppMenuData) {
+      console.log("getAppMenuData", JSON.stringify(getAppMenuData))
+      const tempDrawerData = getAppMenuData.body.filter((item) => {
+        return item.user_type === parsedJsonValue?.user_type
+      })
+      console.log("tempDrawerData", JSON.stringify(tempDrawerData))
+      dispatch(setDrawerData(tempDrawerData[0]))
+    }
+    else if (getAppMenuError) {
+      console.log("getAppMenuError", getAppMenuError)
+    }
+  }, [getAppMenuData, getAppMenuError])
+
+  useEffect(() => {
+    if (getTermsData) {
+      // console.log("getTermsData", getTermsData.body.data?.[0]?.files[0]);
+      dispatch(setTerms(getTermsData.body.data?.[0]?.files[0]))
+    }
+    else if (getTermsError) {
+      // console.log("gettermserror", getTermsError)
+    }
+  }, [getTermsData, getTermsError])
+
   useEffect(()=>{
     if(getSalesBoosterData)
     {
       console.log("getSalesBoosterData",getSalesBoosterData)
+      parsedJsonValue && getDashboardFunc(parsedJsonValue?.token)
     }
     else if(getSalesBoosterError)
     {
@@ -124,7 +250,68 @@ const Splash = ({ navigation }) => {
   },[getSalesBoosterData,getSalesBoosterError])
 
   useEffect(() => {
-    if (getDashboardData) {
+    if (getWorkflowData) {
+      if (getWorkflowData.length === 1 && getWorkflowData[0] === "Genuinity") {
+        dispatch(setIsGenuinityOnly())
+      }
+      const removedWorkFlow = getWorkflowData.body[0]?.program.filter((item, index) => {
+        return item !== "Warranty"
+      })
+      console.log("getWorkflowData", getWorkflowData.body[0])
+      dispatch(setProgram(removedWorkFlow))
+      dispatch(setWorkflow(getWorkflowData.body[0]?.workflow_id))
+      console.log("parsedJsonValue", parsedJsonValue)
+      parsedJsonValue && getBannerFunc(parsedJsonValue?.token)
+
+    }
+    else {
+      console.log(getWorkflowError)
+    }
+  }, [getWorkflowData, getWorkflowError])
+
+
+  useEffect(() => {
+    if (getPolicyData) {
+      // console.log("getPolicyData123>>>>>>>>>>>>>>>>>>>", getPolicyData);
+      dispatch(setPolicy(getPolicyData?.body?.data?.[0]?.files?.[0]))
+    }
+    else if (getPolicyError) {
+      setError(true)
+      setMessage(getPolicyError?.error)
+      // console.log("getPolicyError>>>>>>>>>>>>>>>", getPolicyError)
+    }
+  }, [getPolicyData, getPolicyError])
+
+  useEffect(() => {
+    if (getFormData) {
+      console.log("Form Fields", getFormData.body)
+      dispatch(setWarrantyForm(getFormData.body.template))
+      dispatch(setWarrantyFormId(getFormData.body.form_template_id))
+      parsedJsonValue && getWorkflowFunc({userId:parsedJsonValue?.user_type_id, token:parsedJsonValue?.token })
+    }
+    else if(getFormError){
+      console.log("Form Field Error", getFormError)
+    }
+  }, [getFormData, getFormError])
+
+  useEffect(() => {
+    if (getBannerData) {
+      console.log("getBannerData", getBannerData.body)
+      const images = Object.values(getBannerData.body).map((item) => {
+        return item.image[0]
+      })
+      console.log("images", images)
+      dispatch(setBannerData(images))
+      parsedJsonValue && getSalesBoosterFunc(parsedJsonValue?.token)
+    }
+    else {
+      console.log(getBannerError)
+    }
+  }, [getBannerError, getBannerData])
+
+  useEffect(() => {
+    if (getDashboardData) 
+    {
       console.log("getDashboardData", getDashboardData)
       console.log("Trying to dispatch", parsedJsonValue?.user_type_id)
       dispatch(setAppUserId(parsedJsonValue?.user_type_id))
@@ -140,8 +327,8 @@ const Splash = ({ navigation }) => {
       Platform.OS == 'ios' && minVersionSupport && navigation.reset({ index: '0', routes: [{ name: 'Dashboard' }] })
 
     }
-    else if (getDashboardError) {
-
+    else if (getDashboardError) 
+    {
       console.log("getDashboardError", getDashboardError)
       if(getDashboardError?.data?.message =="Invalid JWT" && getDashboardError?.status == 401 )
       {
@@ -468,8 +655,13 @@ const Splash = ({ navigation }) => {
       console.log("asynch value", value, jsonValue)
       try {
         setParsedJsonValue(parsedJsonValues)
-        getDashboardFunc(parsedJsonValues?.token)
-        getSalesBoosterFunc(parsedJsonValues?.token)
+        const form_type = "2"
+        parsedJsonValues && getFormFunc({ form_type:form_type, token:parsedJsonValues?.token })
+        
+        
+        
+        
+        
 
 
       }

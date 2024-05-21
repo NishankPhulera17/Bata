@@ -26,9 +26,13 @@ import Checkbox from '../../components/atoms/checkbox/Checkbox';
 import PoppinsTextLeftMedium from '../../components/electrons/customFonts/PoppinsTextLeftMedium';
 import { useFetchLegalsMutation } from '../../apiServices/fetchLegal/FetchLegalApi';
 import { useGetAppDashboardDataMutation } from '../../apiServices/dashboard/AppUserDashboardApi';
-import { setDashboardData } from '../../../redux/slices/dashboardDataSlice';
+import { setBannerData, setDashboardData } from '../../../redux/slices/dashboardDataSlice';
 import { useCheckSalesBoosterMutation } from '../../apiServices/salesBooster/salesBoosterApi';
-// import * as Keychain from 'react-native-keychain';  
+import { useGetAppUserBannerDataMutation } from '../../apiServices/dashboard/AppUserBannerApi';
+import { useGetWorkflowMutation } from '../../apiServices/workflow/GetWorkflowByTenant';
+import { useGetFormMutation } from '../../apiServices/workflow/GetForms';
+import { setProgram, setWorkflow, setIsGenuinityOnly } from '../../../redux/slices/appWorkflowSlice';
+import { setWarrantyForm, setWarrantyFormId } from '../../../redux/slices/formSlice'; 
 
 const PasswordLogin = ({ navigation, route }) => {
   const [username, setUsername] = useState("influencer_2")
@@ -37,7 +41,7 @@ const PasswordLogin = ({ navigation, route }) => {
   const [error, setError] = useState(false)
   const [message, setMessage] = useState("")
   const [isChecked, setIsChecked] = useState(false)
-
+  const [parsedJsonValue, setParsedJsonValue] = useState()
   //modal
   const [openModalWithBorder, setModalWithBorder] = useState(false);
 
@@ -81,6 +85,27 @@ const PasswordLogin = ({ navigation, route }) => {
 
   // initializing mutations --------------------------------
 
+  const [getBannerFunc, {
+    data: getBannerData,
+    error: getBannerError,
+    isLoading: getBannerIsLoading,
+    isError: getBannerIsError
+  }] = useGetAppUserBannerDataMutation()
+
+  const [getWorkflowFunc, {
+    data: getWorkflowData,
+    error: getWorkflowError,
+    isLoading: getWorkflowIsLoading,
+    isError: getWorkflowIsError
+  }] = useGetWorkflowMutation()
+
+  const [getFormFunc, {
+    data: getFormData,
+    error: getFormError,
+    isLoading: getFormIsLoading,
+    isError: getFormIsError
+  }] = useGetFormMutation()
+
   const [getDashboardFunc, {
     data: getDashboardData,
     error: getDashboardError,
@@ -118,12 +143,12 @@ const PasswordLogin = ({ navigation, route }) => {
       console.log("Password Login Data", passwordLoginData)
       if (passwordLoginData?.success) {
         storeData(passwordLoginData?.body)
+        setParsedJsonValue(passwordLoginData?.body)
         saveUserDetails(passwordLoginData?.body)
         getDashboardFunc(passwordLoginData?.body?.token)
-        getSalesBoosterFunc(passwordLoginData?.body?.token)
+       
         saveToken(passwordLoginData?.body?.token)
         setMessage(passwordLoginData?.message)
-        setModalWithBorder(true)
       }
     }
     else if (passwordLoginError) {
@@ -159,6 +184,11 @@ const PasswordLogin = ({ navigation, route }) => {
     }
   }
 
+  const removerTokenData =async()=>{
+    await AsyncStorage.removeItem('loginData');
+    navigation.navigate("SelectUser")
+  } 
+
   //modal close
   useEffect(() => {
     console.log("running")
@@ -173,11 +203,59 @@ const PasswordLogin = ({ navigation, route }) => {
     fetchTerms();
   }, [])
 
+  useEffect(() => {
+    if (getBannerData) {
+      console.log("getBannerData", getBannerData.body)
+      const images = Object.values(getBannerData.body).map((item) => {
+        return item.image[0]
+      })
+      console.log("images", images)
+      dispatch(setBannerData(images))
+      parsedJsonValue && getWorkflowFunc({userId:parsedJsonValue?.user_type_id, token:parsedJsonValue?.token })
+
+    }
+    else {
+      console.log(getBannerError)
+    }
+  }, [getBannerError, getBannerData])
+
+  useEffect(() => {
+    if (getWorkflowData) {
+      if (getWorkflowData.length === 1 && getWorkflowData[0] === "Genuinity") {
+        dispatch(setIsGenuinityOnly())
+      }
+      const removedWorkFlow = getWorkflowData.body[0]?.program.filter((item, index) => {
+        return item !== "Warranty"
+      })
+      console.log("getWorkflowData", getWorkflowData.body[0])
+      dispatch(setProgram(removedWorkFlow))
+      dispatch(setWorkflow(getWorkflowData.body[0]?.workflow_id))
+      const form_type = "2"
+      parsedJsonValue && getFormFunc({ form_type:form_type, token:parsedJsonValue?.token })
+
+    }
+    else {
+      console.log(getWorkflowError)
+    }
+  }, [getWorkflowData, getWorkflowError])
+
+  useEffect(() => {
+    if (getFormData) {
+      console.log("Form Fields", getFormData.body)
+      dispatch(setWarrantyForm(getFormData.body.template))
+      dispatch(setWarrantyFormId(getFormData.body.form_template_id))
+      setModalWithBorder(true)
+    }
+    else {
+      console.log("Form Field Error", getFormError)
+    }
+  }, [getFormData, getFormError])
 
   useEffect(()=>{
     if(getSalesBoosterData)
     {
       console.log("getSalesBoosterData",getSalesBoosterData)
+      parsedJsonValue && getBannerFunc(parsedJsonValue?.token)
     }
     else if(getSalesBoosterError)
     {
@@ -199,6 +277,7 @@ const PasswordLogin = ({ navigation, route }) => {
       dispatch(setUserData(parsedJsonValue))
       dispatch(setId(parsedJsonValue?.id))
       dispatch(setDashboardData(getDashboardData?.body?.app_dashboard))
+      parsedJsonValue && getSalesBoosterFunc(parsedJsonValue?.token)
     }
     else if (getDashboardError) {
 
