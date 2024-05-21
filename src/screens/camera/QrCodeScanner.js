@@ -52,6 +52,7 @@ const QrCodeScanner = ({ navigation }) => {
   const [zoom, setZoom] = useState(0);
   const [zoomText, setZoomText] = useState('1');
   const [flash, setFlash] = useState(false);
+  const [scannedCodes, setScannedCodes] = useState(new Set());
   const [addedQrList, setAddedQrList] = useState([]);
   const [addedQrProductId, setAddedQrProductId] = useState([])
   const [success, setSuccess] = useState(false);
@@ -64,7 +65,7 @@ const QrCodeScanner = ({ navigation }) => {
   const [helpModal, setHelpModal] = useState(false);
   const [isFirstScan, setIsFirstScan] = useState(false)
   const [isReportable, setIsReportable] = useState(false)
-
+  const [cameraEnabled, setCameraEnabled] = useState(true)
   const userId = useSelector(state => state.appusersdata.userId);
   const userData = useSelector(state => state.appusersdata.userData)
   const userType = useSelector(state => state.appusersdata.userType);
@@ -368,6 +369,7 @@ const QrCodeScanner = ({ navigation }) => {
         OnReturedCheck(e)
       }
       else {
+        setCameraEnabled(false)
         onSuccessBar(e)
 
       }
@@ -466,7 +468,7 @@ const QrCodeScanner = ({ navigation }) => {
         dispatch(setProductData(productDataData.body.products[0]));
         setProductId(productDataData.body.product_id);
 
-        checkWarrantyFunc({ form_type, token, body })
+       workflowProgram.includes("Warranty") &&  checkWarrantyFunc({ form_type, token, body })
       }
       else {
 
@@ -489,55 +491,62 @@ const QrCodeScanner = ({ navigation }) => {
     setIsReportable(false)
   };
 
+  
   const onSuccessBar = e => {
     console.log('Qr data is ------------------>', e);
+    if(!cameraEnabled) return
 
+    setTimeout(() => {
+      setCameraEnabled(true)
+    }, 1000);
     Vibration.vibrate([1000, 500, 1000]);
 
     if (e.data === undefined) {
-      setError(true)
-      setMessage("Please scan a valid QR")
-    }
-    else {
-      Vibration.vibrate([1000, 500, 1000]);
-      const requestData = { unique_code: e.data };
-      const verifyQR = async data => {
-        // console.log('qrData', data);
-        try {
-          // Retrieve the credentials
-
-          const credentials = await Keychain.getGenericPassword();
-          if (credentials) {
-            console.log(
-              'Credentials successfully loaded for user ' + credentials.username, data
-            );
-            setSavedToken(credentials.username);
-            const token = credentials.username;
-
-            const obj = {
-              body: {
-                unique_code: e?.data,
-                platform_id: 1,
-                scanned_by_name: userData.name
-              },
-              token: token
-            }
-            console.log("token from file", token)
-            data && verifyBarScannerFunc(obj);
-
-          } else {
-            console.log('No credentials stored');
-          }
-        } catch (error) {
-          console.log("Keychain couldn't be accessed!", error);
+        setError(true);
+        setMessage("Please scan a valid QR");
+    } else {
+        if (scannedCodes.has(e.data)) {
+            // If the barcode has already been scanned, don't call verifyBarScannerFunc
+            console.log('Duplicate barcode scanned:', e.data);
+            ToastAndroid.show(`Bar code already added ${e.data}`, ToastAndroid.SHORT)
+            return;
         }
-      };
 
-      verifyQR(requestData);
+        // Add the new barcode to the set of scanned codes
+        setScannedCodes(prevCodes => new Set(prevCodes).add(e.data));
+
+        Vibration.vibrate([1000, 500, 1000]);
+        const requestData = { unique_code: e.data };
+
+        const verifyQR = async data => {
+            try {
+                const credentials = await Keychain.getGenericPassword();
+                if (credentials) {
+                    console.log('Credentials successfully loaded for user ' + credentials.username, data);
+                    setSavedToken(credentials.username);
+                    const token = credentials.username;
+
+                    const obj = {
+                        body: {
+                            unique_code: e?.data,
+                            platform_id: 1,
+                            scanned_by_name: userData.name
+                        },
+                        token: token
+                    };
+                    console.log("token from file", token);
+                    data && verifyBarScannerFunc(obj);
+                } else {
+                    console.log('No credentials stored');
+                }
+            } catch (error) {
+                console.log("Keychain couldn't be accessed!", error);
+            }
+        };
+
+        verifyQR(requestData);
     }
-
-  };
-
+};
 
   const OnReturedCheck = e => {
 
@@ -694,11 +703,15 @@ const QrCodeScanner = ({ navigation }) => {
 
   // delete qr from list of qr-------------------------------------
   const deleteQrFromList = code => {
-    const removedList = addedQrList.filter((item, index) => {
-      return item.unique_code !== code;
-    });
+    const removedList = addedQrList.filter((item) => item.unique_code !== code);
     setAddedQrList(removedList);
 
+    // Remove the deleted barcode from the set of scanned codes
+    setScannedCodes(prevCodes => {
+      const newCodes = new Set(prevCodes);
+      newCodes.delete(code);
+      return newCodes;
+    });
   };
   // --------------------------------------------------------
 
@@ -1443,7 +1456,7 @@ const QrCodeScanner = ({ navigation }) => {
           // frameProcessorFps={5}
           style={{ height: '40%' }}
           device={device}
-          isActive={true}
+          isActive={cameraEnabled}
           torch={flash ? "on" : "off"}
         // format={}
         >
