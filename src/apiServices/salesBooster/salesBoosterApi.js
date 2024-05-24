@@ -18,6 +18,20 @@ export const salesBoosterApi = baseApi.injectEndpoints({
         },
         })
         ,
+        checkSalesBoosterHistory: builder.mutation({
+            query: (token) => {
+                console.log("salesBooster check", token)
+            return {
+            method: "GET",
+            url: `/api/app/salesBooster/history`,
+            headers: {
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + token,
+            slug: slug,
+            },
+            };
+            },
+            }),
         checkSalesBoosterOnEachScan: builder.mutation({
             query: (token) => {
                 return {
@@ -33,19 +47,20 @@ export const salesBoosterApi = baseApi.injectEndpoints({
         }),
         claimSalesBooster : builder.mutation({
             
-            query: (token) => {
+            query: (params) => {
                 return {
                 method: "POST",
                 url: `/api/app/salesBooster/claim`,
                 headers: {
                 "Content-Type": "application/json",
-                Authorization: "Bearer " + token,
+                Authorization: "Bearer " + params.token,
                 slug: slug,
                 },
+                body:params.body
                 };
                 },
         })
     })
 });
 
-export const {useCheckSalesBoosterMutation, useCheckSalesBoosterOnEachScanMutation, useClaimSalesBoosterMutation} = salesBoosterApi;
+export const {useCheckSalesBoosterMutation, useCheckSalesBoosterOnEachScanMutation, useClaimSalesBoosterMutation,useCheckSalesBoosterHistoryMutation} = salesBoosterApi;

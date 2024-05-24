@@ -230,13 +230,13 @@ const CongratulateOnScan = ({ navigation, route }) => {
   // }, [])
 
 
-  useEffect(() => {
-    getMembership()
-  }, [])
+  // useEffect(() => {
+  //   getMembership()
+  // }, [])
 
-  useEffect(() => {
-    getAppTheme("Bata")
-  }, [])
+  // useEffect(() => {
+  //   getAppTheme("Bata")
+  // }, [])
 
 
 
@@ -251,27 +251,19 @@ const CongratulateOnScan = ({ navigation, route }) => {
   // }, [getUsersByIdData, getUsersByIdError])
 
 
-  useEffect(() => {
-    if (getAppThemeData) {
-      console.log("getAppThemeData", getAppThemeData)
-      setPercentMultiplier(Number(getAppThemeData?.body?.points_sharing?.percentage_points_value))
-    }
-    else {
-      console.log("getAppThemeError", getAppThemeError)
-    }
-  }, [getAppThemeData, getAppThemeError])
+  // useEffect(() => {
+  //   if (getAppThemeData) {
+  //     console.log("getAppThemeData", getAppThemeData)
+  //     setPercentMultiplier(Number(getAppThemeData?.body?.points_sharing?.percentage_points_value))
+  //   }
+  //   else {
+  //     console.log("getAppThemeError", getAppThemeError)
+  //   }
+  // }, [getAppThemeData, getAppThemeError])
 
 
 
-  useEffect(() => {
-    if (getAppThemeData) {
-      console.log("getAppThemeData", getAppThemeData)
-      setPercentMultiplier(Number(getAppThemeData?.body?.points_sharing?.percentage_points_value))
-    }
-    else {
-      console.log("getAppThemeError", getAppThemeError)
-    }
-  }, [getAppThemeData, getAppThemeError])
+  
 
 
   useEffect(() => {
@@ -317,122 +309,122 @@ const CongratulateOnScan = ({ navigation, route }) => {
       }
       else if (rewardType === "Points On Product") {
         console.log("QRIDLIST==========>", qrIdList)
-        if (qrIdList.length ==1 ) {
-          const params = {
-            token: token,
-            qr_code: qrIdList,
-          };
+        // if (qrIdList.length ==1 ) {
+        //   const params = {
+        //     token: token,
+        //     qr_code: qrIdList,
+        //   };
 
-          console.log("shouldSharePoints", shouldSharePoints);
-          if (pointSharingData) {
-            if (pointSharingData?.flat_points === true) {
-              if (shouldSharePoints) {
-                const points =
-                  Number(productData[`${userData.user_type}_points`]) *
-                  (Number(pointPercentage) / 100)
+        //   console.log("shouldSharePoints", shouldSharePoints);
+        //   if (pointSharingData) {
+        //     if (pointSharingData?.flat_points === true) {
+        //       if (shouldSharePoints) {
+        //         const points =
+        //           Number(productData[`${userData.user_type}_points`]) *
+        //           (Number(pointPercentage) / 100)
 
 
-                console.log("extra flat points", points, pointPercentage);
-                const body = {
-                  data: {
-                    // app_user_id: userData.id.toString(),
-                    // user_type_id: userData.user_type_id,
-                    // user_type: userData.user_type,
-                    product_id: productData.product_id,
-                    product_code: productData.product_code,
-                    platform_id: Number(platform),
-                    pincode:
-                      location.postcode === undefined ? "N/A" : location.postcode,
-                    platform: "mobile",
-                    state: location.state === undefined ? "N/A" : location.state,
-                    district:
-                      location.district === undefined ? "N/A" : location.district,
-                    city: location.city === undefined ? "N/A" : location.city,
-                    area:
-                      location.district === undefined ? "N/A" : location.district,
-                    known_name:
-                      location.city === undefined ? "N/A" : location.city,
-                    lat:
-                      location.lat === undefined ? "N/A" : String(location.lat),
-                    log:
-                      location.lon === undefined ? "N/A" : String(location.lon),
-                    method_id: 1,
-                    method: "point on product",
-                    points: points,
-                    type: "points_sharing",
-                    point_earned_through_type: "points_sharing",
-                  },
-                  qrId: Number(qrData.qr_id),
-                  tenant_id: slug,
-                  token: token,
-                };
-                extraPointEntryFunc(body);
-              } else if (!shouldSharePoints) {
-                // alert("Points can't be shared for this tenant");
-              }
-            } else if (pointSharingData?.percentage_points === true) {
-              console.log("percentage_points_value", productData, pointSharingData)
-              const point =
-                productData["mrp"] *
-                (pointSharingData["percentage_points_value"] / 100);
-              const memberShipBonus = (points * Number(getActiveMembershipData?.body.points !== undefined ? getActiveMembershipData?.body.points : 0)) / 100
+        //         console.log("extra flat points", points, pointPercentage);
+        //         const body = {
+        //           data: {
+        //             // app_user_id: userData.id.toString(),
+        //             // user_type_id: userData.user_type_id,
+        //             // user_type: userData.user_type,
+        //             product_id: productData.product_id,
+        //             product_code: productData.product_code,
+        //             platform_id: Number(platform),
+        //             pincode:
+        //               location.postcode === undefined ? "N/A" : location.postcode,
+        //             platform: "mobile",
+        //             state: location.state === undefined ? "N/A" : location.state,
+        //             district:
+        //               location.district === undefined ? "N/A" : location.district,
+        //             city: location.city === undefined ? "N/A" : location.city,
+        //             area:
+        //               location.district === undefined ? "N/A" : location.district,
+        //             known_name:
+        //               location.city === undefined ? "N/A" : location.city,
+        //             lat:
+        //               location.lat === undefined ? "N/A" : String(location.lat),
+        //             log:
+        //               location.lon === undefined ? "N/A" : String(location.lon),
+        //             method_id: 1,
+        //             method: "point on product",
+        //             points: points,
+        //             type: "points_sharing",
+        //             point_earned_through_type: "points_sharing",
+        //           },
+        //           qrId: Number(qrData.qr_id),
+        //           tenant_id: slug,
+        //           token: token,
+        //         };
+        //         extraPointEntryFunc(body);
+        //       } else if (!shouldSharePoints) {
+        //         // alert("Points can't be shared for this tenant");
+        //       }
+        //     } else if (pointSharingData?.percentage_points === true) {
+        //       console.log("percentage_points_value", productData, pointSharingData)
+        //       const point =
+        //         productData["mrp"] *
+        //         (pointSharingData["percentage_points_value"] / 100);
+        //       const memberShipBonus = (points * Number(getActiveMembershipData?.body.points !== undefined ? getActiveMembershipData?.body.points : 0)) / 100
 
-              const totalPoints = point + memberShipBonus
-              const points =
-                totalPoints *
-                (Number(pointPercentage) / 100);
+        //       const totalPoints = point + memberShipBonus
+        //       const points =
+        //         totalPoints *
+        //         (Number(pointPercentage) / 100);
 
-              console.log("mrp points", points);
-              if (shouldSharePoints) {
-                const body = {
-                  data: {
-                    // app_user_id: userData.id.toString(),
-                    // user_type_id: userData.user_type_id,
-                    // user_type: userData.user_type,
-                    product_id: productData.product_id,
-                    product_code: productData.product_code,
-                    platform_id: Number(platform),
-                    pincode:
-                      location.postcode === undefined ? "N/A" : location.postcode,
-                    platform: "mobile",
-                    state: location.state === undefined ? "N/A" : location.state,
-                    district:
-                      location.district === undefined ? "N/A" : location.district,
-                    city: location.city === undefined ? "N/A" : location.city,
-                    area:
-                      location.district === undefined ? "N/A" : location.district,
-                    known_name:
-                      location.city === undefined ? "N/A" : location.city,
-                    lat:
-                      location.lat === undefined ? "N/A" : String(location.lat),
-                    log:
-                      location.lon === undefined ? "N/A" : String(location.lon),
-                    method_id: 1,
-                    method: "point on product",
-                    points: points,
-                    type: "points_sharing",
-                    point_earned_through_type: "points_sharing",
-                  },
-                  qrId: Number(qrData.qr_id),
-                  tenant_id: slug,
-                  token: token,
-                };
-                extraPointEntryFunc(body);
-              } else if (!shouldSharePoints) {
-                // alert("Points can't be shared for this tenant");
-              }
-            }
-          }
+        //       console.log("mrp points", points);
+        //       if (shouldSharePoints) {
+        //         const body = {
+        //           data: {
+        //             // app_user_id: userData.id.toString(),
+        //             // user_type_id: userData.user_type_id,
+        //             // user_type: userData.user_type,
+        //             product_id: productData.product_id,
+        //             product_code: productData.product_code,
+        //             platform_id: Number(platform),
+        //             pincode:
+        //               location.postcode === undefined ? "N/A" : location.postcode,
+        //             platform: "mobile",
+        //             state: location.state === undefined ? "N/A" : location.state,
+        //             district:
+        //               location.district === undefined ? "N/A" : location.district,
+        //             city: location.city === undefined ? "N/A" : location.city,
+        //             area:
+        //               location.district === undefined ? "N/A" : location.district,
+        //             known_name:
+        //               location.city === undefined ? "N/A" : location.city,
+        //             lat:
+        //               location.lat === undefined ? "N/A" : String(location.lat),
+        //             log:
+        //               location.lon === undefined ? "N/A" : String(location.lon),
+        //             method_id: 1,
+        //             method: "point on product",
+        //             points: points,
+        //             type: "points_sharing",
+        //             point_earned_through_type: "points_sharing",
+        //           },
+        //           qrId: Number(qrData.qr_id),
+        //           tenant_id: slug,
+        //           token: token,
+        //         };
+        //         extraPointEntryFunc(body);
+        //       } else if (!shouldSharePoints) {
+        //         // alert("Points can't be shared for this tenant");
+        //       }
+        //     }
+        //   }
 
-          if(qrIdList.length==1){
-            checkUserPointFunc(params);
-            console.log("checkuserpointfuncparams", params)
-          }
+        //   if(qrIdList.length==1){
+        //     checkUserPointFunc(params);
+        //     console.log("checkuserpointfuncparams", params)
+        //   }
           
        
 
-        }
-        else {
+        // }
+        // else {
           const params = {
             data: {
               qrs: qrIdList,
@@ -460,7 +452,7 @@ const CongratulateOnScan = ({ navigation, route }) => {
 
           addBulkPointOnProductFunc(params);
 
-        }
+        // }
       }
       else if (isDistributor && rewardType == "barcode revert") {
         if (isDistributor) {

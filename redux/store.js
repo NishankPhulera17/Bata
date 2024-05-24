@@ -24,6 +24,7 @@ import internetMiddleware from './middleware/internetMiddleware';
 import termsPolicySlice from './slices/termsPolicySlice';
 import dashboardDataSlice from './slices/dashboardDataSlice';
 import drawerDataSlice from './slices/drawerDataSlice';
+import salesBoosterSlice from './slices/salesBoosterSlice';
 
 
 export const store = configureStore({
@@ -50,10 +51,13 @@ export const store = configureStore({
     dashboard:dashboardSlice,
     termsPolicy:termsPolicySlice,
     dashboardData:dashboardDataSlice,
-    drawerData:drawerDataSlice
+    drawerData:drawerDataSlice,
+    salesBooster:salesBoosterSlice
   },
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(baseApi.middleware, internetMiddleware), 
+    getDefaultMiddleware({
+      serializableCheck: false,
+    }).concat(baseApi.middleware, internetMiddleware), 
 });
 
 setupListeners(store.dispatch);

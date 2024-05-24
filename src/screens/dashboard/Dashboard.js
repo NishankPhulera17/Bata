@@ -38,6 +38,8 @@ import Close from 'react-native-vector-icons/Ionicons';
 import { GoogleMapsKey } from "@env"
 import InternetModal from '../../components/modals/InternetModal';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import SalesBooster from '../salesBooster/SalesBooster';
+import SalesBoosterTriggerButton from '../../components/organisms/SalesBoosterTriggerButton';
 
 
 const Dashboard = ({ navigation }) => {
@@ -58,13 +60,13 @@ const Dashboard = ({ navigation }) => {
   const dashboardItems = useSelector(state=>state.dashboardData.dashboardData)
   const userId = useSelector((state) => state.appusersdata.userId)
   const userData = useSelector(state => state.appusersdata.userData);
-
+  
   const isDistributor = userData?.user_type_id == 3
-
   const isConnected = useSelector(state => state.internet.isConnected);
   const pointSharingData = useSelector(state => state.pointSharing.pointSharing)
   const bannerArray = useSelector(state => state.dashboardData.banner)
-  console.log("Dashboard data bannerArray",bannerArray)
+
+  
   const ternaryThemeColor = useSelector(
     state => state.apptheme.ternaryThemeColor,
   )
@@ -157,30 +159,30 @@ const Dashboard = ({ navigation }) => {
     dispatch(setQrIdList([]))
   }, [focused])
 
-  useEffect(() => {
-    (async () => {
-      const credentials = await Keychain.getGenericPassword();
-      const token = credentials.username;
-      let queryParams = `?user_type_id=${userData?.user_type_id}&app_user_id=${userData?.id}&limit=${1}`;
-      if (startDate && endDate) {
-        queryParams += `&from_date=${moment(startDate).format(
-          "YYYY-MM-DD"
-        )}&to_date=${moment(endDate).format("YYYY-MM-DD")}`;
-      } else if (startDate) {
-        queryParams += `&from_date=${moment(startDate).format(
-          "YYYY-MM-DD"
-        )}`;
-      }
+  // useEffect(() => {
+  //   (async () => {
+  //     const credentials = await Keychain.getGenericPassword();
+  //     const token = credentials.username;
+  //     let queryParams = `?user_type_id=${userData?.user_type_id}&app_user_id=${userData?.id}&limit=${1}`;
+  //     if (startDate && endDate) {
+  //       queryParams += `&from_date=${moment(startDate).format(
+  //         "YYYY-MM-DD"
+  //       )}&to_date=${moment(endDate).format("YYYY-MM-DD")}`;
+  //     } else if (startDate) {
+  //       queryParams += `&from_date=${moment(startDate).format(
+  //         "YYYY-MM-DD"
+  //       )}`;
+  //     }
 
-      console.log("queryParams", queryParams);
+  //     console.log("queryParams", queryParams);
 
-      fetchAllQrScanedList({
-        token: token,
+  //     fetchAllQrScanedList({
+  //       token: token,
 
-        query_params: queryParams,
-      });
-    })();
-  }, [focused]);
+  //       query_params: queryParams,
+  //     });
+  //   })();
+  // }, [focused]);
   
 
   useEffect(() => {
@@ -320,7 +322,7 @@ const Dashboard = ({ navigation }) => {
             for (let i = 0; i <= addressComponent?.length; i++) {
               if (i === addressComponent?.length) {
                 dispatch(setLocation(locationJson))
-                clearInterval(intervalId)
+                
               }
               else {
                 if (addressComponent[i].types.includes("postal_code")) {
@@ -387,88 +389,8 @@ const Dashboard = ({ navigation }) => {
       }
    
 
-
-    return () => clearInterval(intervalId)
-
   }, [navigation])
-  //   useEffect(() => {
-  //     let lat = ''
-  //     let lon = ''
-  //     try {
-  //       Geolocation.getCurrentPosition((res) => {
-  //         console.log("res", res)
-  //         lat = res?.coords?.latitude
-  //         lon = res?.coords?.longitude
-  //         // getLocation(JSON.stringify(lat),JSON.stringify(lon))
-  //         console.log("latlong", lat, lon)
-  //         var url = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${res?.coords?.latitude},${res?.coords?.longitude}
-  // import {GoogleMapsKey} from "@env"
-  //             &location_type=ROOFTOP&result_type=street_address&key=${GoogleMapsKey}`
-
-  //         fetch(url).then(response => response.json()).then(json => {
-  //           console.log("location address=>", JSON?.stringify(json));
-  //           const formattedAddress = json?.results[0]?.formatted_address
-  //           const formattedAddressArray = formattedAddress?.split(',')
-
-  //           let locationJson = {
-
-  //             lat: json?.results[0]?.geometry?.location?.lat === undefined ? "N/A" : json?.results[0]?.geometry?.location?.lat,
-  //             lon: json?.results[0]?.geometry?.location?.lng === undefined ? "N/A" : json?.results[0]?.geometry?.location?.lng,
-  //             address: formattedAddress === undefined ? "N/A" : formattedAddress
-
-  //           }
-
-  //           const addressComponent = json?.results[0]?.address_components
-  //           console.log("addressComponent", addressComponent)
-  //           for (let i = 0; i <= addressComponent?.length; i++) {
-  //             if (i === addressComponent.length) {
-  //               dispatch(setLocation(locationJson))
-
-  //             }
-  //             else {
-  //               if (addressComponent[i]?.types.includes("postal_code")) {
-  //                 console.log("inside if")
-
-  //                 console.log(addressComponent[i]?.long_name)
-  //                 locationJson["postcode"] = addressComponent[i]?.long_name
-  //               }
-  //               else if (addressComponent[i]?.types.includes("country")) {
-  //                 console.log(addressComponent[i]?.long_name)
-
-  //                 locationJson["country"] = addressComponent[i]?.long_name
-  //               }
-  //               else if (addressComponent[i]?.types.includes("administrative_area_level_1")) {
-  //                 console.log(addressComponent[i]?.long_name)
-
-  //                 locationJson["state"] = addressComponent[i]?.long_name
-  //               }
-  //               else if (addressComponent[i]?.types.includes("administrative_area_level_3")) {
-  //                 console.log(addressComponent[i]?.long_name)
-
-  //                 locationJson["district"] = addressComponent[i]?.long_name
-  //               }
-  //               else if (addressComponent[i]?.types.includes("locality")) {
-  //                 console.log(addressComponent[i]?.long_name)
-
-  //                 locationJson["city"] = addressComponent[i]?.long_name
-  //               }
-  //             }
-
-  //           }
-
-
-  //           console.log("formattedAddressArray", locationJson)
-
-  //         })
-  //       })
-
-  //     }
-  //     catch {
-  //       console.log("error")
-  //     }
-
-
-  //   }, [])
+  
   useEffect(() => {
     if (pointSharingData) {
       const keys = Object.keys(pointSharingData.point_sharing_bw_user.user)
@@ -508,12 +430,11 @@ const Dashboard = ({ navigation }) => {
           const token = credentials.username
           const form_type = "2"
           console.log("token from dashboard ", token)
-          token && getDashboardFunc(token)
           token && getKycStatusFunc(token)
-          token && getBannerFunc(token)
-          token && getWorkflowFunc({ userId, token })
-          token && getFormFunc({ form_type, token })
-          getMembership()
+          // token && getBannerFunc(token)
+          // token && getWorkflowFunc({ userId, token })
+          // token && getFormFunc({ form_type, token })
+          // getMembership()
         } else {
           console.log('No credentials stored');
         }
@@ -555,6 +476,8 @@ const Dashboard = ({ navigation }) => {
     setIsSuccessModalVisible(true);
     console.log("hello")
   };
+
+  
 
   const NoInternetComp = () => {
     return (
@@ -616,7 +539,7 @@ const Dashboard = ({ navigation }) => {
               </TouchableOpacity>
 
             </View>} */}
-          <PlatinumModal isVisible={isSuccessModalVisible} onClose={hideSuccessModal} getActiveMembershipData={getActiveMembershipData} />
+          {/* <PlatinumModal isVisible={isSuccessModalVisible} onClose={hideSuccessModal} getActiveMembershipData={getActiveMembershipData} /> */}
 
         </View>
         <View style={{ width: '100%', alignItems: "center", justifyContent: "center", height: "90%" }}>
@@ -651,6 +574,8 @@ const Dashboard = ({ navigation }) => {
 
             </View>
           }
+         
+
           {/* temporary */}
           {/* {userData.user_type_id !== 13 && scanningDetails && scanningDetails?.data?.length &&  <ScannedDetailsBox lastScannedDate={moment(scanningDetails?.data[0]?.scanned_at).format("DD MMM YYYY")} scanCount={scanningDetails.total}></ScannedDetailsBox>} */}
           <ScrollView showsHorizontalScrollIndicator={false} horizontal={true} style={{ paddingLeft: 10, paddingRight: 10, paddingBottom: 4 }}>

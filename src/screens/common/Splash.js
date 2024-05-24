@@ -38,6 +38,7 @@ import { setDashboardItems } from '../../../redux/slices/dashboardSlice';
 import * as Keychain from 'react-native-keychain';
 import { useGetAppMenuDataMutation } from '../../apiServices/dashboard/AppUserDashboardMenuAPi.js';
 import { setDrawerData } from '../../../redux/slices/drawerDataSlice';
+import { setCheckTriggers, setEachScanTriggers } from '../../../redux/slices/salesBoosterSlice';
 
 
 const Splash = ({ navigation }) => {
@@ -99,21 +100,6 @@ const Splash = ({ navigation }) => {
     isError: getDashboardIsError
   }] = useGetAppDashboardDataMutation()
 
-
-  const [getSalesBoosterFunc,{
-    data:getSalesBoosterData,
-    error:getSalesBoosterError,
-    isLoading:getSalesBoosterIsLoading,
-    isError:getSalesBoosterIsError
-  }] = useCheckSalesBoosterMutation()
-
-  const [checkSalesBoosterOnEachScanFunc,{
-    data:checkSalesBoosterOnEachScanData,
-    error:checkSalesBoosterOnEachScanError,
-    isLoading:checkSalesBoosterOnEachScanIsLoading,
-    isError:checkSalesBoosterOnEachScanIsError
-  }]= useCheckSalesBoosterOnEachScanMutation()
-
   const [
     getMinVersionSupportFunc,
     {
@@ -163,7 +149,6 @@ const Splash = ({ navigation }) => {
 
 
   useEffect(() => {
-    getUsers();
     
     // console.log("currentVersion",currentVersion)
     
@@ -233,21 +218,7 @@ const Splash = ({ navigation }) => {
     }
   }, [getTermsData, getTermsError])
 
-  useEffect(()=>{
-    if(getSalesBoosterData)
-    {
-      console.log("getSalesBoosterData",getSalesBoosterData)
-      parsedJsonValue && getDashboardFunc(parsedJsonValue?.token)
-    }
-    else if(getSalesBoosterError)
-    {
-      console.log("getSalesBoosterError",getSalesBoosterError)
-      if(getSalesBoosterError?.data?.message =="Invalid JWT" && getSalesBoosterError?.status == 401 )
-      {
-        removerTokenData()
-      }
-    }
-  },[getSalesBoosterData,getSalesBoosterError])
+
 
   useEffect(() => {
     if (getWorkflowData) {
@@ -302,7 +273,8 @@ const Splash = ({ navigation }) => {
       })
       console.log("images", images)
       dispatch(setBannerData(images))
-      parsedJsonValue && getSalesBoosterFunc(parsedJsonValue?.token)
+      parsedJsonValue && getDashboardFunc(parsedJsonValue?.token)
+     
     }
     else {
       console.log(getBannerError)
@@ -411,10 +383,12 @@ const Splash = ({ navigation }) => {
           }
         }).then(function (success) {
           console.log("location  prompt box success", success);
-          setLocationEnabled(true) // success => {alreadyEnabled: false, enabled: true, status: "enabled"}
+          setLocationEnabled(true) 
         }).catch((error) => {
           console.log("location  prompt box error", error.message);
-          getLocationPermission()
+          setLocationEnabled(true) 
+
+          // getLocationPermission()
           // error.message => "disabled"
         });
       }

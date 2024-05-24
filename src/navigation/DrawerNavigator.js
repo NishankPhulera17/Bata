@@ -118,26 +118,26 @@ const drawerData = useSelector(state=>state.drawerData.drawerData)
       }
     };
     fetchData()
-    getMembership()
+    // getMembership()
     fetchTerms()
     fetchPolicies()
     fetchFaq()
   }, [])
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const credentials = await Keychain.getGenericPassword();
-      if (credentials) {
-        console.log(
-          'Credentials successfully loaded for user ' + credentials.username,
-        );
-        const token = credentials.username;
-        fetchProfileFunc(token);
-      }
-    };
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     const credentials = await Keychain.getGenericPassword();
+  //     if (credentials) {
+  //       console.log(
+  //         'Credentials successfully loaded for user ' + credentials.username,
+  //       );
+  //       const token = credentials.username;
+  //       fetchProfileFunc(token);
+  //     }
+  //   };
 
-    fetchData()
-  },[focused])
+  //   fetchData()
+  // },[focused])
 
 
 

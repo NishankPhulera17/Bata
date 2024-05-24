@@ -278,7 +278,7 @@ const QrCodeScanner = ({ navigation }) => {
     if (addQrData) {
       console.log("addQrData", addQrData)
       if (addQrData.success) {
-        isFirstScan && checkFirstScan()
+        // isFirstScan && checkFirstScan()
         // isFirstScan && handleWorkflowNavigation("Genuinity","Warranty")
 
       }
@@ -328,9 +328,8 @@ const QrCodeScanner = ({ navigation }) => {
     (async () => {
       const credentials = await Keychain.getGenericPassword();
       const token = credentials.username;
-      getScannedHistory()
       cashPerPointFunc(token)
-
+      // getScannedHistory()
     })();
   }, [])
 
@@ -498,7 +497,7 @@ const QrCodeScanner = ({ navigation }) => {
 
     setTimeout(() => {
       setCameraEnabled(true)
-    }, 1000);
+    }, 200);
     Vibration.vibrate([1000, 500, 1000]);
 
     if (e.data === undefined) {
@@ -1093,7 +1092,7 @@ const QrCodeScanner = ({ navigation }) => {
   const handleAddQr = () => {
 
     const token = savedToken;
-    if (addedQrList.length > 1) {
+    // if (addedQrList.length > 1) {
 
       const addedQrID = addedQrList.map((item, index) => {
         return item.id
@@ -1109,29 +1108,29 @@ const QrCodeScanner = ({ navigation }) => {
       addBulkQrFunc(params)
       dispatch(setQrIdList(addedQrID))
       console.log(addedQrID, params)
-    }
-    else {
-      if (productDataData) {
-        addedQrList.length !== 0 &&
-          addedQrList.map((item, index) => {
-            const requestData = {
-              qr_id: item.id,
-              user_type_id: userId,
-              user_type: userType,
-              platform_id: platform,
-              scanned_by_name: userName,
-              address: location.address,
-              state: location.state,
-              district: location.district,
-              city: location.city,
-              lat: location.lat,
-              log: location.lon
-            };
-            token && addQrFunc({ token, requestData });
-          });
-      }
+    // }
+    // else {
+    //   if (productDataData) {
+    //     addedQrList.length !== 0 &&
+    //       addedQrList.map((item, index) => {
+    //         const requestData = {
+    //           qr_id: item.id,
+    //           user_type_id: userId,
+    //           user_type: userType,
+    //           platform_id: platform,
+    //           scanned_by_name: userName,
+    //           address: location.address,
+    //           state: location.state,
+    //           district: location.district,
+    //           city: location.city,
+    //           lat: location.lat,
+    //           log: location.lon
+    //         };
+    //         token && addQrFunc({ token, requestData });
+    //       });
+    //   }
 
-    }
+    // }
 
 
 

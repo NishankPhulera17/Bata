@@ -79,7 +79,7 @@ import SupportQueries from '../screens/helpAndSupport/SupportQueries';
 import QueryList from '../screens/queryList/QueryList';
 import ReturnPointHistory from '../screens/historyPages/ReturnPointHistory';
 import VisionCamera from '../screens/camera/VisionCamera';
-
+import SalesBooster from '../screens/salesBooster/SalesBooster';
 
 const Stack = createNativeStackNavigator()
 
@@ -100,6 +100,11 @@ const StackNavigator = () => {
                         headerShown: false
                     }
                 } name="WhatsNew" component={WhatsNew}></Stack.Screen>
+                <Stack.Screen options={
+                    {
+                        headerShown: false
+                    }
+                } name="SalesBooster" component={SalesBooster}></Stack.Screen>
                 <Stack.Screen options={
                     {
                         headerShown: false
