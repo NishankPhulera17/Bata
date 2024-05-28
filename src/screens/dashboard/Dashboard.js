@@ -157,7 +157,7 @@ const Dashboard = ({ navigation }) => {
   useEffect(() => {
     fetchPoints()
     dispatch(setQrIdList([]))
-  }, [focused])
+  }, [])
 
   // useEffect(() => {
   //   (async () => {
@@ -446,9 +446,13 @@ const Dashboard = ({ navigation }) => {
         console.log("Keychain couldn't be accessed!", error);
       }
     }
-    getDashboardData()
+    if (focused) {
+      getDashboardData();
+    }
+    
+    
 
-  }, [])
+  }, [focused])
 
 
 
