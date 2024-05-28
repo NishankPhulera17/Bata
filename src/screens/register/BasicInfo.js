@@ -930,6 +930,7 @@ console.log("navigation params from basic info",navigationParams)
                       value={location?.city}
                       displayText = {item.name}
                       label={item.label}
+                      isEditable={true}
                     ></PrefilledTextInput>
                   )
 
@@ -979,6 +980,8 @@ console.log("navigation params from basic info",navigationParams)
                       value={location?.state}
                       label={item.label}
                       displayText = {item.name}
+                      isEditable={false}
+
                     ></PrefilledTextInput>
                   )
                 }
@@ -993,6 +996,7 @@ console.log("navigation params from basic info",navigationParams)
                       value={location?.district}
                       label={item.label}
                       displayText = {item.name}
+                      isEditable={false}
 
                     ></PrefilledTextInput>
                   )

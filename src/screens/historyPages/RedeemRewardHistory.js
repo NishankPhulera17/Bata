@@ -354,7 +354,11 @@ const RedeemRewardHistory = ({ navigation }) => {
         "getSalesBoosterHistoryData",
         JSON.stringify(getSalesBoosterHistoryData)
       );
+      if(getSalesBoosterData?.body?.length!=0)
+      {
       setMergedSalesBooster(getSalesBoosterHistoryData?.body)
+
+      }
     } else if (getSalesBoosterHistoryError) {
       console.log(
         "getSalesBoosterHistoryError",
@@ -1025,7 +1029,7 @@ const RedeemRewardHistory = ({ navigation }) => {
 
         {/* sales booster component ------------------------------------ */}
 
-        {mergedSalesBooster && (
+        {mergedSalesBooster && mergedSalesBooster.length!==0 (
           <SalesBoosterTriggerButton
             data={mergedSalesBooster}
           ></SalesBoosterTriggerButton>
