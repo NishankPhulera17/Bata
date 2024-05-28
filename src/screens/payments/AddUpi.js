@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import PoppinsTextMedium from '../../components/electrons/customFonts/PoppinsTextMedium';
 import {useSelector} from 'react-redux';
-import {useAddBankDetailsMutation} from '../../apiServices/bankAccount.js/AddBankAccount';
+import {useAddBankDetailsMutation} from '../../apiServices/bankAccount/AddBankAccount'
 import * as Keychain from 'react-native-keychain';
 import TextInputRectangularWithPlaceholder from '../../components/atoms/input/TextInputRectangularWithPlaceholder';
 import ShowLoadingButtonSmall from '../../components/atoms/buttons/ShowLoadingButtonSmall';
@@ -20,8 +20,8 @@ import ErrorModal from '../../components/modals/ErrorModal';
 import BottomModal from '../../components/modals/BottomModal';
 import Info from 'react-native-vector-icons/AntDesign';
 import {useVerifyPanMutation} from '../../apiServices/verification/PanVerificationApi';
-import VerifyUpi from '../../apiServices/bankAccount.js/VerifyUpi';
-import { useDeleteBankMutation } from '../../apiServices/bankAccount.js/DeleteBankAccount';
+import VerifyUpi from '../../apiServices/bankAccount/VerifyUpi';
+import { useDeleteBankMutation } from '../../apiServices/bankAccount/DeleteBankAccount';
 
 const AddUpi = ({navigation}) => {
   const [upi, setUpi] = useState();
