@@ -59,6 +59,7 @@ const QrCodeScanner = ({ navigation }) => {
   const [message, setMessage] = useState();
   const [error, setError] = useState(false);
   const [savedToken, setSavedToken] = useState();
+  const [lastScanned, setLastScanned] = useState()
   const [productId, setProductId] = useState();
   const [qr_id, setQr_id] = useState();
   const [registrationBonus, setRegistrationBonus] = useState()
@@ -504,16 +505,20 @@ const QrCodeScanner = ({ navigation }) => {
         setError(true);
         setMessage("Please scan a valid QR");
     } else {
+      console.log("scannedCodes", scannedCodes)
         if (scannedCodes.has(e.data)) {
             // If the barcode has already been scanned, don't call verifyBarScannerFunc
             console.log('Duplicate barcode scanned:', e.data);
             ToastAndroid.show(`Bar code already added ${e.data}`, ToastAndroid.SHORT)
             return;
         }
-
-        // Add the new barcode to the set of scanned codes
+        else{
         setScannedCodes(prevCodes => new Set(prevCodes).add(e.data));
 
+        }
+
+        // Add the new barcode to the set of scanned codes
+        setLastScanned(e.data)
         Vibration.vibrate([1000, 500, 1000]);
         const requestData = { unique_code: e.data };
 
@@ -704,6 +709,7 @@ const QrCodeScanner = ({ navigation }) => {
   const deleteQrFromList = code => {
     const removedList = addedQrList.filter((item) => item.unique_code !== code);
     setAddedQrList(removedList);
+    console.log("scannedCodes", scannedCodes)
 
     // Remove the deleted barcode from the set of scanned codes
     setScannedCodes(prevCodes => {
@@ -862,6 +868,12 @@ const QrCodeScanner = ({ navigation }) => {
       }
     }
     else if (verifyBarError) {
+      setScannedCodes(prevCodes => {
+        const newCodes = new Set(prevCodes);
+        newCodes.delete(lastScanned);
+        return newCodes;
+      });
+
       if (verifyBarError === undefined) {
 
         setError(true)
@@ -870,10 +882,11 @@ const QrCodeScanner = ({ navigation }) => {
       else {
         if (verifyBarError.status !== 409) {
           setError(true)
-          setMessage(JSON.stringify(verifyBarError));
+          setMessage(JSON.stringify(verifyBarError?.data?.Error?.error));
         }
 
         else {
+          
           setError(true)
           setMessage(verifyBarError?.data?.message);
         }
