@@ -15,7 +15,7 @@ import {
 import MessageModal from '../../components/modals/MessageModal';
 import { useSelector } from 'react-redux';
 import PoppinsTextMedium from '../../components/electrons/customFonts/PoppinsTextMedium';
-import { useListAccountsMutation } from '../../apiServices/bankAccount.js/ListBankAccount';
+import { useListAccountsMutation } from '../../apiServices/bankAccount/ListBankAccount';
 import Icon from 'react-native-vector-icons/AntDesign';
 import Dots from 'react-native-vector-icons/Entypo';
 import Edit from 'react-native-vector-icons/Entypo';
@@ -24,8 +24,9 @@ import Info from 'react-native-vector-icons/Feather';
 import Delete from 'react-native-vector-icons/MaterialCommunityIcons';
 import * as Keychain from 'react-native-keychain';
 import PoppinsText from '../../components/electrons/customFonts/PoppinsText';
-import { useDeleteBankMutation } from '../../apiServices/bankAccount.js/DeleteBankAccount';
+import { useDeleteBankMutation } from '../../apiServices/bankAccount/DeleteBankAccount';
 import { useIsFocused } from '@react-navigation/native';
+import { useTranslation } from 'react-i18next';
 
 
 const BankAccounts = ({ navigation, route }) => {
@@ -42,6 +43,8 @@ const BankAccounts = ({ navigation, route }) => {
     ? useSelector(state => state.apptheme.ternaryThemeColor)
     : 'grey';
   const userData = useSelector(state => state.appusersdata.userData)
+
+  const {t} = useTranslation()
 
     const type = route.params?.type
     console.log("navigating to bank page from",type)
@@ -422,7 +425,7 @@ const BankAccounts = ({ navigation, route }) => {
             source={require('../../../assets/images/blackBack.png')}></Image>
         </TouchableOpacity>
         <PoppinsTextMedium
-          content="Bank Account"
+          content={t("Bank Account")}
           style={{
             marginLeft: 10,
             fontSize: 16,
@@ -450,7 +453,7 @@ const BankAccounts = ({ navigation, route }) => {
             marginTop: 20,
 
           }}
-          content="Preferred Method"></PoppinsTextMedium>
+          content={t("Preferred Method")}></PoppinsTextMedium>
         <ScrollView contentContainerStyle={{width: '100%',height:'80%'}} style={{ width: '100%',height:'70%' }}>
           <View style={{ alignItems: "center", justifyContent: "center" }}>
 
@@ -494,7 +497,7 @@ const BankAccounts = ({ navigation, route }) => {
             }
 
             {(listAccountData?.body?.length == 0  || listAccountData == undefined ) && <View style={{ alignItems: 'center', marginTop:"60%"}}>
-              <PoppinsTextMedium style ={{fontSize:16,color:'black'}}content="No Bank Account has been added yet !"></PoppinsTextMedium>
+              <PoppinsTextMedium style ={{fontSize:16,color:'black'}} content={`${t("No bank account has been added yet")}`}></PoppinsTextMedium>
             </View>}
 
 
@@ -502,7 +505,7 @@ const BankAccounts = ({ navigation, route }) => {
           
         </ScrollView>
         <View style={{ flexDirection: "row", alignItems: 'center', justifyContent: 'center', position: 'absolute', bottom: 14, right: 20 }}>
-          <PoppinsText content="Add Account" style={{ color: ternaryThemeColor, fontSize: 16 }}></PoppinsText>
+          <PoppinsText content={t("Add Account")} style={{ color: ternaryThemeColor, fontSize: 16 }}></PoppinsText>
           <TouchableOpacity onPress={() => { navigation.navigate('AddBankAccountAndUpi') }} style={{ backgroundColor: '#DDDDDD', height: 60, width: 60, borderRadius: 30, alignItems: "center", justifyContent: 'center', marginLeft: 10 }}>
 
             <Plus name="pluscircle" size={50} color={ternaryThemeColor}></Plus>
@@ -512,10 +515,10 @@ const BankAccounts = ({ navigation, route }) => {
            type==="Cashback" && <TouchableOpacity onPress={()=>{
             if(hasSelectedPaymentMethod)
             {
-            navigation.navigate("OtpVerification",{type:"Cashback",selectedAccount:hasSelectedPaymentMethod})
+            navigation.replace("OtpVerification",{type:"Cashback",selectedAccount:hasSelectedPaymentMethod})
             }
             }} style={{width:100,alignItems:'center',justifyContent:'center',backgroundColor:ternaryThemeColor,padding:8, position: 'absolute', bottom: 14, left: 20 }}>
-              <PoppinsText content ="Get OTP" style={{color:'white',fontSize:16}}></PoppinsText>
+              <PoppinsText content ={t("Get OTP")} style={{color:'white',fontSize:16}}></PoppinsText>
             </TouchableOpacity>
             }
         {/* {Platform.OS=='android'  && <View style={{ flexDirection: "row", alignItems: 'center', justifyContent: 'center', position: 'absolute', bottom: 10, right: 20 }}>
