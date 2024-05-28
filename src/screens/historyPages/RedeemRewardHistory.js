@@ -1029,7 +1029,7 @@ const RedeemRewardHistory = ({ navigation }) => {
 
         {/* sales booster component ------------------------------------ */}
 
-        {mergedSalesBooster && mergedSalesBooster.length!==0 (
+        {mergedSalesBooster && mergedSalesBooster?.length!==0 && (
           <SalesBoosterTriggerButton
             data={mergedSalesBooster}
           ></SalesBoosterTriggerButton>

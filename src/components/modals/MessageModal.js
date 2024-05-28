@@ -37,7 +37,8 @@ const MessageModal = (props) => {
         animationType="slide"
         transparent={true}
         visible={modalVisible}
-        onRequestClose={() => {
+           onRequestClose={() => {
+            navigateTo && navigation.navigate(navigateTo,params)
             props.modalClose()
           setModalVisible(!modalVisible);
         }}>
