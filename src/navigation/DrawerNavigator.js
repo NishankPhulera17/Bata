@@ -546,7 +546,7 @@ const drawerData = useSelector(state=>state.drawerData.drawerData)
 
       <ScrollView contentContainerStyle={{}} style={{ width: '100%',height:'100%',backgroundColor:'white'}} >
         {
-          drawerData !== undefined && drawerData.app_menu.map((item, index) => {
+          drawerData !== undefined && drawerData?.app_menu.map((item, index) => {
             return (
               <DrawerItems
                 key={index}

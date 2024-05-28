@@ -38,6 +38,8 @@ import { useGetWorkflowMutation } from '../../apiServices/workflow/GetWorkflowBy
 import { useGetFormMutation } from '../../apiServices/workflow/GetForms';
 import { setProgram, setWorkflow, setIsGenuinityOnly } from '../../../redux/slices/appWorkflowSlice';
 import { setWarrantyForm, setWarrantyFormId } from '../../../redux/slices/formSlice';
+import { useGetAppMenuDataMutation } from '../../apiServices/dashboard/AppUserDashboardMenuAPi.js';
+import { setDrawerData } from '../../../redux/slices/drawerDataSlice';
 
 
 const VerifyOtp = ({ navigation, route }) => {
@@ -98,6 +100,13 @@ const VerifyOtp = ({ navigation, route }) => {
     isLoading: getBannerIsLoading,
     isError: getBannerIsError
   }] = useGetAppUserBannerDataMutation()
+
+  const [getAppMenuFunc, {
+    data: getAppMenuData,
+    error: getAppMenuError,
+    isLoading: getAppMenuIsLoading,
+    isError: getAppMenuIsError
+  }] = useGetAppMenuDataMutation()
 
   const [getWorkflowFunc, {
     data: getWorkflowData,
@@ -216,11 +225,27 @@ const VerifyOtp = ({ navigation, route }) => {
   }, [getWorkflowData, getWorkflowError])
 
   useEffect(() => {
+    if (getAppMenuData) {
+      console.log("getAppMenuData", JSON.stringify(getAppMenuData))
+      const tempDrawerData = getAppMenuData.body.filter((item) => {
+        return item.user_type === parsedJsonValue?.user_type
+      })
+      console.log("tempDrawerData", JSON.stringify(tempDrawerData))
+      dispatch(setDrawerData(tempDrawerData[0]))
+      setModalWithBorder(true)
+
+    }
+    else if (getAppMenuError) {
+      console.log("getAppMenuError", getAppMenuError)
+    }
+  }, [getAppMenuData, getAppMenuError])
+
+  useEffect(() => {
     if (getFormData) {
       console.log("Form Fields", getFormData.body)
       dispatch(setWarrantyForm(getFormData.body.template))
       dispatch(setWarrantyFormId(getFormData.body.form_template_id))
-      setModalWithBorder(true)
+      parsedJsonValue && getAppMenuFunc(parsedJsonValue?.token)
     }
     else {
       console.log("Form Field Error", getFormError)
