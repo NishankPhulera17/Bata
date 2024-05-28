@@ -35,6 +35,7 @@ const CashbackHistory = ({ navigation }) => {
   const [error, setError] = useState(false);
   const [success, setSuccess] = useState(false)
   const [navigateTo, setNavigateTo] = useState()
+  const[isReedemable, setIsReedemable] = useState(true)
 
   const focused = useIsFocused()
 
@@ -132,6 +133,7 @@ const CashbackHistory = ({ navigation }) => {
           setRedemptionStartDate(temp?.redeem_start_date)
           setRedemptionEndDate(temp?.redeem_end_date)
           setMinRedemptionPoints(temp?.min_point_redeem)
+          setIsReedemable(cashPerPointData.body.max_transaction_per_day)
         }
     }
     else if(cashPerPointError){
