@@ -243,7 +243,7 @@ const Passbook = ({ navigation }) => {
                 navigation.navigate('RedeemedHistory')
 
             }
-            else if (data === "Cashback Redeemed History") {
+            else if (data === "Cashback History") {
                 navigation.navigate('CashbackHistory')
 
             }

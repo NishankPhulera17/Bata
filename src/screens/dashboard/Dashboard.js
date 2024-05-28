@@ -418,6 +418,10 @@ const Dashboard = ({ navigation }) => {
 
 
   }, [])
+
+  useEffect(()=>{
+    getMembership()
+  },[])
   useEffect(() => {
     const getDashboardData = async () => {
       try {
