@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, StyleSheet, ScrollView, Platform, TouchableOpacity, Image, Text } from 'react-native';
+import { View, StyleSheet, ScrollView, Platform, TouchableOpacity, Image, Text, Alert, Linking } from 'react-native';
 import MenuItems from '../../components/atoms/MenuItems';
 import { BaseUrl } from '../../utils/BaseUrl';
 import { useGetAppDashboardDataMutation } from '../../apiServices/dashboard/AppUserDashboardApi';
@@ -444,7 +444,7 @@ const Dashboard = ({ navigation }) => {
     }
     getDashboardData()
 
-  }, [focused])
+  }, [])
 
 
 

@@ -3,6 +3,9 @@ import { Alert, Modal, StyleSheet, Text, Pressable, View, Image } from 'react-na
 import { useSelector } from 'react-redux';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { useNavigation } from '@react-navigation/native';
+import { useTranslation } from 'react-i18next';
+import Cancel from 'react-native-vector-icons/MaterialIcons'
+
 
 const ErrorModal = (props) => {
   const [modalVisible, setModalVisible] = useState(false);
@@ -17,7 +20,9 @@ const ErrorModal = (props) => {
     : 'grey';
   const navigateTo = props.navigateTo
 
-  console.log("product data in report an issue", productData)
+  console.log("product data in report an issue", productData,navigateTo)
+
+  const {t} = useTranslation()
 
   
   useEffect(() => {
@@ -32,11 +37,10 @@ const ErrorModal = (props) => {
     // navigation.navigate(navigateTo)
   },[navigateTo])
   const closeModal = () => {
-    console.log("navigateTo",navigateTo)
    
-    if (navigateTo !== undefined) {
-      navigation.navigate(navigateTo)
-    }
+    
+    navigateTo &&  navigation.replace(navigateTo)
+    
     props.modalClose()
     setModalVisible(!modalVisible)
   }
@@ -61,23 +65,25 @@ const ErrorModal = (props) => {
         onRequestClose={() => {
           props.modalClose()
           setModalVisible(!modalVisible);
+         navigateTo &&  navigation.replace(navigateTo)
         }}>
         <View style={styles.centeredView}>
-          <View style={{ ...styles.modalView, borderWidth: 2, borderColor: ternaryThemeColor }}>
+          <View style={{ ...styles.modalView}}>
             {/* <Image style={{ width: 80, height: 80, resizeMode: 'contain' }} source={require('../../../assets/images/failed.png')}></Image> */}
+            <Cancel name="cancel" size = {100} color="#FF3436"></Cancel>
             {title && <Text style={{ color: '#FF5D5D', fontSize: 24, fontWeight: '700' }}>{title}</Text>}
-            {!title && <Text style={{ color: '#FF5D5D', fontSize: 24, fontWeight: '700' }}>Sorry</Text>}
+            {!title && <Text style={{ color: '#FF5D5D', fontSize: 24, fontWeight: '700' }}>{t("Error")}</Text>}
 
             <Text style={{ ...styles.modalText, fontSize: 20, fontWeight: '600', color: 'black' }}>{props.message}</Text>
             <Pressable
-              style={{ ...styles.button, backgroundColor: '#FF5D5D', width: 100 }}
+              style={{ ...styles.button, backgroundColor: '#FF3436', width: 240 }}
               onPress={() => closeModal()}>
-              <Text style={styles.textStyle}>Close</Text>
+              <Text style={styles.textStyle}>{t("Try Again")}</Text>
             </Pressable>
 
             {props.isReportable &&
               <Pressable
-                style={{ ...styles.button, backgroundColor: '#FF5D5D', width: 100, marginTop: 10 }}
+                style={{ ...styles.button, backgroundColor: 'red', width: 100, marginTop: 10 }}
                 onPress={() => reportAndNavigate()}>
                 <Text style={styles.textStyle}>Report</Text>
               </Pressable>
@@ -95,13 +101,17 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'white'
+    backgroundColor: 'rgba(52, 52, 52, 0.8)'
+    
   },
   modalView: {
 
     backgroundColor: 'white',
     borderRadius: 20,
+    width:'90%',
     padding: 60,
+    paddingTop:30,
+    paddingBottom:40,
     alignItems: 'center',
     shadowColor: '#000',
     shadowOffset: {
@@ -111,11 +121,13 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 4,
     elevation: 5,
-
+    borderWidth:3,
+    borderColor:'#c43b3d'
+   
   },
   button: {
-    borderRadius: 4,
-    padding: 10,
+    borderRadius: 30,
+    padding: 14,
     elevation: 2,
     marginTop: 10
   },
@@ -127,6 +139,7 @@ const styles = StyleSheet.create({
     color: 'white',
     fontWeight: 'bold',
     textAlign: 'center',
+    fontSize:16
   },
   modalText: {
     marginBottom: 15,
