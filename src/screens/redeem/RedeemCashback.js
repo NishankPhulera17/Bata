@@ -388,7 +388,7 @@ const RedeemCashback = ({navigation,route}) => {
                 fontWeight: '600',
                 fontSize: 14,
               }}></PoppinsTextMedium>
-           <TextInput value={pointsConversion + ""} style={{color:'black',height:50, fontWeight:'bold', fontSize:14,width:'50%'}} onChangeText={(text)=>{setPointsConversion(text),dispatch(setPointConversionF(text))}} placeholder='Enter Points'></TextInput>
+           <TextInput keyboardType='numeric' value={pointsConversion + ""} style={{color:'black',height:50, fontWeight:'bold', fontSize:14,width:'50%'}} onChangeText={(text)=>{setPointsConversion(text),dispatch(setPointConversionF(text))}} placeholder='Enter Points'></TextInput>
           </View>
           <Image
             style={{height: 24, width: 24, resizeMode: 'contain', right: 12}}

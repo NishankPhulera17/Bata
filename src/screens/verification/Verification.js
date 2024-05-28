@@ -127,6 +127,9 @@ const Verification = ({ navigation }) => {
         dispatch(setKycCompleted())
         setSuccess(true)
         setMessage("Kyc Completed")
+        setTimeout(()=>{
+          navigation.navigate("Dashboard")
+        },1000)
         console.log("Success")
       }
     }
