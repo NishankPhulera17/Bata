@@ -47,6 +47,7 @@ const Splash = ({ navigation }) => {
   const [connected, setConnected] = useState(true)
   const [isSlowInternet, setIsSlowInternet] = useState(false)
   const [locationEnabled, setLocationEnabled] = useState(false)
+  const [fetchLocationAgain, setfetchLocationAgain] = useState(false)
   const [locationBoxEnabled, setLocationBoxEnabled] = useState(false)
   const [message, setMessage] = useState();
   const [success, setSuccess] = useState(false);
@@ -383,7 +384,7 @@ const Splash = ({ navigation }) => {
           }
         }).then(function (success) {
           console.log("location  prompt box success", success);
-          setLocationEnabled(true) 
+          setfetchLocationAgain(true) 
         }).catch((error) => {
           console.log("location  prompt box error", error.message);
           setLocationEnabled(true) 
@@ -503,7 +504,7 @@ const Splash = ({ navigation }) => {
         console.log("error in fetching location", e)
       }
     }
-  }, [navigation])
+  }, [navigation,fetchLocationAgain])
 
   useEffect(() => {
     getUsers();
