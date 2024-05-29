@@ -155,9 +155,13 @@ const Dashboard = ({ navigation }) => {
 
 
   useEffect(() => {
+    if(focused)
+    {
     fetchPoints()
     dispatch(setQrIdList([]))
-  }, [])
+    }
+    
+  }, [focused])
 
   // useEffect(() => {
   //   (async () => {
