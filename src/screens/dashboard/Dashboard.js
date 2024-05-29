@@ -54,6 +54,7 @@ const Dashboard = ({ navigation }) => {
   const [connected, setConnected] = useState(true)
   const[error, setError] = useState(false);
   const[message, setMessage] = useState("")
+  const[balancePoint, setBalancePoint] = useState(0)
 
   const focused = useIsFocused()
   const dispatch = useDispatch()
@@ -138,6 +139,10 @@ const Dashboard = ({ navigation }) => {
 
     }
   }, [isConnected])
+
+  useEffect(()=>{
+    setBalancePoint(userPointData?.body?.point_balance )
+  },[userPointData?.body?.point_balance, userData])
 
   useEffect(() => {
     const unsubscribe = messaging().onMessage(async remoteMessage => {
@@ -567,7 +572,7 @@ const Dashboard = ({ navigation }) => {
 
               <View style={{ backgroundColor: 'white', width: '42%', marginHorizontal: 20 }}>
                 {
-                  <PoppinsText content={`Balance Points ${userPointData?.body?.point_balance ? userPointData?.body?.point_balance : ": 0"}`}
+                  <PoppinsText content={`Balance Points ${balancePoint ? balancePoint : ": 0"}`}
                     style={{ color: 'black', fontWeight: 'bold' }}></PoppinsText>}
               </View>
 
