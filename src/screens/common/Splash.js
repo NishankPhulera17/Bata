@@ -293,10 +293,10 @@ const Splash = ({ navigation }) => {
       dispatch(setUserData(parsedJsonValue))
       dispatch(setId(parsedJsonValue?.id))
       dispatch(setDashboardData(getDashboardData?.body?.app_dashboard))
-      Platform.OS == 'android' && locationEnabled && minVersionSupport && navigation.navigate('Dashboard');
+      Platform.OS == 'android'  && minVersionSupport && navigation.navigate('Dashboard');
       Platform.OS == 'ios' && minVersionSupport && navigation.navigate('Dashboard');
 
-      Platform.OS == 'android' && locationEnabled && minVersionSupport && navigation.reset({ index: '0', routes: [{ name: 'Dashboard' }] })
+      Platform.OS == 'android'  && minVersionSupport && navigation.reset({ index: '0', routes: [{ name: 'Dashboard' }] })
       Platform.OS == 'ios' && minVersionSupport && navigation.reset({ index: '0', routes: [{ name: 'Dashboard' }] })
 
     }
@@ -384,11 +384,14 @@ const Splash = ({ navigation }) => {
           }
         }).then(function (success) {
           console.log("location  prompt box success", success);
-          setfetchLocationAgain(true) 
+          getData()
+          setLocationEnabled(true) 
+          
+          // setfetchLocationAgain(true) 
         }).catch((error) => {
           console.log("location  prompt box error", error.message);
           setLocationEnabled(true) 
-
+          getData()
           // getLocationPermission()
           // error.message => "disabled"
         });
@@ -396,9 +399,9 @@ const Splash = ({ navigation }) => {
 
     }
 
-    if (__DEV__) {
-      setLocationEnabled(true)
-    }
+    // if (__DEV__) {
+    //   setLocationEnabled(true)
+    // }
 
     if (!locationBoxEnabled) {
       try {
@@ -649,12 +652,12 @@ const Splash = ({ navigation }) => {
     else {
       if (value === "Yes") 
       {
-        Platform.OS == 'android' && locationEnabled && minVersionSupport && getUsersData && getAppThemeData  && navigation.navigate('SelectUser');
+        Platform.OS == 'android'  && minVersionSupport && getUsersData && getAppThemeData  && navigation.navigate('SelectUser');
         Platform.OS == 'ios' && minVersionSupport && getUsersData && navigation.navigate('SelectUser');
       }
       else 
       {
-        Platform.OS == 'android' && locationEnabled && getUsersData && minVersionSupport && navigation.navigate('Introduction')
+        Platform.OS == 'android'  && getUsersData && minVersionSupport && navigation.navigate('Introduction')
         Platform.OS == 'ios' && minVersionSupport && getUsersData && navigation.navigate('Introduction')
       }
       // console.log("isAlreadyIntroduced",isAlreadyIntroduced,gotLoginData)

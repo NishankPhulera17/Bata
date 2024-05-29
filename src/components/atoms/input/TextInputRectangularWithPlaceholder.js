@@ -2,11 +2,16 @@ import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, TextInput } from 'react-native';
 import PoppinsTextMedium from '../../electrons/customFonts/PoppinsTextMedium';
 import PoppinsTextLeftMedium from '../../electrons/customFonts/PoppinsTextLeftMedium';
+import { useIsFocused } from '@react-navigation/native';
+
+
 const TextInputRectangularWithPlaceholder = (props) => {
     const [value, setValue] = useState(props.value)
     const [keyboardType, setKeyboardType] = useState('default')
     const [maxLength, setMaxlength] = useState(props.maxLength)
     const [error, setError] = useState(false);
+
+    const focused = useIsFocused()
     // console.log("value", props)
     const placeHolder = props.placeHolder
     const required = props.required
@@ -14,10 +19,15 @@ const TextInputRectangularWithPlaceholder = (props) => {
     const validationType = props.validationType
     const title  = props.title
 
+
     useEffect(() => {
         setValue(props.value)
         props.handleData(props.value,props.title)
     }, [props.value])
+
+    useEffect(()=>{
+        setValue('')
+    },[focused])
 
     useEffect(() => {
         if (placeHolder === "Mobile No") {

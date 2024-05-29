@@ -514,6 +514,8 @@ console.log("Point conversion and cash conversion data",pointsConversion,cashCon
             navigateTo="Passbook"
           ></ErrorModal>
         )}
+
+        
         {success && (
           <MessageModal
             modalClose={modalClose}
@@ -523,6 +525,8 @@ console.log("Point conversion and cash conversion data",pointsConversion,cashCon
             navigateTo="RedeemedHistory"
           ></MessageModal>
         )}
+
+
       </View>
       <View style={{alignItems:'center',justifyContent:"center",width:'100%',backgroundColor:ternaryThemeColor,padding:20,marginBottom:60,marginTop:20}}>
         <PoppinsTextMedium style={{color:'white',fontSize:16}} content={t("OTP has been sent to your registered mobile number")}></PoppinsTextMedium>

@@ -106,6 +106,10 @@ const OtpLogin = ({ navigation, route }) => {
     fetchTerms();
   }, [])
 
+  useEffect(()=>{
+    setMobile("")
+  },[focused])
+
   useEffect(() => {
     if (getTermsData) {
       console.log("getTermsData", getTermsData.body.data?.[0]?.files[0]);
