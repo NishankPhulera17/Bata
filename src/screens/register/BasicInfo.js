@@ -597,6 +597,7 @@ console.log("navigation params from basic info",navigationParams)
         // setMessage(`${responseArray[i].label} is required`);
         missingParam = responseArray[i].label
     }
+    
     console.log("missing params", missingParam)
     
     }
@@ -606,11 +607,19 @@ console.log("navigation params from basic info",navigationParams)
       const keys = Object.keys(body)
       const values = Object.values(body)
 
+      if(keys.includes('pincode')){
+        const index = keys.indexOf('pincode')
+        if (!(values[index].length == 6)) {
+            setError(true)
+            setMessage("Picode should be 6 digits")
+            return
+        }
+      }
+
       if (keys.includes('email')) {
         const index = keys.indexOf('email')
         if (isValidEmail(values[index])) {
           if(isFormValid){
-          
           registerUserFunc(body)
           setHideButton(true)
           }

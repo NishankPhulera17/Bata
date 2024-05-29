@@ -46,8 +46,8 @@ export const CashbackRedeemApi = baseApi.injectEndpoints({
               };
             },
           }),
-          addCashToBank: builder.mutation({
 
+          addCashToBank: builder.mutation({
             query: (params) => {
               console.log("addCashToBankobject",params.body,slug);
               return {
@@ -62,6 +62,24 @@ export const CashbackRedeemApi = baseApi.injectEndpoints({
               };
             },
           }),
+
+          checkBeforeRedeem: builder.mutation({
+            query: (params) => {
+              return {
+                method: "GET",
+                url: `/api/app/cashTranferToBank/max-cash/${params.userId}`,
+                headers: {
+                  "Content-Type": "application/json",
+                  Authorization: "Bearer " + params.token,
+                  slug: slug,
+                },
+                // body:params.body
+              };
+            },
+          }),
+
+
+
           getCashTransactions: builder.mutation({
 
             query: (params) => {
@@ -83,5 +101,5 @@ export const CashbackRedeemApi = baseApi.injectEndpoints({
 });
 
 
-export const {useRedeemCashbackMutation,useAddCashToBankMutation,useGetCashTransactionsMutation,useGetRedeemptionListMutation,useGetWalletBalanceMutation} = CashbackRedeemApi
+export const {useRedeemCashbackMutation,useAddCashToBankMutation,useGetCashTransactionsMutation,useGetRedeemptionListMutation,useGetWalletBalanceMutation, useCheckBeforeRedeemMutation} = CashbackRedeemApi
 

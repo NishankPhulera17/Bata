@@ -536,6 +536,7 @@ console.log("Point conversion and cash conversion data",pointsConversion,cashCon
         handleData={getMobile}
         maxLength={10}
         editable = {false}
+        placeHolderValue = {userData.mobile}
         value={userData.mobile}
       ></TextInputRectangularWithPlaceholder>
 

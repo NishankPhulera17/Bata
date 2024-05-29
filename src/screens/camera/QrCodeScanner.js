@@ -10,7 +10,10 @@ import {
   ScrollView,
   FlatList,
   Vibration,
-  ToastAndroid
+  ToastAndroid,
+  Modal,
+  Button,
+  Linking
 } from 'react-native';
 import QRCodeScanner from 'react-native-qrcode-scanner';
 import { RNCamera } from 'react-native-camera';
@@ -46,6 +49,7 @@ import { Camera } from 'react-native-vision-camera';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler'
 import { request, PERMISSIONS } from 'react-native-permissions';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useIsFocused } from '@react-navigation/native';
 
 
 const QrCodeScanner = ({ navigation }) => {
@@ -67,6 +71,9 @@ const QrCodeScanner = ({ navigation }) => {
   const [isFirstScan, setIsFirstScan] = useState(false)
   const [isReportable, setIsReportable] = useState(false)
   const [cameraEnabled, setCameraEnabled] = useState(true)
+  const [proceedVisible, setProceedVisible] = useState(false)
+  const [checkCount, setCheckCount] = useState(0)
+
   const userId = useSelector(state => state.appusersdata.userId);
   const userData = useSelector(state => state.appusersdata.userData)
   const userType = useSelector(state => state.appusersdata.userType);
@@ -87,20 +94,67 @@ const QrCodeScanner = ({ navigation }) => {
   console.log("Selector state", userData)
 
   const [hasPermission, setHasPermission] = useState(null);
+  const [manualPermissionModal, setManualPermissionModal] = useState(false);
+
+  const focused = useIsFocused()
+  
 
   useEffect(() => {
     checkCameraPermission();
   }, []);
+
+  useEffect(() => {
+    console.log("check count", checkCount);
+
+    if (hasPermission == false ) {
+      
+      checkCameraPermission()
+  
+    }
+    
+    
+
+  }, [focused])
+
+  useEffect(()=>{
+  
+    if(hasPermission){
+      setManualPermissionModal(false)
+    }else if(!hasPermission){
+      setManualPermissionModal(true)
+    }
+  },[hasPermission])
+
+
 
   const checkCameraPermission = async () => {
     try {
       const status = await requestCameraPermission();
       console.log('Camera Permission Status:', status);
       setHasPermission(status === 'granted');
+
     } catch (error) {
       console.error('Error checking camera permission:', error);
+      // setManualPermissionModal(true);
     }
   };
+
+  const openAppSettings = () => {
+    // setCheckCount(checkCount+1)
+
+    if (Platform.OS === 'ios') {
+      setTimeout(()=>{
+        navigation.navigate("Dashboard")
+      },1000)
+      Linking.openURL('app-settings:');
+    } else {
+      setTimeout(()=>{
+        navigation.navigate("Dashboard")
+      },1000)
+      Linking.openSettings();
+    }
+  };
+
 
   const requestCameraPermission = async () => {
     try {
@@ -289,6 +343,14 @@ const QrCodeScanner = ({ navigation }) => {
   }, [addQrData]);
 
   useEffect(() => {
+    if (addedQrList.length > 0) {
+      setTimeout(() => {
+        setProceedVisible(true)
+      }, 1500)
+    }
+  }, [addedQrList])
+
+  useEffect(() => {
     if (verifyQrDistributorData) {
       //reverse logic as retailer
       console.log('verifyQrDistributorData', verifyQrDistributorData);
@@ -333,6 +395,8 @@ const QrCodeScanner = ({ navigation }) => {
       // getScannedHistory()
     })();
   }, [])
+
+
 
   const getScannedHistory = async () => {
     (async () => {
@@ -468,7 +532,7 @@ const QrCodeScanner = ({ navigation }) => {
         dispatch(setProductData(productDataData.body.products[0]));
         setProductId(productDataData.body.product_id);
 
-       workflowProgram.includes("Warranty") &&  checkWarrantyFunc({ form_type, token, body })
+        workflowProgram.includes("Warranty") && checkWarrantyFunc({ form_type, token, body })
       }
       else {
 
@@ -491,10 +555,10 @@ const QrCodeScanner = ({ navigation }) => {
     setIsReportable(false)
   };
 
-  
+
   const onSuccessBar = e => {
     console.log('Qr data is ------------------>', e);
-    if(!cameraEnabled) return
+    if (!cameraEnabled) return
 
     setTimeout(() => {
       setCameraEnabled(true)
@@ -502,55 +566,58 @@ const QrCodeScanner = ({ navigation }) => {
     Vibration.vibrate([1000, 500, 1000]);
 
     if (e.data === undefined) {
-        setError(true);
-        setMessage("Please scan a valid QR");
+      setError(true);
+      setMessage("Please scan a valid QR");
     } else {
       console.log("scannedCodes", scannedCodes)
-        if (scannedCodes.has(e.data)) {
-            // If the barcode has already been scanned, don't call verifyBarScannerFunc
-            console.log('Duplicate barcode scanned:', e.data);
-            ToastAndroid.show(`Bar code already added ${e.data}`, ToastAndroid.SHORT)
-            return;
-        }
-        else{
+      if (scannedCodes.has(e.data)) {
+        // If the barcode has already been scanned, don't call verifyBarScannerFunc
+        console.log('Duplicate barcode scanned:', e.data);
+        ToastAndroid.show(`Bar code already added ${e.data}`, ToastAndroid.SHORT)
+        return;
+      }
+      else {
         setScannedCodes(prevCodes => new Set(prevCodes).add(e.data));
 
-        }
+      }
 
-        // Add the new barcode to the set of scanned codes
-        setLastScanned(e.data)
-        Vibration.vibrate([1000, 500, 1000]);
-        const requestData = { unique_code: e.data };
+      // Add the new barcode to the set of scanned codes
+      setLastScanned(e.data)
+      Vibration.vibrate([1000, 500, 1000]);
+      const requestData = { unique_code: e.data };
 
-        const verifyQR = async data => {
-            try {
-                const credentials = await Keychain.getGenericPassword();
-                if (credentials) {
-                    console.log('Credentials successfully loaded for user ' + credentials.username, data);
-                    setSavedToken(credentials.username);
-                    const token = credentials.username;
+      const verifyQR = async data => {
+        try {
+          const credentials = await Keychain.getGenericPassword();
+          if (credentials) {
+            console.log('Credentials successfully loaded for user ' + credentials.username, data);
+            setSavedToken(credentials.username);
+            const token = credentials.username;
 
-                    const obj = {
-                        body: {
-                            unique_code: e?.data,
-                            platform_id: 1,
-                            scanned_by_name: userData.name
-                        },
-                        token: token
-                    };
-                    console.log("token from file", token);
-                    data && verifyBarScannerFunc(obj);
-                } else {
-                    console.log('No credentials stored');
-                }
-            } catch (error) {
-                console.log("Keychain couldn't be accessed!", error);
+            const obj = {
+              body: {
+                unique_code: e?.data,
+                platform_id: 1,
+                scanned_by_name: userData.name
+              },
+              token: token
+            };
+            console.log("token from file", token, verifyBarIsLoading);
+            if (!verifyBarIsLoading && !addedQrList.includes(e?.data)) {
+              data && verifyBarScannerFunc(obj);
+
             }
-        };
+          } else {
+            console.log('No credentials stored');
+          }
+        } catch (error) {
+          console.log("Keychain couldn't be accessed!", error);
+        }
+      };
 
-        verifyQR(requestData);
+      verifyQR(requestData);
     }
-};
+  };
 
   const OnReturedCheck = e => {
 
@@ -886,7 +953,7 @@ const QrCodeScanner = ({ navigation }) => {
         }
 
         else {
-          
+
           setError(true)
           setMessage(verifyBarError?.data?.message);
         }
@@ -1107,20 +1174,20 @@ const QrCodeScanner = ({ navigation }) => {
     const token = savedToken;
     // if (addedQrList.length > 1) {
 
-      const addedQrID = addedQrList.map((item, index) => {
-        return item.id
-      })
-      const params = {
-        token: token,
-        data: {
-          "qrs": addedQrID,
-          "platform_id": 1,
-          "name": userData.name
-        }
+    const addedQrID = addedQrList.map((item, index) => {
+      return item.id
+    })
+    const params = {
+      token: token,
+      data: {
+        "qrs": addedQrID,
+        "platform_id": 1,
+        "name": userData.name
       }
-      addBulkQrFunc(params)
-      dispatch(setQrIdList(addedQrID))
-      console.log(addedQrID, params)
+    }
+    addBulkQrFunc(params)
+    dispatch(setQrIdList(addedQrID))
+    console.log(addedQrID, params)
     // }
     // else {
     //   if (productDataData) {
@@ -1375,7 +1442,7 @@ const QrCodeScanner = ({ navigation }) => {
                 <FlatList
                   style={{ width: '100%', height: 400 }}
                   data={addedQrList}
-                  inverted= {true}
+                  inverted={true}
                   renderItem={({ item, index }) => (
                     <View
                       style={{
@@ -1461,7 +1528,7 @@ const QrCodeScanner = ({ navigation }) => {
           style={{ height: '60%' }}
         > */}
 
-        {hasPermission &&<Camera
+        {hasPermission && <Camera
           codeScanner={codeScanner}
           focusable={true}
           // frameProcessor={frameProcessor}
@@ -1675,7 +1742,7 @@ const QrCodeScanner = ({ navigation }) => {
                 )}
                 keyExtractor={item => item.id}
               />
-              {
+              {proceedVisible &&
                 <View style={{ marginBottom: 60 }}>
                   <ButtonProceed
                     handleOperation={isDistributor ? handleReturnBar : handleAddBar}
@@ -1690,8 +1757,34 @@ const QrCodeScanner = ({ navigation }) => {
           )}
 
         </View>
+          {
+            manualPermissionModal && !hasPermission &&
+            <Modal
+            transparent={true}
+            visible={manualPermissionModal}
+            onRequestClose={() => setManualPermissionModal(false)}
+          >
+            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0,0,0,0.5)' }}>
+              <View style={{ width: 300, padding: 20, backgroundColor: 'white', borderRadius: 10 }}>
+                <Text style={{ marginBottom: 20 }}>
+                  Camera permission is required to use this feature. Please enable it in the app settings.
+                </Text>
+                <View>
+                  <View style={{marginBottom:20}}>
+                <Button title="Open Settings" onPress={openAppSettings} />
 
+                  </View>
 
+                </View>
+                <Button title="Cancel" onPress={() => {navigation.navigate("Dashboard")}} />
+              </View>
+            </View>
+          </Modal>
+  
+  
+
+          }
+      
 
         {helpModal && <ModalWithBorder
           modalClose={() => { setHelpModal(!helpModal) }}
