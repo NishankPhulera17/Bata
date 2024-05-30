@@ -7,7 +7,7 @@ import RedeemRewardHistory from '../screens/historyPages/RedeemRewardHistory';
 import AddBankAccountAndUpi from '../screens/payments/AddBankAccountAndUpi';
 import Profile from '../screens/profile/Profile';
 import { useIsFocused, useNavigation } from '@react-navigation/native';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { useGetAppDashboardDataMutation } from '../apiServices/dashboard/AppUserDashboardApi';
 import * as Keychain from 'react-native-keychain';
@@ -23,6 +23,9 @@ import { useFetchLegalsMutation } from '../apiServices/fetchLegal/FetchLegalApi'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { user_type_option } from '../utils/usertTypeOption';
 import VersionCheck from 'react-native-version-check';
+import { useGetAppMenuDataMutation } from '../apiServices/dashboard/AppUserDashboardMenuAPi.js';
+import { setDrawerData } from '../../redux/slices/drawerDataSlice';
+
 
 
 const Drawer = createDrawerNavigator();
@@ -32,11 +35,14 @@ const CustomDrawer = () => {
   const [ozoneProductVisible, setOzoneProductVisible] = useState(false);
   const [communityVisible, setCommunityVisible] = useState(false);
   const [KnowledgeHubVisible, setKnowledgeHubVisible] = useState(false);
+  const [parsedJsonValue, setParsedJsonValue] = useState()
+  const [drawerData, setDrawerData] = useState();
 
 
 
 
-const drawerData = useSelector(state=>state.drawerData.drawerData)
+
+// const drawerData = useSelector(state=>state.drawerData.drawerData)
   const ternaryThemeColor = useSelector(
     state => state.apptheme.ternaryThemeColor,
   )
@@ -73,10 +79,17 @@ const drawerData = useSelector(state=>state.drawerData.drawerData)
     isError: FAQIsError
   }] = useFetchLegalsMutation();
 
+  const [getAppMenuFunc, {
+    data: getAppMenuData,
+    error: getAppMenuError,
+    isLoading: getAppMenuIsLoading,
+    isError: getAppMenuIsError
+  }] = useGetAppMenuDataMutation()
+
 
   console.log("kycCompleted", kycData)
 
-
+  const dispatch = useDispatch()
 
   const navigation = useNavigation()
 
@@ -113,6 +126,7 @@ const drawerData = useSelector(state=>state.drawerData.drawerData)
         );
         const token = credentials.username;
         fetchProfileFunc(token);
+        getAppMenuFunc(token)
 
 
       }
@@ -171,6 +185,22 @@ const drawerData = useSelector(state=>state.drawerData.drawerData)
       console.log("getFAQError", getFAQError)
     }
   },[getFAQData,getFAQError]);
+
+  useEffect(() => {
+    if (getAppMenuData) {
+      console.log("getAppMenuData", JSON.stringify(getAppMenuData))
+     
+      console.log("tempDrawerData", JSON.stringify(getAppMenuData))
+      // dispatch(setDrawerData(tempDrawerData[0]))
+      setDrawerData(getAppMenuData.body[0])
+    }
+    else if (getAppMenuError) {
+      console.log("getAppMenuError", getAppMenuError)
+      if(getAppMenuError.status==401){
+        navigation.navigate("SelectUser")
+      }
+    }
+  }, [getAppMenuData, getAppMenuError])
 
   const handleLogout=async()=>{
     
@@ -545,7 +575,8 @@ const drawerData = useSelector(state=>state.drawerData.drawerData)
       </View>
 
       <ScrollView contentContainerStyle={{}} style={{ width: '100%',height:'100%',backgroundColor:'white'}} >
-        {
+        {console.log("DrawerData",drawerData)}
+        {drawerData &&
           drawerData !== undefined && drawerData?.app_menu.map((item, index) => {
             return (
               <DrawerItems

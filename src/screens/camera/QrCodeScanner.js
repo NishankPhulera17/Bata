@@ -1771,7 +1771,7 @@ const QrCodeScanner = ({ navigation }) => {
                 </Text>
                 <View>
                   <View style={{marginBottom:20}}>
-                <Button title="Open Settings" onPress={openAppSettings} />
+                <Button style={{color:'black'}} title="Open Settings" onPress={openAppSettings} />
 
                   </View>
 

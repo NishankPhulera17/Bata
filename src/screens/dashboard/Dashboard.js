@@ -279,126 +279,126 @@ const Dashboard = ({ navigation }) => {
   
 
 
-  useEffect(() => {
+  // useEffect(() => {
 
-    let lat = ''
-    let lon = ''
+  //   let lat = ''
+  //   let lon = ''
 
-    const openSettings = () => {
-      if (Platform.OS === 'android') {
-        Linking.openSettings();
-      } else {
-        Linking.openURL('app-settings:');
-      }
-    };
-    const enableLocation = () => {
-      Alert.alert(
-        'Enable Location Services',
-        'Location services are disabled. Do you want to enable them?',
-        [
-          { text: 'Cancel', style: 'cancel' },
-          { text: 'OK', onPress: openSettings },
-        ],
-      );
-    };
+  //   const openSettings = () => {
+  //     if (Platform.OS === 'android') {
+  //       Linking.openSettings();
+  //     } else {
+  //       Linking.openURL('app-settings:');
+  //     }
+  //   };
+  //   const enableLocation = () => {
+  //     Alert.alert(
+  //       'Enable Location Services',
+  //       'Location services are disabled. Do you want to enable them?',
+  //       [
+  //         { text: 'Cancel', style: 'cancel' },
+  //         { text: 'OK', onPress: openSettings },
+  //       ],
+  //     );
+  //   };
     
-      try {
-        Geolocation.getCurrentPosition((res) => {
-          setLocationEnabled(true)
-          console.log("res", res)
-          lat = res.coords.latitude
-          lon = res.coords.longitude
-          // getLocation(JSON.stringify(lat),JSON.stringify(lon))
-          console.log("latlongasdasds", lat, lon)
-          var url = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${res?.coords?.latitude},${res?.coords?.longitude}
-            &location_type=ROOFTOP&result_type=street_address&key=${GoogleMapsKey}`
+  //     try {
+  //       Geolocation.getCurrentPosition((res) => {
+  //         setLocationEnabled(true)
+  //         console.log("res", res)
+  //         lat = res.coords.latitude
+  //         lon = res.coords.longitude
+  //         // getLocation(JSON.stringify(lat),JSON.stringify(lon))
+  //         console.log("latlongasdasds", lat, lon)
+  //         var url = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${res?.coords?.latitude},${res?.coords?.longitude}
+  //           &location_type=ROOFTOP&result_type=street_address&key=${GoogleMapsKey}`
 
-          fetch(url).then(response => response.json()).then(json => {
-            // console.log("location address=>", JSON.stringify(json));
-            const formattedAddress = json?.results[0]?.formatted_address
-            const formattedAddressArray = formattedAddress?.split(',')
+  //         fetch(url).then(response => response.json()).then(json => {
+  //           // console.log("location address=>", JSON.stringify(json));
+  //           const formattedAddress = json?.results[0]?.formatted_address
+  //           const formattedAddressArray = formattedAddress?.split(',')
 
-            let locationJson = {
+  //           let locationJson = {
 
-              lat: json?.results[0]?.geometry?.location?.lat === undefined ? "N/A" : json?.results[0]?.geometry?.location?.lat,
-              lon: json?.results[0]?.geometry?.location?.lng === undefined ? "N/A" : json?.results[0]?.geometry?.location?.lng,
-              address: formattedAddress === undefined ? "N/A" : formattedAddress
+  //             lat: json?.results[0]?.geometry?.location?.lat === undefined ? "N/A" : json?.results[0]?.geometry?.location?.lat,
+  //             lon: json?.results[0]?.geometry?.location?.lng === undefined ? "N/A" : json?.results[0]?.geometry?.location?.lng,
+  //             address: formattedAddress === undefined ? "N/A" : formattedAddress
 
-            }
+  //           }
 
-            const addressComponent = json?.results[0]?.address_components
-            // console.log("addressComponent", addressComponent)
-            for (let i = 0; i <= addressComponent?.length; i++) {
-              if (i === addressComponent?.length) {
-                dispatch(setLocation(locationJson))
+  //           const addressComponent = json?.results[0]?.address_components
+  //           // console.log("addressComponent", addressComponent)
+  //           for (let i = 0; i <= addressComponent?.length; i++) {
+  //             if (i === addressComponent?.length) {
+  //               dispatch(setLocation(locationJson))
                 
-              }
-              else {
-                if (addressComponent[i].types.includes("postal_code")) {
-                  console.log("inside if")
+  //             }
+  //             else {
+  //               if (addressComponent[i].types.includes("postal_code")) {
+  //                 console.log("inside if")
 
-                  console.log(addressComponent[i]?.long_name)
-                  locationJson["postcode"] = addressComponent[i]?.long_name
-                }
-                else if (addressComponent[i]?.types.includes("country")) {
-                  console.log(addressComponent[i]?.long_name)
+  //                 console.log(addressComponent[i]?.long_name)
+  //                 locationJson["postcode"] = addressComponent[i]?.long_name
+  //               }
+  //               else if (addressComponent[i]?.types.includes("country")) {
+  //                 console.log(addressComponent[i]?.long_name)
 
-                  locationJson["country"] = addressComponent[i]?.long_name
-                }
-                else if (addressComponent[i]?.types.includes("administrative_area_level_1")) {
-                  console.log(addressComponent[i]?.long_name)
+  //                 locationJson["country"] = addressComponent[i]?.long_name
+  //               }
+  //               else if (addressComponent[i]?.types.includes("administrative_area_level_1")) {
+  //                 console.log(addressComponent[i]?.long_name)
 
-                  locationJson["state"] = addressComponent[i]?.long_name
-                }
-                else if (addressComponent[i]?.types.includes("administrative_area_level_3")) {
-                  console.log(addressComponent[i]?.long_name)
+  //                 locationJson["state"] = addressComponent[i]?.long_name
+  //               }
+  //               else if (addressComponent[i]?.types.includes("administrative_area_level_3")) {
+  //                 console.log(addressComponent[i]?.long_name)
 
-                  locationJson["district"] = addressComponent[i]?.long_name
-                }
-                else if (addressComponent[i]?.types.includes("locality")) {
-                  console.log(addressComponent[i]?.long_name)
+  //                 locationJson["district"] = addressComponent[i]?.long_name
+  //               }
+  //               else if (addressComponent[i]?.types.includes("locality")) {
+  //                 console.log(addressComponent[i]?.long_name)
 
-                  locationJson["city"] = addressComponent[i]?.long_name
-                }
-              }
+  //                 locationJson["city"] = addressComponent[i]?.long_name
+  //               }
+  //             }
 
-            }
+  //           }
 
 
-            console.log("formattedAddressArray", locationJson)
+  //           console.log("formattedAddressArray", locationJson)
 
-          })
-        }, (error) => {
-          setLocationEnabled(false)
-          console.log("error", error)
-          if (error.code === 1) {
-            // Permission Denied
-            Geolocation.requestAuthorization()
+  //         })
+  //       }, (error) => {
+  //         setLocationEnabled(false)
+  //         console.log("error", error)
+  //         if (error.code === 1) {
+  //           // Permission Denied
+  //           Geolocation.requestAuthorization()
 
-          } else if (error.code === 2) {
-            // Position Unavailable
-            enableLocation()
+  //         } else if (error.code === 2) {
+  //           // Position Unavailable
+  //           enableLocation()
 
-          } else {
-            // Other errors
-            Alert.alert(
-              "Error",
-              "An error occurred while fetching your location.",
-              [
-                { text: "OK", onPress: () => console.log("OK Pressed") }
-              ],
-              { cancelable: false }
-            );
-          }
-        })
+  //         } else {
+  //           // Other errors
+  //           Alert.alert(
+  //             "Error",
+  //             "An error occurred while fetching your location.",
+  //             [
+  //               { text: "OK", onPress: () => console.log("OK Pressed") }
+  //             ],
+  //             { cancelable: false }
+  //           );
+  //         }
+  //       })
 
-      }
-      catch (e) {
-        console.log("error in fetching location", e)
-      }
+  //     }
+  //     catch (e) {
+  //       console.log("error in fetching location", e)
+  //     }
    
 
-  }, [navigation])
+  // }, [navigation])
   
   useEffect(() => {
     if (pointSharingData) {

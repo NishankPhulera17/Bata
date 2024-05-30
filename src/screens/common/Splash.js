@@ -206,6 +206,9 @@ const Splash = ({ navigation }) => {
     }
     else if (getAppMenuError) {
       console.log("getAppMenuError", getAppMenuError)
+      if(getAppMenuError.status==401){
+        navigation.navigate("SelectUser")
+      }
     }
   }, [getAppMenuData, getAppMenuError])
 
@@ -277,7 +280,11 @@ const Splash = ({ navigation }) => {
       parsedJsonValue && getDashboardFunc(parsedJsonValue?.token)
      
     }
-    else {
+    else if(getBannerError) {
+      console.log("getBannerError",getBannerError);
+      if(getBannerError.message.includes("Invalid session")){
+        Alert.alert("Invalid")
+      }
       console.log(getBannerError)
     }
   }, [getBannerError, getBannerData])
@@ -306,6 +313,7 @@ const Splash = ({ navigation }) => {
       if(getDashboardError?.data?.message =="Invalid JWT" && getDashboardError?.status == 401 )
       {
         removerTokenData()
+        Alert.alert("Invalid Session")
       }
     }
   }, [getDashboardData, getDashboardError])
