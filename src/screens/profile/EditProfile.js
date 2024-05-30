@@ -72,7 +72,7 @@ const EditProfile = ({ navigation, route }) => {
       console.log("updateProfileData", updateProfileData)
       setMessage("Profile Updated Successfully")
       setSuccess(true)
-      setIsClicked(false);
+      setIsClicked(true);
     }
     else if (updateProfileError) {
       console.log("updateProfileError", updateProfileError)
@@ -362,6 +362,21 @@ const EditProfile = ({ navigation, route }) => {
                   </DisplayOnlyTextInput>
                   )
                 }
+
+                else if(item.name==="gstin")
+                  {
+                    return(
+                      <DisplayOnlyTextInput
+                      key={index}
+                      data={formValues[index] === null || formValues[index] === undefined  ? 'No data available' : formValues[index]}
+                      title={item.label}
+                      photo={require('../../../assets/images/eye.png')}>
+  
+                    </DisplayOnlyTextInput>
+                    )
+                  }
+
+
                 else if(item.name==="name")
                 {
                   return(
@@ -374,6 +389,9 @@ const EditProfile = ({ navigation, route }) => {
                   </DisplayOnlyTextInput>
                   )
                 }
+
+
+
                 else if(item.name==="mobile")
                 {
                   return(
@@ -406,8 +424,8 @@ const EditProfile = ({ navigation, route }) => {
                   )
                 }
                 else{
+                  if(item.name!=="state" && item.name!=="district" && item.name!="city")
                   return (
-
                     <TextInputRectangularWithPlaceholder jsonData = {item} placeHolder={formFields?.[index]?.label } pressedSubmit={pressedSubmit} key={index} handleData={handleData} label={item.label} title={item.name} value={formValues[index] != undefined ? formValues[index] : ""}></TextInputRectangularWithPlaceholder>
                   )
                 }

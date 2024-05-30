@@ -44,7 +44,7 @@ import EmailTextInput from '../../components/atoms/input/EmailTextInput';
 import { validatePathConfig } from '@react-navigation/native';
 import { useIsFocused } from '@react-navigation/native';
 import FastImage from 'react-native-fast-image';
-import {GoogleMapsKey} from "@env"
+import { GoogleMapsKey } from "@env"
 import { useTranslation } from 'react-i18next';
 
 
@@ -69,6 +69,8 @@ const BasicInfo = ({ navigation, route }) => {
   const [hideButton, setHideButton] = useState(false)
   const [timer, setTimer] = useState(0)
   const [aadhaarVerified, setAadhaarVerified] = useState(true)
+  const [loading, setLoading] = useState(false)
+  const [wrongPincode, setWrongPincode] = useState(false);
 
   const timeOutCallback = useCallback(() => setTimer(currTimer => currTimer - 1), []);
   const focused = useIsFocused()
@@ -99,14 +101,14 @@ const BasicInfo = ({ navigation, route }) => {
   const registrationRequired = route.params.registrationRequired
   console.log("registration required basic info", registrationRequired)
   // const navigationParams = { "needsApproval": needsApproval, "userId": userTypeId, "user_type": userType, "mobile": mobile, "name": name, "registrationRequired":registrationRequired}
-  const navigationParams = { "needsApproval": needsApproval, "userId": userTypeId, "userType": userType, "registrationRequired":registrationRequired}
-console.log("navigation params from basic info",navigationParams)
+  const navigationParams = { "needsApproval": needsApproval, "userId": userTypeId, "userType": userType, "registrationRequired": registrationRequired }
+  console.log("navigation params from basic info", navigationParams)
   const name = route.params?.name
   const mobile = route.params?.mobile
   console.log("appUsers", userType, userTypeId, isManuallyApproved, name, mobile)
   const width = Dimensions.get('window').width
   const height = Dimensions.get('window').height
-  const {t} = useTranslation()
+  const { t } = useTranslation()
   const gifUri = Image.resolveAssetSource(
     require("../../../assets/gif/loader.gif")
   ).uri;
@@ -163,9 +165,9 @@ console.log("navigation params from basic info",navigationParams)
   ] = useVerifyOtpForNormalUseMutation();
 
   useEffect(() => {
-    if(timer > 0){
+    if (timer > 0) {
       timeoutId = setTimeout(timeOutCallback, 1000);
-    } 
+    }
     return () => clearTimeout(timeoutId);
   }, [timer, timeOutCallback]);
 
@@ -194,9 +196,9 @@ console.log("navigation params from basic info",navigationParams)
 
   }, [])
 
-  useEffect(()=>{
+  useEffect(() => {
     setHideButton(false)
-  },[focused])
+  }, [focused])
 
   useEffect(() => {
     if (verifyOtpData?.success) {
@@ -300,7 +302,7 @@ console.log("navigation params from basic info",navigationParams)
 
 
         }
-        console.log("getLocationFormPincodeDataLocationJson",locationJson)
+        console.log("getLocationFormPincodeDataLocationJson", locationJson)
         setLocation(locationJson)
       }
     }
@@ -311,7 +313,7 @@ console.log("navigation params from basic info",navigationParams)
     }
   }, [getLocationFormPincodeData, getLocationFormPincodeError])
 
-  
+
   useEffect(() => {
     if (getFormData) {
       if (getFormData.message !== "Not Found") {
@@ -383,34 +385,31 @@ console.log("navigation params from basic info",navigationParams)
   }, [sendOtpData, sendOtpError])
 
   const handleTimer = () => {
-    if(userMobile)
-    {
-      if(userMobile.length==10)
-      {
-        if(timer===60)
-        {
+    if (userMobile) {
+      if (userMobile.length == 10) {
+        if (timer === 60) {
           getOTPfunc()
           setOtpVisible(true)
         }
-        if (timer===0 || timer===-1) {
+        if (timer === 0 || timer === -1) {
           setTimer(60);
           getOTPfunc()
           setOtpVisible(true)
-    
-         
+
+
         }
       }
-      else{
+      else {
         setError(true)
         setMessage("Mobile number length must be 10")
       }
-     
+
     }
-    else{
+    else {
       setError(true)
-        setMessage("Kindly enter mobile number")
+      setMessage("Kindly enter mobile number")
     }
-    
+
   }
 
 
@@ -420,15 +419,14 @@ console.log("navigation params from basic info",navigationParams)
   };
 
   const handleFetchPincode = (data) => {
+    setLoading(true)
     console.log("pincode is", data)
     getLocationFromPinCode(data)
-
   }
 
 
   const handleChildComponentData = data => {
-    if(data?.name == "aadhar")
-    {
+    if (data?.name == "aadhar") {
       console.log("handleChildComponentData", data)
 
     }
@@ -444,31 +442,25 @@ console.log("navigation params from basic info",navigationParams)
       console.log("isValidEmail", isValidEmail(data?.value), isValid)
 
     }
-    if(data?.name=== "aadhar")
-    {
-     
-        console.log("aadhar input returned", data?.value?.length)
-      
-        
-       
-      if(data?.value?.length==0 || data?.value==undefined)
-     {
-      setHideButton(false)
-     }
-     else if(data?.value.length<12)
-     {
-      setHideButton(true)
-     }
-    
-     
-     
-     
-      
-     
-      
-      
+    if (data?.name === "aadhar") {
+
+      console.log("aadhar input returned", data?.value?.length)
+
+
+
+      if (data?.value?.length == 0 || data?.value == undefined) {
+        setHideButton(false)
+      }
+      else if (data?.value.length < 12) {
+        setHideButton(true)
+      }
+
+
     }
-    
+
+
+
+
 
 
 
@@ -477,15 +469,14 @@ console.log("navigation params from basic info",navigationParams)
       const reg = '^([0|+[0-9]{1,5})?([6-9][0-9]{9})$';
       const mobReg = new RegExp(reg)
       if (data?.value?.length === 10) {
-        if(mobReg.test(data?.value))
-      {
-      setUserMobile(data?.value)
+        if (mobReg.test(data?.value)) {
+          setUserMobile(data?.value)
+        }
+        else {
+          setError(true)
+          setMessage("Please enter a valid mobile number")
+        }
       }
-      else{
-        setError(true)
-        setMessage("Please enter a valid mobile number")
-      }
-    }
 
     }
     // Update the responseArray state with the new data
@@ -514,31 +505,35 @@ console.log("navigation params from basic info",navigationParams)
     setError(false);
   };
 
-  const getLocationFromPinCode =  (pin) => {
-    console.log("getting location from pincode",pin)
+  const getLocationFromPinCode = (pin) => {
+    console.log("getting location from pincode", pin)
     var url = `http://postalpincode.in/api/pincode/${pin}`
 
-  fetch(url).then(response => response.json()).then(json => {
-    console.log("location address=>", JSON.stringify(json));
-    if(json.PostOffice===null)
-    {
-      setError(true)
-      setMessage("Pincode data cannot be retrieved.")
-    }
-    else{
-      const locationJson = {
-        "postcode":pin,
-        "district":json.PostOffice[0].District,
-        "state":json.PostOffice[0].State,
-        "country":json.PostOffice[0].Country,
-        "city":json.PostOffice[0].Region
-      }
-      setLocation(locationJson)
-    }
-    
+    fetch(url).then(response => response.json()).then(json => {
+      console.log("location address=>", JSON.stringify(json));
+      if (json.PostOffice === null) {
+        setError(true)
+        setMessage("Pincode data cannot be retrieved.")
+        setWrongPincode(true)
+        setLoading(false)
 
-  })
-}
+      }
+      else {
+        const locationJson = {
+          "postcode": pin,
+          "district": json.PostOffice[0].District,
+          "state": json.PostOffice[0].State,
+          "country": json.PostOffice[0].Country,
+          "city": json.PostOffice[0].Region
+        }
+        setLoading(false)
+        setLocation(locationJson)
+        setWrongPincode(false)
+      }
+
+
+    })
+  }
 
   const getOtpFromComponent = value => {
     if (value.length === 6) {
@@ -546,7 +541,7 @@ console.log("navigation params from basic info",navigationParams)
       setOtp(value);
 
 
-      const params = { mobile: userMobile, name: userName, otp: value, user_type_id: userTypeId, user_type: userType,type:'login' }
+      const params = { mobile: userMobile, name: userName, otp: value, user_type_id: userTypeId, user_type: userType, type: 'login' }
 
 
       verifyOtpFunc(params);
@@ -558,25 +553,26 @@ console.log("navigation params from basic info",navigationParams)
     console.log("get user data", userData)
 
     console.log("ooooooo->>>>>>>>", { userName, userMobile, userTypeId, userType })
-    const params = { mobile: userMobile, name: userName, user_type_id: userTypeId, user_type: userType,type:'login' }
+    const params = { mobile: userMobile, name: userName, user_type_id: userTypeId, user_type: userType, type: 'login' }
     sendOtpFunc(params)
   }
 
-  const addharVerified = (bool)=>{
+  const addharVerified = (bool) => {
     console.log("aadhar text input status", bool)
-    if(!bool)
-    {
+    if (!bool) {
       setAadhaarVerified(false)
       setHideButton(true)
     }
-    else{
+    else {
       setHideButton(false)
     }
   }
 
+
+
   const handleRegistrationFormSubmission = () => {
     const inputFormData = {}
-    let isFormValid = true; 
+    let isFormValid = true;
     let missingParam = ""
     inputFormData["user_type"] = userType;
     inputFormData["user_type_id"] = userTypeId;
@@ -596,10 +592,10 @@ console.log("navigation params from basic info",navigationParams)
         // setError(true);
         // setMessage(`${responseArray[i].label} is required`);
         missingParam = responseArray[i].label
-    }
-    
-    console.log("missing params", missingParam)
-    
+      }
+
+      console.log("missing params", missingParam)
+
     }
     const body = inputFormData
 
@@ -607,26 +603,34 @@ console.log("navigation params from basic info",navigationParams)
       const keys = Object.keys(body)
       const values = Object.values(body)
 
-      if(keys.includes('pincode')){
+      if (keys.includes('pincode')) {
         const index = keys.indexOf('pincode')
         if (!(values[index].length == 6)) {
-            setError(true)
-            setMessage("Picode should be 6 digits")
-            return
+          setError(true)
+          setMessage("Picode should be 6 digits")
+          return
         }
       }
 
       if (keys.includes('email')) {
         const index = keys.indexOf('email')
         if (isValidEmail(values[index])) {
-          if(isFormValid){
-          registerUserFunc(body)
-          setHideButton(true)
+        console.log(("wrongPincode",wrongPincode));
+
+          if (isFormValid && !wrongPincode && !loading) {
+            registerUserFunc(body)
+            setHideButton(true)
           }
-          else{
-                
-            setError(true)
-            setMessage(`${missingParam} is Required`)
+          else {
+            console.log(("wrongPincode", wrongPincode));
+            if (wrongPincode) {
+              setError(true)
+              setMessage(`Please enter correct pincode`)
+            } else {
+              setError(true)
+              setMessage(`${missingParam} is Required`)
+            }
+
           }
         }
         else {
@@ -635,13 +639,21 @@ console.log("navigation params from basic info",navigationParams)
         }
       }
       else {
-        if(isFormValid){
-        registerUserFunc(body)
+        console.log(("wrongPincode", wrongPincode));
+        if (isFormValid && !wrongPincode && (!loading)) {
+          registerUserFunc(body)
         }
-        else{
-                
-          setError(true)
-          setMessage(`${missingParam} is Required`)
+        else {
+          if (wrongPincode) {
+            setError(true)
+            setMessage(`Please enter correct pincode`)
+
+          }
+          else {
+            setError(true)
+            setMessage(`${missingParam} is Required`)
+          }
+
         }
       }
 
@@ -693,7 +705,7 @@ console.log("navigation params from basic info",navigationParams)
           message={message}
           openModal={success}
           navigateTo={navigatingFrom === "PasswordLogin" ? "PasswordLogin" : "OtpLogin"}
-          params={{ needsApproval: needsApproval, userType: userType, userId: userTypeId, registrationRequired:registrationRequired }}></MessageModal>
+          params={{ needsApproval: needsApproval, userType: userType, userId: userTypeId, registrationRequired: registrationRequired }}></MessageModal>
       )}
 
       {otpModal && (
@@ -726,7 +738,7 @@ console.log("navigation params from basic info",navigationParams)
             left: 10
           }}
           onPress={() => {
-            navigation.navigate('OtpLogin',navigationParams);
+            navigation.navigate('OtpLogin', navigationParams);
           }}>
           <Image
             style={{
@@ -792,24 +804,24 @@ console.log("navigation params from basic info",navigationParams)
 
                         {otpVerified ? <View style={{ alignItems: 'center', justifyContent: 'center' }}>
                           <Image style={{ height: 30, width: 30, resizeMode: 'contain' }} source={require('../../../assets/images/greenTick.png')}></Image>
-                        </View> : <TouchableOpacity style={{ flex: 0.15, marginTop: 6, backgroundColor: ternaryThemeColor, alignItems: 'center', justifyContent: 'center', height: 50, borderRadius: 5 }} onPress={()=>{
+                        </View> : <TouchableOpacity style={{ flex: 0.15, marginTop: 6, backgroundColor: ternaryThemeColor, alignItems: 'center', justifyContent: 'center', height: 50, borderRadius: 5 }} onPress={() => {
                           handleTimer()
                         }}>
-                          <PoppinsTextLeftMedium style={{ color: 'white', fontWeight: '800', padding: 5 }}content={t("get otp")}></PoppinsTextLeftMedium>
+                          <PoppinsTextLeftMedium style={{ color: 'white', fontWeight: '800', padding: 5 }} content={t("get otp")}></PoppinsTextLeftMedium>
                         </TouchableOpacity>}
                         {sendOtpIsLoading && <FastImage
-                style={{
-                  width: 40,
-                  height: 40,
-                  alignSelf: "center",
-                  
-                }}
-                source={{
-                  uri: gifUri, // Update the path to your GIF
-                  priority: FastImage.priority.normal,
-                }}
-                resizeMode={FastImage.resizeMode.contain}
-              />}
+                          style={{
+                            width: 40,
+                            height: 40,
+                            alignSelf: "center",
+
+                          }}
+                          source={{
+                            uri: gifUri, // Update the path to your GIF
+                            priority: FastImage.priority.normal,
+                          }}
+                          resizeMode={FastImage.resizeMode.contain}
+                        />}
                       </View>
 
 
@@ -839,7 +851,7 @@ console.log("navigation params from basic info",navigationParams)
                             <View style={{ alignItems: 'center', justifyContent: 'center' }}>
                               <Text style={{ color: ternaryThemeColor, marginTop: 10 }}>Didn't recieve any Code?</Text>
 
-                              <Text onPress={()=>{handleTimer()}} style={{ color: ternaryThemeColor, marginTop: 6, fontWeight: '600', fontSize: 16 }}>Resend Code</Text>
+                              <Text onPress={() => { handleTimer() }} style={{ color: ternaryThemeColor, marginTop: 6, fontWeight: '600', fontSize: 16 }}>Resend Code</Text>
 
                             </View>
                           </View>
@@ -874,7 +886,7 @@ console.log("navigation params from basic info",navigationParams)
                       key={index}
                       handleData={handleChildComponentData}
                       placeHolder={item.name}
-                      displayText = {t(item.name.trim())}
+                      displayText={t(item.name.trim())}
                       label={item.label}
                     // isValidEmail = {isValidEmail}
                     ></EmailTextInput>
@@ -892,7 +904,7 @@ console.log("navigation params from basic info",navigationParams)
                       notVerified={addharVerified}
                       handleData={handleChildComponentData}
                       placeHolder={item.name}
-                      displayText = {t(item.name.toLowerCase().trim())}
+                      displayText={t(item.name.toLowerCase().trim())}
                       label={item.label}
                     >
                       {' '}
@@ -928,7 +940,7 @@ console.log("navigation params from basic info",navigationParams)
                     </TextInputGST>
                   );
                 }
-                else if ((item.name).trim().toLowerCase() === "city" ) {
+                else if ((item.name).trim().toLowerCase() === "city") {
 
                   return (
                     <PrefilledTextInput
@@ -937,7 +949,7 @@ console.log("navigation params from basic info",navigationParams)
                       handleData={handleChildComponentData}
                       placeHolder={item.name}
                       value={location?.city}
-                      displayText = {item.name}
+                      displayText={item.name}
                       label={item.label}
                       isEditable={true}
                     ></PrefilledTextInput>
@@ -946,40 +958,40 @@ console.log("navigation params from basic info",navigationParams)
 
 
                 }
-                else if ((item.name).trim().toLowerCase() === "pincode"   ) {
-                 
-                    return (
-                      <PincodeTextInput
-                        jsonData={item}
-                        key={index}
-                        handleData={handleChildComponentData}
-                        handleFetchPincode={handleFetchPincode}
-                        placeHolder={item.name}
-                        value={location?.postcode}
-                        label={item.label}
-                        displayText = {item.name}
-                        maxLength={6}
-                      ></PincodeTextInput>
-                    )
-                  }
-                
-                  // else if ((item.name).trim().toLowerCase() === "pincode" ) {
-                 
-                  //   return (
-                  //     <PincodeTextInput
-                  //       jsonData={item}
-                  //       key={index}
-                  //       handleData={handleChildComponentData}
-                  //       handleFetchPincode={handleFetchPincode}
-                  //       placeHolder={item.name}
+                else if ((item.name).trim().toLowerCase() === "pincode") {
 
-                  //       label={item.label}
-                  //       maxLength={6}
-                  //     ></PincodeTextInput>
-                  //   )
-                  // }
-                
-                else if ((item.name).trim().toLowerCase() === "state"  ) {
+                  return (
+                    <PincodeTextInput
+                      jsonData={item}
+                      key={index}
+                      handleData={handleChildComponentData}
+                      handleFetchPincode={handleFetchPincode}
+                      placeHolder={item.name}
+                      label={item.label}
+                      value={location?.postcode}
+                      displayText={item.name}
+                      maxLength={6}
+                    ></PincodeTextInput>
+                  )
+                }
+
+                // else if ((item.name).trim().toLowerCase() === "pincode" ) {
+
+                //   return (
+                //     <PincodeTextInput
+                //       jsonData={item}
+                //       key={index}
+                //       handleData={handleChildComponentData}
+                //       handleFetchPincode={handleFetchPincode}
+                //       placeHolder={item.name}
+
+                //       label={item.label}
+                //       maxLength={6}
+                //     ></PincodeTextInput>
+                //   )
+                // }
+
+                else if ((item.name).trim().toLowerCase() === "state") {
                   return (
                     <PrefilledTextInput
                       jsonData={item}
@@ -988,13 +1000,13 @@ console.log("navigation params from basic info",navigationParams)
                       placeHolder={item.name}
                       value={location?.state}
                       label={item.label}
-                      displayText = {item.name}
+                      displayText={item.name}
                       isEditable={false}
 
                     ></PrefilledTextInput>
                   )
                 }
-                else if ((item.name).trim().toLowerCase() === "district"  ) {
+                else if ((item.name).trim().toLowerCase() === "district") {
 
                   return (
                     <PrefilledTextInput
@@ -1004,7 +1016,7 @@ console.log("navigation params from basic info",navigationParams)
                       placeHolder={item.name}
                       value={location?.district}
                       label={item.label}
-                      displayText = {item.name}
+                      displayText={item.name}
                       isEditable={false}
 
                     ></PrefilledTextInput>

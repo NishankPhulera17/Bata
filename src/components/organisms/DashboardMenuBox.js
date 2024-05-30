@@ -133,7 +133,7 @@ const DashboardMenuBox=(props)=>{
         <View style={{borderColor:'#DDDDDD',borderRadius:20,borderWidth:1.2,width:width-20,alignItems:"center",justifyContent:"center",backgroundColor:'white',padding:4,marginBottom:30}}>
         <View style={{width:'100%',flexWrap:"wrap",flexDirection:"row",alignItems:"center",justifyContent:'center'}}>
         {
-            data.map((item,index)=>{
+            data?.map((item,index)=>{
                 return(
                    
                     <MenuItems handlePress={handleMenuItemPress} key={index} image={item.icon} content={item.name}></MenuItems>
