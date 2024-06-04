@@ -36,6 +36,7 @@ const PincodeTextInput = (props) => {
         console.log(tempJsonData)
         props.handleData(tempJsonData)
         }
+        
         // props.handleData(value)
        
     }

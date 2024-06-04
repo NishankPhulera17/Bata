@@ -505,16 +505,15 @@ const Dashboard = ({ navigation }) => {
     )
   }
   const notifModalFunc = () => {
+    console.log("notification body",notifData.body)
     return (
-      <View style={{ height: 130 }}>
-        <View style={{ height: '100%', width: '100%', alignItems: 'center', }}>
-          <View>
-            {/* <Bell name="bell" size={18} style={{marginTop:5}} color={ternaryThemeColor}></Bell> */}
+      <ScrollView style={{padding:10}}>
+        <View style={{ height: '100%', width: '100%', alignItems: 'center',padding:10 }}>
 
-          </View>
+          <PoppinsTextMedium style={{color:"grey",fontWeight:'800',fontSize:20,marginBottom:20,textDecorationStyle:'double',textDecorationLine:'underline'}} content="Notification Recieved"></PoppinsTextMedium>
           <PoppinsTextLeftMedium content={notifData?.title ? notifData?.title : ""} style={{ color: ternaryThemeColor, fontWeight: '800', fontSize: 20, marginTop: 8 }}></PoppinsTextLeftMedium>
 
-          <PoppinsTextLeftMedium content={notifData?.title ? notifData?.title : ""} style={{ color: '#000000', marginTop: 10, padding: 10, fontSize: 15, fontWeight: '600' }}></PoppinsTextLeftMedium>
+          <PoppinsTextLeftMedium content={notifData?.body ? notifData?.body : ""} style={{ color: '#000000', marginTop: 10, padding: 10, fontSize: 15, fontWeight: '600' }}></PoppinsTextLeftMedium>
         </View>
 
         <TouchableOpacity style={[{
@@ -523,7 +522,7 @@ const Dashboard = ({ navigation }) => {
           <Close name="close" size={17} color="#ffffff" />
         </TouchableOpacity>
 
-      </View>
+      </ScrollView>
     )
   }
 
@@ -536,7 +535,7 @@ const Dashboard = ({ navigation }) => {
         <DrawerHeader></DrawerHeader>
         <View style={{ width: '100%', alignItems: 'center', justifyContent: 'flex-start', flexDirection: 'row', marginBottom: 10 }}>
           <PoppinsTextLeftMedium style={{ color: ternaryThemeColor, fontWeight: 'bold', fontSize: 19, marginLeft: 20 }} content={`Welcome ${userData?.name}`}></PoppinsTextLeftMedium>
-          {/* {getActiveMembershipData?.body!==null && <View
+          {getActiveMembershipData?.body!==null && <View
               style={{
                 flexDirection: 'row',
                 alignItems: 'center',
@@ -555,8 +554,8 @@ const Dashboard = ({ navigation }) => {
                   content={membership}></PoppinsTextMedium>
               </TouchableOpacity>
 
-            </View>} */}
-          {/* <PlatinumModal isVisible={isSuccessModalVisible} onClose={hideSuccessModal} getActiveMembershipData={getActiveMembershipData} /> */}
+            </View>}
+          <PlatinumModal isVisible={isSuccessModalVisible} onClose={hideSuccessModal} getActiveMembershipData={getActiveMembershipData} />
 
         </View>
         <View style={{ width: '100%', alignItems: "center", justifyContent: "center", height: "90%" }}>

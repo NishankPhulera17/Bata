@@ -228,50 +228,50 @@ const BasicInfo = ({ navigation, route }) => {
 
       fetch(url).then(response => response.json()).then(json => {
         console.log("location address=>", JSON.stringify(json));
-        const formattedAddress = json.results[0].formatted_address
+        const formattedAddress = json.results[0]?.formatted_address
         const formattedAddressArray = formattedAddress?.split(',')
 
         let locationJson = {
 
-          lat: json.results[0].geometry.location.lat === undefined ? "N/A" : json.results[0].geometry.location.lat,
-          lon: json.results[0].geometry.location.lng === undefined ? "N/A" : json.results[0].geometry.location.lng,
+          lat: json.results[0]?.geometry?.location?.lat === undefined ? "N/A" : json.results[0]?.geometry?.location?.lat,
+          lon: json.results[0]?.geometry?.location?.lng === undefined ? "N/A" : json.results[0]?.geometry?.location?.lng,
           address: formattedAddress === undefined ? "N/A" : formattedAddress
 
         }
 
-        const addressComponent = json.results[0].address_components
+        const addressComponent = json?.results[0]?.address_components
         console.log("addressComponent", addressComponent)
-        for (let i = 0; i <= addressComponent.length; i++) {
-          if (i === addressComponent.length) {
+        for (let i = 0; i <= addressComponent?.length; i++) {
+          if (i === addressComponent?.length) {
             dispatch(setLocation(locationJson))
             setLocation(locationJson)
           }
           else {
-            if (addressComponent[i].types.includes("postal_code")) {
+            if (addressComponent[i]?.types.includes("postal_code")) {
               console.log("inside if")
 
-              console.log(addressComponent[i].long_name)
-              locationJson["postcode"] = addressComponent[i].long_name
+              console.log(addressComponent[i]?.long_name)
+              locationJson["postcode"] = addressComponent[i]?.long_name
             }
-            else if (addressComponent[i].types.includes("country")) {
-              console.log(addressComponent[i].long_name)
+            else if (addressComponent[i]?.types.includes("country")) {
+              console.log(addressComponent[i]?.long_name)
 
-              locationJson["country"] = addressComponent[i].long_name
+              locationJson["country"] = addressComponent[i]?.long_name
             }
-            else if (addressComponent[i].types.includes("administrative_area_level_1")) {
-              console.log(addressComponent[i].long_name)
+            else if (addressComponent[i]?.types.includes("administrative_area_level_1")) {
+              console.log(addressComponent[i]?.long_name)
 
-              locationJson["state"] = addressComponent[i].long_name
+              locationJson["state"] = addressComponent[i]?.long_name
             }
-            else if (addressComponent[i].types.includes("administrative_area_level_3")) {
-              console.log(addressComponent[i].long_name)
+            else if (addressComponent[i]?.types.includes("administrative_area_level_3")) {
+              console.log(addressComponent[i]?.long_name)
 
-              locationJson["district"] = addressComponent[i].long_name
+              locationJson["district"] = addressComponent[i]?.long_name
             }
-            else if (addressComponent[i].types.includes("locality")) {
-              console.log(addressComponent[i].long_name)
+            else if (addressComponent[i]?.types.includes("locality")) {
+              console.log(addressComponent[i]?.long_name)
 
-              locationJson["city"] = addressComponent[i].long_name
+              locationJson["city"] = addressComponent[i]?.long_name
             }
           }
 
@@ -430,6 +430,7 @@ const BasicInfo = ({ navigation, route }) => {
       console.log("handleChildComponentData", data)
 
     }
+   
     // setOtpVisible(true)
     if (data?.name === "name") {
       setUserName(data?.value)
@@ -465,20 +466,7 @@ const BasicInfo = ({ navigation, route }) => {
 
 
 
-    if (data?.name === "mobile") {
-      const reg = '^([0|+[0-9]{1,5})?([6-9][0-9]{9})$';
-      const mobReg = new RegExp(reg)
-      if (data?.value?.length === 10) {
-        if (mobReg.test(data?.value)) {
-          setUserMobile(data?.value)
-        }
-        else {
-          setError(true)
-          setMessage("Please enter a valid mobile number")
-        }
-      }
-
-    }
+    
     // Update the responseArray state with the new data
     setResponseArray(prevArray => {
       const existingIndex = prevArray.findIndex(
@@ -605,7 +593,7 @@ const BasicInfo = ({ navigation, route }) => {
 
       if (keys.includes('pincode')) {
         const index = keys.indexOf('pincode')
-        if (!(values[index].length == 6)) {
+        if (!(values[index]?.length == 6)) {
           setError(true)
           setMessage("Picode should be 6 digits")
           return
@@ -618,7 +606,7 @@ const BasicInfo = ({ navigation, route }) => {
         console.log(("wrongPincode",wrongPincode));
 
           if (isFormValid && !wrongPincode && !loading) {
-            registerUserFunc(body)
+             registerUserFunc(body)
             setHideButton(true)
           }
           else {
@@ -641,7 +629,7 @@ const BasicInfo = ({ navigation, route }) => {
       else {
         console.log(("wrongPincode", wrongPincode));
         if (isFormValid && !wrongPincode && (!loading)) {
-          registerUserFunc(body)
+           registerUserFunc(body)
         }
         else {
           if (wrongPincode) {

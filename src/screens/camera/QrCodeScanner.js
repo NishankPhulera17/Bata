@@ -423,7 +423,7 @@ const QrCodeScanner = ({ navigation }) => {
 
   const codeScanner = {
     // codeTypes: ["code-128" | "code-39" | "code-93" | "codabar" | "ean-13" | "ean-8" | "itf" | "upc-e" | "qr" | "pdf-417" | "aztec" | "data-matrix"],
-    codeTypes: ['code-128'],
+    codeTypes: ['code-128','qr'],
     onCodeScanned: (codes) => {
       console.log(`Scanned ${codes.length} codes!`, JSON.stringify(codes[0]))
       let e = {
@@ -1766,7 +1766,7 @@ const QrCodeScanner = ({ navigation }) => {
           >
             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0,0,0,0.5)' }}>
               <View style={{ width: 300, padding: 20, backgroundColor: 'white', borderRadius: 10 }}>
-                <Text style={{ marginBottom: 20 }}>
+                <Text style={{color:'black', marginBottom: 20 }}>
                   Camera permission is required to use this feature. Please enable it in the app settings.
                 </Text>
                 <View>

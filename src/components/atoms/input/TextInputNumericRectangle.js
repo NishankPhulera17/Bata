@@ -21,18 +21,50 @@ Keyboard.addListener('keyboardDidHide',()=>{
     {
       let tempJsonData = {...props.jsonData, value: props.value};
       console.log(tempJsonData);
+      const reg = '^([0|+[0-9]{1,5})?([6-9][0-9]{9})$';
+      const mobReg = new RegExp(reg)
+      if (value?.length === 10) {
+        if (mobReg.test(value)) {
       props.handleData(tempJsonData);
+          
+        }
+        else {
+          setError(true)
+          setMessage("Please enter a valid mobile number")
+        }
+      }
     } 
 
   },[props.value])
   useEffect(()=>{
-    props.handleData({...props.jsonData,value:value})
+    if (value?.length === 10) {
+      if (mobReg.test(value)) {
+        props.handleData({...props.jsonData,value:value})
+
+        
+      }
+      else {
+        setError(true)
+        setMessage("Please enter a valid mobile number")
+      }
+    }
   },[keyboardShow])
 
   const handleInput = text => {
     if(!text.includes(".") && !text.includes("-") && !text.includes(",") && !text.includes(" ")){
       setValue(text)
-      props.handleData(text, props.title)
+      if (value?.length === 10) {
+        if (mobReg.test(value)) {
+          props.handleData(text, props.title)
+
+  
+          
+        }
+        else {
+          setError(true)
+          setMessage("Please enter a valid mobile number")
+        }
+      }
     
   }
 
@@ -40,8 +72,23 @@ Keyboard.addListener('keyboardDidHide',()=>{
   const handleInputEnd = () => {
     let tempJsonData = {...props.jsonData, value: value};
     console.log(tempJsonData);
-    props.handleData(tempJsonData);
+    if (data?.value?.length === 10) {
+      if (mobReg.test(data?.value)) {
+        props.handleData(tempJsonData);
+
+
+
+        
+      }
+      else {
+        setError(true)
+        setMessage("Please enter a valid mobile number")
+      }
+    }
   };
+
+
+  
 
   return (
     <View

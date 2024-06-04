@@ -2,7 +2,10 @@ import { createSlice } from '@reduxjs/toolkit'
 
 const initialState = {
   kycData:{},
-  kycCompleted:false
+  kycCompleted:false,
+  panCompleted:false,
+  aadharCompleted:false,
+  gstCompleted:false
   
 }
 
@@ -18,10 +21,19 @@ export const userKycStatusSlice = createSlice({
       setKycCompleted: (state, action) => {
         state.kycCompleted = true
       },
+      setPanCompleted: (state, action) => {
+        state.panCompleted = action.payload
+      },
+      setAadharCompleted: (state, action) => {
+        state.panCompleted = action.payload
+      },
+      setGstCompleted: (state, action) => {
+        state.gstCompleted = action.payload
+      }
   },
 })
 
 // Action creators are generated for each case reducer function
-export const { setKycData,setKycCompleted} = userKycStatusSlice.actions
+export const { setKycData,setKycCompleted, setAadharCompleted, setGstCompleted,setPanCompleted} = userKycStatusSlice.actions
 
 export default userKycStatusSlice.reducer

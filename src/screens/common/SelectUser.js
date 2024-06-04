@@ -24,7 +24,33 @@ const SelectUser = ({navigation}) => {
   const[error,setError] = useState(false)
   const[message,setMessage] = useState("")
   
- 
+  const primaryThemeColor = useSelector(
+    state => state.apptheme.primaryThemeColor,
+  )
+    ? useSelector(state => state.apptheme.primaryThemeColor)
+    : '#FF9B00';
+  const secondaryThemeColor = useSelector(
+    state => state.apptheme.secondaryThemeColor,
+  )
+    ? useSelector(state => state.apptheme.secondaryThemeColor)
+    : '#FFB533';
+  const ternaryThemeColor = useSelector(
+    state => state.apptheme.ternaryThemeColor,
+  )
+    ? useSelector(state => state.apptheme.ternaryThemeColor)
+    : '#FFB533';
+
+  const icon = useSelector(state => state.apptheme.icon)
+    ? useSelector(state => state.apptheme.icon)
+    : require('../../../assets/images/demoIcon.png');
+
+    const otpLogin = useSelector(state => state.apptheme.otpLogin)
+    // console.log(useSelector(state => state.apptheme.otpLogin))
+    const passwordLogin = useSelector(state => state.apptheme.passwordLogin)
+    // console.log(useSelector(state => state.apptheme.passwordLogin))
+    const manualApproval = useSelector(state => state.appusers.manualApproval)
+    const autoApproval = useSelector(state => state.appusers.autoApproval)
+    const registrationRequired = useSelector(state => state.appusers.registrationRequired)
 
   const [
     getUsers,
@@ -45,6 +71,8 @@ const SelectUser = ({navigation}) => {
     getUsers();
     return () => backHandler.remove()
   }, []);
+
+
   useEffect(() => {
     if (getUsersData) {
       console.log("type of users",getUsersData?.body);
@@ -96,36 +124,12 @@ const SelectUser = ({navigation}) => {
 
     }, 5000);
   }
-  const primaryThemeColor = useSelector(
-    state => state.apptheme.primaryThemeColor,
-  )
-    ? useSelector(state => state.apptheme.primaryThemeColor)
-    : '#FF9B00';
-  const secondaryThemeColor = useSelector(
-    state => state.apptheme.secondaryThemeColor,
-  )
-    ? useSelector(state => state.apptheme.secondaryThemeColor)
-    : '#FFB533';
-  const ternaryThemeColor = useSelector(
-    state => state.apptheme.ternaryThemeColor,
-  )
-    ? useSelector(state => state.apptheme.ternaryThemeColor)
-    : '#FFB533';
-
-  const icon = useSelector(state => state.apptheme.icon)
-    ? useSelector(state => state.apptheme.icon)
-    : require('../../../assets/images/demoIcon.png');
-
-    const otpLogin = useSelector(state => state.apptheme.otpLogin)
-    // console.log(useSelector(state => state.apptheme.otpLogin))
-    const passwordLogin = useSelector(state => state.apptheme.passwordLogin)
-    // console.log(useSelector(state => state.apptheme.passwordLogin))
-    const manualApproval = useSelector(state => state.appusers.manualApproval)
-    const autoApproval = useSelector(state => state.appusers.autoApproval)
-    const registrationRequired = useSelector(state => state.appusers.registrationRequired)
-    console.log("registration required",registrationRequired)
+ 
 
   const width = Dimensions.get('window').width;
+    console.log("registration required",registrationRequired)
+
+ 
     
   
 

@@ -7,6 +7,7 @@ import {
   ScrollView,
   Dimensions,
   Platform,
+  ActivityIndicator
 } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import PoppinsTextMedium from "../../components/electrons/customFonts/PoppinsTextMedium";
@@ -1082,6 +1083,7 @@ const CongratulateOnScan = ({ navigation, route }) => {
                   content="You Have Won"
                 ></PoppinsTextMedium>
               </View>
+              {addBulkPointOnProductIsLoading && <ActivityIndicator size = "small" color={ternaryThemeColor}></ActivityIndicator>}
 
               {/* reward user according to the workflow ------------------------*/}
               {showBulkScanPoints && (
@@ -1157,6 +1159,8 @@ const CongratulateOnScan = ({ navigation, route }) => {
                 //   </ScrollView>
                 // </View>
               )}
+
+
               {getCouponOnCategoryData && (
                 <Win
                   data="Coupons Earned"

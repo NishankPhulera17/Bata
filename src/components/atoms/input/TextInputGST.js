@@ -5,15 +5,18 @@ import { useVerifyGstMutation } from '../../../apiServices/verification/GstinVer
 import ZoomImageAnimation from '../../animations/ZoomImageAnimation';
 import FastImage from 'react-native-fast-image';
 import ErrorModal from '../../modals/ErrorModal';
+import { useDispatch } from 'react-redux';
+import { setGstCompleted } from '../../../../redux/slices/userKycStatusSlice';
+
 
 const TextInputGST = (props) => {
-  const [value, setValue] = useState()
+  const [value, setValue] = useState(props.value)
   const [modalVisible, setModalVisible] = useState(false);
   const [gstVerified, setGSTVerified] = useState(false)
   const [error, setError] = useState(false)
   const [message, setMessage] = useState("")
   const [errorModal, setErrorModal] = useState(false)
-
+  const dispatch = useDispatch()
   const placeHolder = props.placeHolder
   const required = props.required
   const label = props.label
@@ -40,6 +43,11 @@ const TextInputGST = (props) => {
       verifyGstFunc(data)
       console.log(data)
     }
+    if(value?.length<15)
+    {
+      dispatch(setGstCompleted(false))
+
+    }
   }, [value])
 
   useEffect(() => {
@@ -48,12 +56,15 @@ const TextInputGST = (props) => {
       if (verifyGstData.success) {
         setGSTVerified(true)
         setModalVisible(true)
+        dispatch(setGstCompleted(true))
       }
     }
     else if (verifyGstError) {
       console.log("verifyGstError", verifyGstError)
       setErrorModal(true)
       setMessage(verifyGstError?.data?.message)
+      dispatch(setGstCompleted(false))
+
     }
   }, [verifyGstData, verifyGstError])
 
@@ -67,13 +78,17 @@ const TextInputGST = (props) => {
   }
 
   const handleInputEnd = () => {
-    let tempJsonData = { ...props.jsonData, "value": value }
+     let tempJsonData = { ...props.jsonData, "value": value }
+
     console.log(tempJsonData)
-    props.handleData(tempJsonData)
+    props.type != 'editprofile' && props.handleData(tempJsonData)
+    props.type == 'editprofile' && props.handleData(value, placeHolder)
+
   }
 
   return (
-    <View style={{ height: 60, width: '86%', borderWidth: 1, borderColor: '#DDDDDD', alignItems: "center", justifyContent: "center", backgroundColor: 'white', margin: 10 }}>
+    <>
+<View style={{ height: 60, width: '86%', borderWidth: 1, borderColor: '#DDDDDD', alignItems: "center", justifyContent: "center", backgroundColor: 'white', margin: 10 }}>
       <Modal
         animationType="slide"
         transparent={true}
@@ -122,8 +137,12 @@ const TextInputGST = (props) => {
           openModal={error}></ErrorModal>
       )}
 
-     { verifyGstError && <Text style={{color:'red', position:'absolute', left:10,bottom:-22,zIndex:1}}>{verifyGstError.data.message}</Text>} 
+     
     </View>
+    { verifyGstError && <Text style={{color:'red',zIndex:1,marginLeft:10}}>{verifyGstError.data.message}</Text>} 
+
+    </>
+    
   );
 }
 
