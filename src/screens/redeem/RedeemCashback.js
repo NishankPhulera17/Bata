@@ -110,7 +110,7 @@ const RedeemCashback = ({ navigation, route }) => {
           setMessage("You only have " + points + " points")
         }
 
-        if(Number(pointsConversion)> Number(isReedemable)){
+        if(Number(cashConversion)>= Number(isReedemable)){
           setError(true)
           // setMessage("Maximum Amount Trasaction Per Day Is : " + isReedemable)
           setMessage("Maximum Amount Per Trasaction  : " + isReedemable)

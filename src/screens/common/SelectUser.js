@@ -23,6 +23,7 @@ const SelectUser = ({navigation}) => {
   const [connected, setConnected] = useState(true)
   const[error,setError] = useState(false)
   const[message,setMessage] = useState("")
+  const dispatch = useDispatch()
   
   const primaryThemeColor = useSelector(
     state => state.apptheme.primaryThemeColor,
@@ -52,6 +53,9 @@ const SelectUser = ({navigation}) => {
     const autoApproval = useSelector(state => state.appusers.autoApproval)
     const registrationRequired = useSelector(state => state.appusers.registrationRequired)
 
+
+    console.log("icon recieved in selectUser", icon)
+
   const [
     getUsers,
     {
@@ -61,7 +65,6 @@ const SelectUser = ({navigation}) => {
       isError: getUsersDataIsError,
     },
   ] = useGetAppUsersDataMutation();
-  const dispatch = useDispatch()
   
   
 

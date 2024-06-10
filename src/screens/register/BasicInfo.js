@@ -63,6 +63,7 @@ const BasicInfo = ({ navigation, route }) => {
   const [formFound, setFormFound] = useState(true)
   const [otp, setOtp] = useState("")
   const [otpVerified, setOtpVerified] = useState(false)
+  const [mobileNumberEditable, setMobileNumberEditable] = useState(true)
   const [otpModal, setOtpModal] = useState(false)
   const [otpVisible, setOtpVisible] = useState(false)
   const [isValid, setIsValid] = useState(true)
@@ -204,6 +205,7 @@ const BasicInfo = ({ navigation, route }) => {
     if (verifyOtpData?.success) {
       setOtpVerified(true)
       setOtpModal(true)
+      setMobileNumberEditable(false)
       console.log("verifyOtp", verifyOtpData)
       setMessage("OTP Verified")
 
@@ -378,6 +380,8 @@ const BasicInfo = ({ navigation, route }) => {
     if (sendOtpData) {
       console.log("sendOtpData", sendOtpData);
       setOtpVisible(true);
+      setMobileNumberEditable(false)
+
     }
     else {
       console.log("sendOtpError", sendOtpError)
@@ -429,6 +433,10 @@ const BasicInfo = ({ navigation, route }) => {
     if (data?.name == "aadhar") {
       console.log("handleChildComponentData", data)
 
+    }
+    if(data?.name == "mobile")
+    {
+      setUserMobile(data?.value)
     }
    
     // setOtpVisible(true)
@@ -542,7 +550,12 @@ const BasicInfo = ({ navigation, route }) => {
 
     console.log("ooooooo->>>>>>>>", { userName, userMobile, userTypeId, userType })
     const params = { mobile: userMobile, name: userName, user_type_id: userTypeId, user_type: userType, type: 'login' }
+    if(userName!="")
     sendOtpFunc(params)
+    else{
+      alert("Kindly Enter Owner Name")
+    }
+
   }
 
   const addharVerified = (bool) => {
@@ -595,7 +608,7 @@ const BasicInfo = ({ navigation, route }) => {
         const index = keys.indexOf('pincode')
         if (!(values[index]?.length == 6)) {
           setError(true)
-          setMessage("Picode should be 6 digits")
+          setMessage("Pincode should be 6 digits")
           return
         }
       }
@@ -773,7 +786,7 @@ const BasicInfo = ({ navigation, route }) => {
                             placeHolder={item.name}
                             value={userMobile}
                             label={item.label}
-                            isEditable={!otpVerified}
+                            isEditable={mobileNumberEditable}
                           >
                             {' '}
                           </TextInputNumericRectangle>}

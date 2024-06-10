@@ -43,44 +43,44 @@ const TextInputRectangularWithPlaceholder = (props) => {
     }, [])
 
     const handleInput = (text, placeHolder) => {
-        if (specialChar) {
-            if(validationType!="numeric"){
-                const nameRegex = /^[a-zA-Z\s-]+$/;
-                if (nameRegex.test(text)) {
-                    setValue(text)
-                    props.handleData(text, props.title)
-                    setError(false)
-                }
-                else {
-                    setValue("")
-                    if (text != "") {
-                        setError(true)
-                    }else{
-                        setError(false)
-                    }
-                }
-            }
-            else{
+        // if (specialChar) {
+        //     if(validationType!="numeric"){
+        //         const nameRegex = /^[a-zA-Z\s-]+$/;
+        //         if (nameRegex.test(text)) {
+        //             setValue(text)
+        //             props.handleData(text, props.title)
+        //             setError(false)
+        //         }
+        //         else {
+        //             setValue("")
+        //             if (text != "") {
+        //                 setError(true)
+        //             }else{
+        //                 setError(false)
+        //             }
+        //         }
+        //     }
+        //     else{
              
-                // var numberRegex = /^((\(){1}(\+?\d{3}(\)){1})|(\+)?\d{3})(\d){2,17}$/g;
-                // const numberRegex = /^(?:(?:\(?(?:00|\+)([1-4]\d\d|[1-9]\d?)\)?)?[\-\.\ \\\/]?)?((?:\(?\d{1,}\)?[\-\.\ \\\/]?){0,})(?:[\-\.\ \\\/]?(?:#|ext\.?|extension|x)[\-\.\ \\\/]?(\d+))?$/i;
+        //         // var numberRegex = /^((\(){1}(\+?\d{3}(\)){1})|(\+)?\d{3})(\d){2,17}$/g;
+        //         // const numberRegex = /^(?:(?:\(?(?:00|\+)([1-4]\d\d|[1-9]\d?)\)?)?[\-\.\ \\\/]?)?((?:\(?\d{1,}\)?[\-\.\ \\\/]?){0,})(?:[\-\.\ \\\/]?(?:#|ext\.?|extension|x)[\-\.\ \\\/]?(\d+))?$/i;
             
-                    if(!text.includes(".") && !text.includes("-") && !text.includes(",") && !text.includes(" ")){
-                        setValue(text)
-                        props.handleData(text, props.title)
-                        setError(false)
-                    }
+        //             if(!text.includes(".") && !text.includes("-") && !text.includes(",") && !text.includes(" ")){
+        //                 setValue(text)
+        //                 props.handleData(text, props.title)
+        //                 setError(false)
+        //             }
                  
                 
                
-            }
+        //     }
           
 
-        }
-        else {
+        // }
+        // else {
             setValue(text)
             props.handleData(text, props.title)
-        }
+        // }
 
     }
     const handleInputEnd = (text, placeHolder) => {

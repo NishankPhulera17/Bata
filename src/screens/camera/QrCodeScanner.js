@@ -50,7 +50,7 @@ import { Gesture, GestureDetector } from 'react-native-gesture-handler'
 import { request, PERMISSIONS } from 'react-native-permissions';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useIsFocused } from '@react-navigation/native';
-
+import scanDelay from '../../utils/ScanDelayUtil';
 
 const QrCodeScanner = ({ navigation }) => {
   const [zoom, setZoom] = useState(0);
@@ -430,11 +430,15 @@ const QrCodeScanner = ({ navigation }) => {
         data: codes[0].value
       }
       if (isDistributor) {
+        scanDelay(e,()=>{
         OnReturedCheck(e)
+        })
       }
       else {
         setCameraEnabled(false)
+        scanDelay(e,()=>{
         onSuccessBar(e)
+        })
 
       }
     }
