@@ -224,6 +224,8 @@ const PasswordLogin = ({ navigation, route }) => {
     }
     else {
       console.log(getBannerError)
+      parsedJsonValue && getWorkflowFunc({userId:parsedJsonValue?.user_type_id, token:parsedJsonValue?.token })
+
     }
   }, [getBannerError, getBannerData])
 

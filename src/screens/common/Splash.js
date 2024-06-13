@@ -240,7 +240,7 @@ const Splash = ({ navigation }) => {
 
     }
     else {
-      console.log(getWorkflowError)
+      console.log("getWorkflowError",getWorkflowError)
     }
   }, [getWorkflowData, getWorkflowError])
 

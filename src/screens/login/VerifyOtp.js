@@ -349,6 +349,8 @@ const VerifyOtp = ({ navigation, route }) => {
     else if(getSalesBoosterError)
     {
       console.log("getSalesBoosterError",getSalesBoosterError)
+      parsedJsonValue && getWorkflowFunc({"userId": parsedJsonValue?.user_type_id,"token":parsedJsonValue?.token})
+
       if(getSalesBoosterError?.data?.message =="Invalid JWT" && getSalesBoosterError?.status == 401 )
       {
         removerTokenData()
