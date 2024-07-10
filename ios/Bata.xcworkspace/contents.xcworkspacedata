@@ -2,6 +2,9 @@
 <Workspace
    version = "1.0">
    <FileRef
+      location = "group:Settings.bundle">
+   </FileRef>
+   <FileRef
       location = "group:/Users/genefied/RNProjects/bata/ios/Bata Dhanshree.xcodeproj">
    </FileRef>
    <FileRef

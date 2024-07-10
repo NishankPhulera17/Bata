@@ -95,7 +95,7 @@ const QrCodeScanner = ({ navigation }) => {
 
   const [hasPermission, setHasPermission] = useState(null);
   const [manualPermissionModal, setManualPermissionModal] = useState(false);
-
+    
   const focused = useIsFocused()
   
 
@@ -130,7 +130,8 @@ const QrCodeScanner = ({ navigation }) => {
   const checkCameraPermission = async () => {
     try {
       const status = await requestCameraPermission();
-      console.log('Camera Permission Status:', status);
+      // console.log('Camera Permission Status:', status);
+      alert("camera permission status",status)
       setHasPermission(status === 'granted');
 
     } catch (error) {
@@ -157,8 +158,9 @@ const QrCodeScanner = ({ navigation }) => {
 
 
   const requestCameraPermission = async () => {
-    try {
-      const result = await request(PERMISSIONS.ANDROID.CAMERA);
+
+    try {  
+      const result = Camera.getCameraPermissionStatus();
       return result;
     } catch (error) {
       console.error('Error requesting camera permission:', error);
