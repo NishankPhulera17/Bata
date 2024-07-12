@@ -196,7 +196,7 @@ useEffect(()=>{
       if (fetchCashbackEnteriesData.body) {
         for (var i = 0; i < fetchCashbackEnteriesData.body?.data?.length; i++) {
 
-          if (fetchCashbackEnteriesData.body.data[i].approval_status === "1") {
+          if (fetchCashbackEnteriesData.body.data[i].status === "1") {
             cashback = cashback + Number(fetchCashbackEnteriesData.body.data[i].cash)
             console.log("fetchCashbackEnteriesData", fetchCashbackEnteriesData.body.data[i].cash)
           }
@@ -563,54 +563,11 @@ useEffect(()=>{
             color: "#171717",
           }}
         ></PoppinsTextMedium>
-        {/* <TouchableOpacity style={{ marginLeft: 160 }}>
-                    <Image style={{ height: 30, width: 30, resizeMode: 'contain' }} source={require('../../../assets/images/notificationOn.png')}></Image>
-                </TouchableOpacity> */}
+       
       </View>
-      <View
-        style={{
-          padding: 14,
-          alignItems: "flex-start",
-          justifyContent: "flex-start",
-          width: "100%",
-          height:'8%'
-        }}
-      >
-        <View style={{ flexDirection: "row", alignItems: 'center', justifyContent: 'center',marginTop:14 }}>
-          <Image
-            style={{
-              height: 24,
-              width: 24,
-              resizeMode: "contain",
+      
 
-            }}
-            source={require("../../../assets/images/wallet.png")}
-          ></Image>
-          <PoppinsTextMedium
-            style={{
-              marginLeft: 10,
-              fontSize: 16,
-              fontWeight: "700",
-              color: "#6E6E6E",
-            }}
-            content={t("total cashback earned ") + totalCashbackEarned }
-          ></PoppinsTextMedium>
-          {/* <PoppinsText style={{ marginLeft: 10, fontSize: 34, fontWeight: '600', color: 'black' }} content={fetchCashbackEnteriesData?.body?.total != undefined ?  `${fetchCashbackEnteriesData?.body?.total}` : <AnimatedDots color={'black'}/>}></PoppinsText> */}
-        </View>
 
-        {/* <PoppinsTextMedium style={{marginLeft:10,fontSize:20,fontWeight:'600',color:'#6E6E6E'}} content="Cashback"></PoppinsTextMedium> */}
-        {/* <PoppinsTextMedium
-          style={{
-            marginLeft: 10,
-            fontSize: 20,
-            fontWeight: "600",
-            color: "#6E6E6E",
-          }}
-          content="Cashbacks are now instantly credited"
-        ></PoppinsTextMedium> */}
-
-      </View>
-      {/* <Header></Header> */}
       <WalletComponent></WalletComponent>
       <View style={{width:'100%',alignItems:'center',justifyContent:'center',flexDirection:'row',height:40}}>
         <TouchableOpacity onPress={()=>{

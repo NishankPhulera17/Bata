@@ -130,8 +130,8 @@ const QrCodeScanner = ({ navigation }) => {
   const checkCameraPermission = async () => {
     try {
       const status = await requestCameraPermission();
-      // console.log('Camera Permission Status:', status);
-      alert("camera permission status",status)
+      const newCameraPermission = await Camera.requestCameraPermission()
+      console.log('Camera Permission Status:', status,newCameraPermission);
       setHasPermission(status === 'granted');
 
     } catch (error) {
@@ -1534,7 +1534,7 @@ const QrCodeScanner = ({ navigation }) => {
           style={{ height: '60%' }}
         > */}
 
-        {hasPermission && <Camera
+        { <Camera
           codeScanner={codeScanner}
           focusable={true}
           // frameProcessor={frameProcessor}
@@ -1764,28 +1764,28 @@ const QrCodeScanner = ({ navigation }) => {
 
         </View>
           {
-            manualPermissionModal && !hasPermission &&
-            <Modal
-            transparent={true}
-            visible={manualPermissionModal}
-            onRequestClose={() => setManualPermissionModal(false)}
-          >
-            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0,0,0,0.5)' }}>
-              <View style={{ width: 300, padding: 20, backgroundColor: 'white', borderRadius: 10 }}>
-                <Text style={{color:'black', marginBottom: 20 }}>
-                  Camera permission is required to use this feature. Please enable it in the app settings.
-                </Text>
-                <View>
-                  <View style={{marginBottom:20}}>
-                <Button style={{color:'black'}} title="Open Settings" onPress={openAppSettings} />
+          //   manualPermissionModal && !hasPermission &&
+          //   <Modal
+          //   transparent={true}
+          //   visible={manualPermissionModal}
+          //   onRequestClose={() => setManualPermissionModal(false)}
+          // >
+          //   <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0,0,0,0.5)' }}>
+          //     <View style={{ width: 300, padding: 20, backgroundColor: 'white', borderRadius: 10 }}>
+          //       <Text style={{color:'black', marginBottom: 20 }}>
+          //         Camera permission is required to use this feature. Please enable it in the app settings.
+          //       </Text>
+          //       <View>
+          //         <View style={{marginBottom:20}}>
+          //       <Button style={{color:'black'}} title="Open Settings" onPress={openAppSettings} />
 
-                  </View>
+          //         </View>
 
-                </View>
-                <Button title="Cancel" onPress={() => {navigation.navigate("Dashboard")}} />
-              </View>
-            </View>
-          </Modal>
+          //       </View>
+          //       <Button title="Cancel" onPress={() => {navigation.navigate("Dashboard")}} />
+          //     </View>
+          //   </View>
+          // </Modal>
   
   
 

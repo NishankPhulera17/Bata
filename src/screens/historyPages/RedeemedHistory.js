@@ -552,19 +552,13 @@ const RedeemedHistory = ({ navigation }) => {
           //   )
 
           // }) */}
-     {error  && (
-        <ErrorModal
-          modalClose={modalClose}
-          message={message}
-          openModal={error}
-          ></ErrorModal>
-      )}
+     
       {error && navigateTo && (
         <ErrorModal
           modalClose={modalClose}
           message={message}
           openModal={error}
-          navigateTo={navigateTo}
+          
           ></ErrorModal>
       )}
       {success && (
