@@ -326,20 +326,14 @@ const RedeemCashback = ({ navigation, route }) => {
       }}>
       <ScrollView style={{ width: '100%', height: '100%' }}>
 
-        {error && redemptionFrom != "Wallet" && (
+        {error && (
           <ErrorModal
             modalClose={modalClose}
             message={message}
             openModal={error}
-            navigateTo="Passbook"></ErrorModal>
+            navigateTo={redemptionFrom != "Wallet" ? "Passbook" : "CashbackHistory"}></ErrorModal>
         )}
-        {error && redemptionFrom == "Wallet" && (
-          <ErrorModal
-            modalClose={modalClose}
-            message={message}
-            openModal={error}
-            navigateTo="CashbackHistory"></ErrorModal>
-        )}
+       
 
 
         {success && (
