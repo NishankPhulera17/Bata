@@ -11,7 +11,6 @@ import { setAppUserType, setAppUserName, setAppUserId, setUserData, setId} from 
 import PoppinsTextMedium from '../../components/electrons/customFonts/PoppinsTextMedium';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import ErrorModal from '../../components/modals/ErrorModal';
-import { t } from 'i18next';
 
 
 

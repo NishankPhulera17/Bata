@@ -391,7 +391,7 @@ const PointHistory = ({ navigation }) => {
     const ListItem = (props) => {
         const description = props.description
         const productCode = props.productCode
-
+        const data = props.data
         const time = props.time
         const amount = props.amount
         const status = props.status
@@ -420,9 +420,12 @@ const PointHistory = ({ navigation }) => {
 
                     <PoppinsTextMedium style={{ fontWeight: '200', fontSize: 12, color: 'black' }} content={time}></PoppinsTextMedium>
                 </View>
-                <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center", position: 'absolute', right: 10, width: '26%' }}>
+                <View style={{alignItems:'center',justifyContent:'center', position: 'absolute', right: 10, width: '26%'}}>
+                <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center" }}>
                     <Image style={{ height: 20, width: 20, resizeMode: "contain" }} source={(status == 0 && (points < 0) && is_reverted == true) ? require('../../../assets/images/minus_wallet.png') : require('../../../assets/images/wallet.png')}></Image>
                     <PoppinsTextMedium style={{ color: "#91B406", fontSize: 14, color: (status == 0 && (points < 0) && is_reverted == true) ? "red" : 'black' }} content={`${status == "1" ? " +" : status == "2" ? ' -' : ""} ${amount}`}></PoppinsTextMedium>
+                </View>
+                {data.platform_id == "3" && <PoppinsTextMedium style={{fontSize:10,fontWeight:'700', color:"black",marginTop:4}} content="Manually Rewarded" ></PoppinsTextMedium>}
                 </View>
             </View>
         )
@@ -494,7 +497,7 @@ const PointHistory = ({ navigation }) => {
                 renderItem={({ item, index }) => {
                     console.log("item of displaylist", index + 1, item)
                     return (
-                        <ListItem type={item?.cause?.type} image={item?.images === undefined ? undefined : item?.images?.[0]} description={item?.product_name} productCode={item?.product_code} amount={item?.points} status={item?.status} points={item?.points} is_reverted={item?.is_reverted} mrp={item.mrp} date={moment(item?.created_at).format("DD-MMM-YYYY")} time={moment(item?.created_at).format("HH:mm a")} />
+                        <ListItem data = {item} type={item?.cause?.type} image={item?.images === undefined ? undefined : item?.images?.[0]} description={item?.product_name} productCode={item?.product_code} amount={item?.points} status={item?.status} points={item?.points} is_reverted={item?.is_reverted} mrp={item.mrp} date={moment(item?.created_at).format("DD-MMM-YYYY")} time={moment(item?.created_at).format("HH:mm a")} />
                     )
                 }}
                 keyExtractor={(item, index) => index}
