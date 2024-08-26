@@ -7,6 +7,7 @@ import messaging from '@react-native-firebase/messaging';
 import ModalWithBorder from './src/components/modals/ModalWithBorder';
 import Close from 'react-native-vector-icons/Ionicons';
 import VersionCheck from 'react-native-version-check';
+import { InternetSpeedProvider } from './src/Contexts/useInternetSpeedContext';
 
 const App = () => {
 
@@ -110,6 +111,7 @@ const App = () => {
 
   return (
     <Provider store={store}>
+      <InternetSpeedProvider>
       <SafeAreaView style={{ flex: 1 }}>
         <StackNavigator>
           {notifModal && <ModalWithBorder
@@ -122,6 +124,7 @@ const App = () => {
         </StackNavigator>
 
       </SafeAreaView>
+      </InternetSpeedProvider>
     </Provider>
     // <View>
     // </View>

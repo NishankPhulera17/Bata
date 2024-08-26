@@ -104,8 +104,6 @@ const PointHistory = ({ navigation }) => {
     useEffect(() => {
         if (fetchUserPointsHistoryData) {
             console.log("fetchUserPointsHistoryData", JSON.stringify(fetchUserPointsHistoryData))
-
-
             if (fetchUserPointsHistoryData.success) {
                 setIsLoading(false)
                 setDisplayList(fetchUserPointsHistoryData.body.data)
