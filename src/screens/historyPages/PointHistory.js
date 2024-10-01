@@ -260,7 +260,7 @@ const PointHistory = ({ navigation }) => {
                 }
                 {registrationRequired.includes(userData.user_type) &&
                     <TouchableOpacity onPress={() => {
-                        getRegistrationPoints("points_sharing")
+                        getRegistrationPoints("sales_booster")
                         setType("extra")
                     }} style={{ height: 60, width: '33%', alignItems: "center", justifyContent: 'center', borderLeftWidth: 1, borderRightWidth: 1, borderColor: '#DDDDDD', backgroundColor: type === "extra" ? "#DDDDDD" : "white" }}>
                         <PoppinsTextMedium content="Extra Points" style={{ color: 'black', fontWeight: '700', fontSize: 14 }}></PoppinsTextMedium>
@@ -406,12 +406,14 @@ const PointHistory = ({ navigation }) => {
                 <View style={{ height: 60, width: '14%', alignItems: "center", justifyContent: "center", borderRadius: 10, borderWidth: 1, borderColor: '#DDDDDD', position: 'absolute', left: 10, }}>
                     {image ? <Image style={{ height: 40, width: 40, resizeMode: "contain" }} source={{ uri: image }}></Image> : <Image style={{ height: 40, width: 40, resizeMode: "contain" }} source={require('../../../assets/images/batalogo.png')}></Image>}
                 </View>
+                
                 <View style={{ alignItems: "flex-start", justifyContent: "center", position: 'absolute', left: 80, width: '60%' }}>
-                    {type !== "registration_bonus" && <PoppinsTextMedium style={{ fontWeight: '700', fontSize: 14, color: 'black' }} content={description}></PoppinsTextMedium>}
+                    {type == "sales_booster"  && <PoppinsTextMedium style={{ fontWeight: '700', fontSize: 14, color: 'black' }} content={data.name ? data.name : "Bata scheme"}></PoppinsTextMedium>}
+                    {type !== "sales_booster" && type !== "registration_bonus"  && <PoppinsTextMedium style={{ fontWeight: '700', fontSize: 14, color: 'black' }} content={description}></PoppinsTextMedium>}
                     {type === "registration_bonus" && <PoppinsTextMedium style={{ fontWeight: '400', fontSize: 14, color: 'black', fontWeight: '700' }} content={`Registration Bonus`}></PoppinsTextMedium>}
 
-                    {type !== "registration_bonus" && <PoppinsTextMedium style={{ fontWeight: '400', fontSize: 12, color: 'black' }} content={`Article No : ${productCode}`}></PoppinsTextMedium>}
-                    {type !== "registration_bonus" && <PoppinsTextMedium style={{ fontWeight: '400', fontSize: 12, color: 'black' }} content={`MRP : ${mrp}`}></PoppinsTextMedium>}
+                    {type !== "sales_booster"  && type !== "registration_bonus" && <PoppinsTextMedium style={{ fontWeight: '400', fontSize: 12, color: 'black' }} content={`Article No : ${productCode}`}></PoppinsTextMedium>}
+                    {type !== "registration_bonus" && type!=="sales_booster" &&  <PoppinsTextMedium style={{ fontWeight: '400', fontSize: 12, color: 'black' }} content={`MRP : ${mrp}`}></PoppinsTextMedium>}
 
                     {/* {visibleCode && type !== "registration_bonus" && <PoppinsTextMedium style={{ fontWeight: '400', fontSize: 12, color: 'black' }} content={`Visible Code : ${visibleCode}`}></PoppinsTextMedium>} */}
                     <PoppinsTextMedium style={{ fontWeight: '200', fontSize: 12, color: 'black' }} content={date}></PoppinsTextMedium>

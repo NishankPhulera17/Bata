@@ -516,6 +516,7 @@ useEffect(()=>{
         <PoppinsTextMedium style={{fontSize:16,fontWeight:'bold',color:'black',marginLeft:10}} content={getWalletBalanceData?.body?.cashback_balance}></PoppinsTextMedium>
 
         </View>
+        { getWalletBalanceData?.body?.cashback_balance > 0 &&
         <View style={{width:'40%',alignItems:'center',justifyContent:'flex-start'}}>
           <TouchableOpacity onPress={()=>{
             handleRedeemButtonPress()
@@ -523,6 +524,7 @@ useEffect(()=>{
             <PoppinsTextMedium style={{fontSize:16,fontWeight:'bold',color:'white'}} content={t("redeem")}></PoppinsTextMedium>
           </TouchableOpacity>
         </View>
+  }
       </View>
     )
   }

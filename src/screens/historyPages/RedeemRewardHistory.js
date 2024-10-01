@@ -350,14 +350,14 @@ const RedeemRewardHistory = ({ navigation }) => {
 
   useEffect(() => {
     if (getSalesBoosterHistoryData) {
-      console.log(
-        "getSalesBoosterHistoryData",
-        JSON.stringify(getSalesBoosterHistoryData)
-      );
-      if(getSalesBoosterData?.body?.length!=0)
+     
+      if(getSalesBoosterHistoryData?.body?.length!=0)
       {
+        console.log(
+          "getSalesBoosterHistoryData",
+          JSON.stringify(getSalesBoosterHistoryData)
+        );
       setMergedSalesBooster(getSalesBoosterHistoryData?.body)
-
       }
     } else if (getSalesBoosterHistoryError) {
       console.log(
@@ -372,6 +372,8 @@ const RedeemRewardHistory = ({ navigation }) => {
       }
     }
   }, [getSalesBoosterHistoryData, getSalesBoosterHistoryError]);
+
+  console.log("mergedSalesBooster", mergedSalesBooster);
 
   // useEffect(() => {
   //   if (

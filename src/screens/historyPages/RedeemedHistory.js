@@ -278,7 +278,7 @@ const RedeemedHistory = ({ navigation }) => {
         else{
           setError(true)
         setMessage("Redemption window starts from "+ moment(redemptionStartData).format("DD-MMM-YYYY") + " and ends on " +  moment(redemptionEndDate).format("DD-MMM-YYYY"))
-        setNavigateTo("RedeemedHistory")
+        // setNavigateTo("RedeemedHistory")
 
         }
       }

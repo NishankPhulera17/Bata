@@ -564,9 +564,10 @@ const Dashboard = ({ navigation }) => {
               <Banner images={bannerArray}></Banner>
             }
 
-            {/* <CampaignVideoModal isVisible={CampainVideoVisible} onClose={()=>{
+            <CampaignVideoModal isVisible={CampainVideoVisible} onClose={()=>{
               setCmpainVideoVisible(false)
-            }} /> */}
+            }} />
+
           </View>
           {/* Ozone specific change do not show for sales */}
           {

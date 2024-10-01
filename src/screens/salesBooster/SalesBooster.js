@@ -99,7 +99,7 @@ const SalesBooster = ({ navigation, route }) => {
         };
 
         console.log("claimSalesBoosterFunc", params);
-        {item.trigger_status && claimSalesBoosterFunc(params)} ;
+        {data.trigger_status && claimSalesBoosterFunc(params)} ;
       } catch (e) {
         console.log("error in claiming salesbooster", e);
       }

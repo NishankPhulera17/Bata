@@ -52,7 +52,7 @@ const Passbook = ({ navigation }) => {
     console.log('userdata', userData)
     const workflowProgram = useSelector(state => state.appWorkflow.program);
     const pointSharingData = useSelector(state => state.pointSharing.pointSharing)
-    console.log("pointSharingData", pointSharingData, userData)
+    console.log("pointSharingData", pointSharingData, userData,workflowProgram)
     const name = userData.name
     const membership = getActiveMembershipData && getActiveMembershipData.body?.tier.name;
     const isDistributor = userData?.user_type_id == 3

@@ -125,7 +125,7 @@ const Splash = ({ navigation }) => {
   // const [gotLoginData, setGotLoginData] = useState()
   const isConnected = useSelector((state) => state.internet.isConnected);
   let lastFetchedApiOn;
-  let currentVersion;
+  let currentVersion = undefined
   if (isConnected?.isConnected) {
     currentVersion = VersionCheck.getCurrentVersion();
     console.log("current version check", currentVersion);
@@ -251,7 +251,7 @@ const Splash = ({ navigation }) => {
   useEffect(() => {
     console.log("currentVersion", currentVersion);
     if (isConnected.isConnected) {
-      getMinVersionSupportFunc(currentVersion);
+      currentVersion && getMinVersionSupportFunc(currentVersion);
 
       const fetchTerms = async () => {
         // const credentials = await Keychain.getGenericPassword();
@@ -889,7 +889,7 @@ const Splash = ({ navigation }) => {
     getData();
     dispatch(setAppVersion(currentVersion));
 
-    getMinVersionSupportFunc(currentVersion);
+    currentVersion && getMinVersionSupportFunc(currentVersion);
     getAppTheme("bata");
     getData();
   }, [isConnected, locationStatusChecked]);
