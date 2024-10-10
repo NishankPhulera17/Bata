@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { View, StyleSheet, ScrollView, Image } from 'react-native';
 import RewardSquare from '../atoms/RewardSquare';
 import { useSelector } from 'react-redux';
-import { useFetchUserPointsMutation } from '../../apiServices/workflow/rewards/GetPointsApi';
+import { useFetchMonthlyAndQuarterlyBalancesMutation, useFetchUserPointsMutation } from '../../apiServices/workflow/rewards/GetPointsApi';
 import * as Keychain from 'react-native-keychain';
 import FastImage from 'react-native-fast-image';
 import { useFetchUserCashbackByAppUserIdMutation } from '../../apiServices/workflow/rewards/GetCashbackApi';
@@ -18,6 +18,13 @@ const RewardBox = () => {
 
     const[totalAmount, setTotalCashbackEarned] = useState(0);
 
+
+    const [fetchMonthlyBalanceFunc,{
+        data:fetchMonthlyBalanceData,
+        error:fetchMonthlyBalanceError,
+        isLoading:fetchMonthlyBalanceIsLoading,
+        isError:fetchMonthlyBalanceIsError
+    }] = useFetchMonthlyAndQuarterlyBalancesMutation()
 
     const [userPointFunc, {
         data: userPointData,
@@ -55,7 +62,7 @@ const RewardBox = () => {
                 const token = credentials.username;
                 // const params = { token: token, appUserId: userData.id };
                 const params = { token: token };
-
+                fetchMonthlyBalanceFunc(token)
                 // getCashTransactionsFunc(params);
                 if(isDistributor){
                     fetctReturnListFunc(params)
@@ -101,6 +108,17 @@ const RewardBox = () => {
         }
 
     }, [userPointData, userPointError])
+
+    useEffect(()=>{
+        if(fetchMonthlyBalanceData)
+        {
+            console.log("fetchMonthlyBalanceData",fetchMonthlyBalanceData)
+        }
+        else if(fetchMonthlyBalanceError)
+        {
+            console.log("fetchMonthlyBalanceError",fetchMonthlyBalanceError)
+        }
+    },[fetchMonthlyBalanceData,fetchMonthlyBalanceError])
 
     useEffect(()=>{
         if(getPointSharingCashbackData){
@@ -171,6 +189,12 @@ const RewardBox = () => {
             }
             {
                 workflow.includes("Points On Product") && userPointData && <RewardSquare amount={userPointData.body.point_balance} color="#DCFCE7" image={require('../../../assets/images/points.png')} title="Balance Points"></RewardSquare>
+            }
+             {
+                workflow.includes("Points On Product") && fetchMonthlyBalanceData && <RewardSquare amount={fetchMonthlyBalanceData.body.current_month} color="#DCFCE7" image={require('../../../assets/images/points.png')} title="Current Month Points"></RewardSquare>
+            }
+            {
+                workflow.includes("Points On Product") && fetchMonthlyBalanceData && <RewardSquare amount={fetchMonthlyBalanceData.body.quaterly} color="#DCFCE7" image={require('../../../assets/images/points.png')} title="Current Quarter Points"></RewardSquare>
             }
                 {
                getPointSharingCashbackData && workflow && workflow.includes("Cashback") && <RewardSquare cashback_balance={ getPointSharingCashbackData?.body?.cashback_balance} color="#FFF4DE" image={require('../../../assets/images/cashback.png')} title="Cashback"></RewardSquare>

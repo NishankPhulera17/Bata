@@ -18,7 +18,7 @@ import { setKycData } from '../../../redux/slices/userKycStatusSlice';
 import { useIsFocused } from '@react-navigation/native';
 import { setPercentagePoints, setShouldSharePoints } from '../../../redux/slices/pointSharingSlice';
 import PoppinsText from '../../components/electrons/customFonts/PoppinsText';
-import { useFetchUserPointsMutation } from '../../apiServices/workflow/rewards/GetPointsApi';
+import { useFetchMonthlyAndQuarterlyBalancesMutation, useFetchUserPointsMutation } from '../../apiServices/workflow/rewards/GetPointsApi';
 import PoppinsTextLeftMedium from '../../components/electrons/customFonts/PoppinsTextLeftMedium';
 import { setQrIdList } from '../../../redux/slices/qrCodeDataSlice';
 import CampaignVideoModal from '../../components/modals/CampaignVideoModal';
@@ -89,6 +89,14 @@ const Dashboard = ({ navigation }) => {
     isError: getActiveMembershipIsError
   }] = useGetActiveMembershipMutation()
   
+
+  const [fetchMonthlyBalanceFunc,{
+    data:fetchMonthlyBalanceData,
+    error:fetchMonthlyBalanceError,
+    isLoading:fetchMonthlyBalanceIsLoading,
+    isError:fetchMonthlyBalanceIsError
+}] = useFetchMonthlyAndQuarterlyBalancesMutation()
+
   const [
     fetchAllQrScanedList,
     {
@@ -167,6 +175,17 @@ const Dashboard = ({ navigation }) => {
     }
     
   }, [focused])
+
+    useEffect(()=>{
+      if(fetchMonthlyBalanceData)
+      {
+          console.log("fetchMonthlyBalanceData",fetchMonthlyBalanceData)
+      }
+      else if(fetchMonthlyBalanceError)
+      {
+          console.log("fetchMonthlyBalanceError",fetchMonthlyBalanceError)
+      }
+  },[fetchMonthlyBalanceData,fetchMonthlyBalanceError])
 
   // useEffect(() => {
   //   (async () => {
@@ -444,6 +463,7 @@ const Dashboard = ({ navigation }) => {
           const form_type = "2"
           console.log("token from dashboard ", token)
           token && getKycStatusFunc(token)
+          token && fetchMonthlyBalanceFunc(token)
           // token && getBannerFunc(token)
           // token && getWorkflowFunc({ userId, token })
           // token && getFormFunc({ form_type, token })
@@ -572,19 +592,27 @@ const Dashboard = ({ navigation }) => {
           {/* Ozone specific change do not show for sales */}
           {
             userData?.user_type_id !== 13 && !isDistributor &&
-            <View style={{ width: "90%", height: 50, backgroundColor: 'white', marginBottom: 20, flexDirection: 'row', alignItems: 'center', borderColor: '#808080', borderWidth: 0.3, borderRadius: 10 }}>
+            <View style={{ width: "90%", height: 60, backgroundColor: 'white', marginBottom: 20, flexDirection: 'row', alignItems: 'center', borderColor: '#808080', borderWidth: 1, borderRadius: 10}}>
 
-              <View style={{ backgroundColor: 'white', width: '42%', marginHorizontal: 20 }}>
-                {
-                  <PoppinsText content={`Balance Points ${balancePoint ? balancePoint : ": 0"}`}
-                    style={{ color: 'black', fontWeight: 'bold' }}></PoppinsText>}
+              <View style={{ backgroundColor: 'white', width: '70%',justifyContent:'space-evenly',flexDirection:'row' }}>
+                <View style={{alignItems:'center',justifyContent:'center',borderColor:"#DDDDDD",borderRightWidth:1,paddingRight:10,width:'40%'}}>
+                  <PoppinsTextMedium content={`Balance Points`}
+                    style={{ color: 'black', fontWeight: '700',fontSize:12 }}></PoppinsTextMedium>
+                    <PoppinsTextMedium content={`${balancePoint ? balancePoint : ": 0"}`}
+                    style={{ color: 'black', fontWeight: '700',fontSize:12 }}></PoppinsTextMedium>
+                </View>
+                <View style={{alignItems:'center',justifyContent:'center',width:'50%'}}>
+                  <PoppinsTextMedium content={`Current Month Points`}
+                    style={{ color: 'black', fontWeight: '700',fontSize:12 }}></PoppinsTextMedium>
+                    {fetchMonthlyBalanceData && <PoppinsTextMedium content={`${fetchMonthlyBalanceData.body.current_month ? fetchMonthlyBalanceData.body.current_month : "0"}`}
+                    style={{ color: 'black', fontWeight: '700',fontSize:12 }}></PoppinsTextMedium>}
+                </View>
               </View>
 
-              <View style={{ height: '100%', borderWidth: 0.4, color: "#808080", opacity: 0.3, width: 0.2 }}>
-              </View>
+              
 
-              <View style={{ backgroundColor: 'white', paddingLeft: '8%' }}>
-                <TouchableOpacity style={{ backgroundColor: ternaryThemeColor, padding: 10, borderRadius: 5, width: 120, alignItems: 'center' }} onPress={() => { navigation.navigate("RedeemedHistory") }}>
+              <View style={{width:'30%', backgroundColor: 'white'}}>
+                <TouchableOpacity style={{ backgroundColor: ternaryThemeColor, padding: 10, borderRadius: 5, width: '90%', alignItems: 'center' }} onPress={() => { navigation.navigate("RedeemedHistory") }}>
                   <PoppinsTextLeftMedium style={{ color: 'white', fontWeight: '800' }} content="Redeem"  ></PoppinsTextLeftMedium>
                 </TouchableOpacity>
               </View>

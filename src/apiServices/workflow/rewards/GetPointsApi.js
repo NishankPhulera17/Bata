@@ -30,6 +30,20 @@ export const GetForms = baseApi.injectEndpoints({
         };
       },
     }),
+    fetchMonthlyAndQuarterlyBalances: builder.mutation({
+      query: (token) => {
+        console.log("paramsfetchMonthlyAndQuarterlyBalances",token)
+        return {
+          method: "POST",
+          url: `/api/tenant/bata/point-stats`,
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + token,
+            slug: slug,
+          },
+        };
+      },
+    }),
     fetchUserPointsHistory: builder.mutation({
       query: (params) => {
         console.log("point history",params)
@@ -89,4 +103,4 @@ export const GetForms = baseApi.injectEndpoints({
   }),
 });
 
-export const {useAllUserPointsEntryMutation,useCheckUserPointMutation,useFetchUserPointsHistoryMutation,useFetchUserPointsMutation,useUserPointsEntryMutation,useCashPerPointMutation} = GetForms;
+export const {useAllUserPointsEntryMutation,useCheckUserPointMutation,useFetchUserPointsHistoryMutation,useFetchUserPointsMutation,useUserPointsEntryMutation,useCashPerPointMutation,useFetchMonthlyAndQuarterlyBalancesMutation} = GetForms;
