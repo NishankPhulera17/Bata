@@ -457,7 +457,7 @@ const BankAccounts = ({ navigation, route }) => {
         <ScrollView contentContainerStyle={{width: '100%',height:'80%'}} style={{ width: '100%',height:'70%' }}>
           <View style={{ alignItems: "center", justifyContent: "center" }}>
 
-            {listAccountData?.body?.length !== 0 &&
+            {listAccountData && Object.keys(listAccountData?.body).length !== 0 &&
               <View
                 style={{
                   alignItems: 'center',
@@ -496,9 +496,9 @@ const BankAccounts = ({ navigation, route }) => {
               </View>
             }
 
-            {(listAccountData?.body?.length == 0  || listAccountData == undefined ) && <View style={{ alignItems: 'center', marginTop:"60%"}}>
+            {/* {(listAccountData?.body?.length == 0  || listAccountData == undefined ) && <View style={{ alignItems: 'center', marginTop:"60%"}}>
               <PoppinsTextMedium style ={{fontSize:16,color:'black'}} content={`${t("No bank account has been added yet")}`}></PoppinsTextMedium>
-            </View>}
+            </View>} */}
 
 
           </View>

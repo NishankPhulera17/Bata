@@ -260,7 +260,7 @@ const PointHistory = ({ navigation }) => {
                 }
                 {registrationRequired.includes(userData.user_type) &&
                     <TouchableOpacity onPress={() => {
-                        getRegistrationPoints("sales_booster")
+                        getRegistrationPoints("monthly_scheme")
                         setType("extra")
                     }} style={{ height: 60, width: '33%', alignItems: "center", justifyContent: 'center', borderLeftWidth: 1, borderRightWidth: 1, borderColor: '#DDDDDD', backgroundColor: type === "extra" ? "#DDDDDD" : "white" }}>
                         <PoppinsTextMedium content="Extra Points" style={{ color: 'black', fontWeight: '700', fontSize: 14 }}></PoppinsTextMedium>
@@ -408,12 +408,12 @@ const PointHistory = ({ navigation }) => {
                 </View>
                 
                 <View style={{ alignItems: "flex-start", justifyContent: "center", position: 'absolute', left: 80, width: '60%' }}>
-                    {type == "sales_booster"  && <PoppinsTextMedium style={{ fontWeight: '700', fontSize: 14, color: 'black' }} content={data.name ? data.name : "Bata scheme"}></PoppinsTextMedium>}
-                    {type !== "sales_booster" && type !== "registration_bonus"  && <PoppinsTextMedium style={{ fontWeight: '700', fontSize: 14, color: 'black' }} content={description}></PoppinsTextMedium>}
+                    {type == "monthly_scheme"  && <PoppinsTextMedium style={{ fontWeight: '700', fontSize: 14, color: 'black' }} content={data.name ? data.name : "Bata scheme"}></PoppinsTextMedium>}
+                    {type !== "monthly_scheme" && type !== "registration_bonus"  && <PoppinsTextMedium style={{ fontWeight: '700', fontSize: 14, color: 'black' }} content={description}></PoppinsTextMedium>}
                     {type === "registration_bonus" && <PoppinsTextMedium style={{ fontWeight: '400', fontSize: 14, color: 'black', fontWeight: '700' }} content={`Registration Bonus`}></PoppinsTextMedium>}
 
-                    {type !== "sales_booster"  && type !== "registration_bonus" && <PoppinsTextMedium style={{ fontWeight: '400', fontSize: 12, color: 'black' }} content={`Article No : ${productCode}`}></PoppinsTextMedium>}
-                    {type !== "registration_bonus" && type!=="sales_booster" &&  <PoppinsTextMedium style={{ fontWeight: '400', fontSize: 12, color: 'black' }} content={`MRP : ${mrp}`}></PoppinsTextMedium>}
+                    {type !== "monthly_scheme"  && type !== "registration_bonus" && <PoppinsTextMedium style={{ fontWeight: '400', fontSize: 12, color: 'black' }} content={`Article No : ${productCode}`}></PoppinsTextMedium>}
+                    {type !== "registration_bonus" && type!=="monthly_scheme" &&  <PoppinsTextMedium style={{ fontWeight: '400', fontSize: 12, color: 'black' }} content={`MRP : ${mrp}`}></PoppinsTextMedium>}
 
                     {/* {visibleCode && type !== "registration_bonus" && <PoppinsTextMedium style={{ fontWeight: '400', fontSize: 12, color: 'black' }} content={`Visible Code : ${visibleCode}`}></PoppinsTextMedium>} */}
                     <PoppinsTextMedium style={{ fontWeight: '200', fontSize: 12, color: 'black' }} content={date}></PoppinsTextMedium>
@@ -425,7 +425,7 @@ const PointHistory = ({ navigation }) => {
                     <Image style={{ height: 20, width: 20, resizeMode: "contain" }} source={(status == 0 && (points < 0) && is_reverted == true) ? require('../../../assets/images/minus_wallet.png') : require('../../../assets/images/wallet.png')}></Image>
                     <PoppinsTextMedium style={{ color: "#91B406", fontSize: 14, color: (status == 0 && (points < 0) && is_reverted == true) ? "red" : 'black' }} content={`${status == "1" ? " +" : status == "2" ? ' -' : ""} ${amount}`}></PoppinsTextMedium>
                 </View>
-                {data.platform_id == "3" && <PoppinsTextMedium style={{fontSize:10,fontWeight:'700', color:"black",marginTop:4}} content="Manually Rewarded" ></PoppinsTextMedium>}
+                {data.platform_id == "3" && <PoppinsTextMedium style={{fontSize:10,fontWeight:'700', color:"black",marginTop:4}} content="Scheme Reward" ></PoppinsTextMedium>}
                 </View>
             </View>
         )

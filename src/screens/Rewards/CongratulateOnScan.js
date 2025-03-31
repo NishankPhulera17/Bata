@@ -38,6 +38,7 @@ import Error from "react-native-vector-icons/MaterialIcons"
 import { useGetActiveMembershipMutation } from '../../apiServices/membership/AppMembershipApi';
 import ErrorModal from "../../components/modals/ErrorModal";
 import { useGetAppThemeDataMutation } from "../../apiServices/appTheme/AppThemeApi";
+import { setShowCampaign } from "../../../redux/slices/campaignSlice";
 // import { useGetAppUsersDataByIdMutation } from "../../apiServices/appUsers/AppUsersApi";
 
 
@@ -894,7 +895,8 @@ const CongratulateOnScan = ({ navigation, route }) => {
     }
   };
   const navigateDashboard = () => {
-    navigation.navigate("Dashboard");
+    dispatch(setShowCampaign(false))
+    navigation.reset({ index: '0', routes: [{ name: 'Dashboard' }] })
   };
   const navigateQrScanner = () => {
     // navigation.navigate('QrCodeScanner')

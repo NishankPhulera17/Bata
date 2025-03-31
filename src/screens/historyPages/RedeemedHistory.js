@@ -247,37 +247,43 @@ const RedeemedHistory = ({ navigation }) => {
       
       if (Number(userPointData.body.point_balance) <= 0 ) {
         setError(true)
-        setMessage("Sorry you don't have enough points.")
+        setMessage(t("Sorry you don't have enough points."))
         setNavigateTo("RedeemedHistory")
       }
     
       else if(Number(minRedemptionPoints)>Number(pointBalance))
       {
-        console.log("Minimum Point required to redeem is : ",minRedemptionPoints)
+        console.log("Minimum Point required to redeem is",minRedemptionPoints)
         setError(true)
-        setMessage(`Minimum Point required to redeem is : ${minRedemptionPoints}`)
+        setMessage(`${t("Minimum Point required to redeem is")} ${minRedemptionPoints}`)
         setNavigateTo("RedeemedHistory")
 
       }
       else {
         
-        if((Number(new Date(redemptionStartData).getTime()) < Number(new Date().getTime()) ) &&  ( Number(new Date().getTime()) < Number(new Date(redemptionEndDate).getTime())) )
+        if((Number(new Date(redemptionStartData).getTime()) <= Number(new Date().setUTCHours(0,0,0,0)) ) &&  ( Number(new Date().setUTCHours(0,0,0,0)) <= Number(new Date(redemptionEndDate).getTime())) )
         {
-          
-          console.log("correct redemption date",new Date().getTime(),new Date(redemptionStartData).getTime(),new Date(redemptionEndDate).getTime())
         if(!showKyc)
         {
+          console.log("check handler is handling dates",new Date().setUTCHours(0,0,0,0),new Date(redemptionStartData).getTime(),new Date(redemptionEndDate).getTime())
+
           setModalVisible(true)
         }
-        else{
+        else
+        {
+          console.log("correct redemption date sadghasgd",new Date().setUTCHours(0,0,0,0),new Date(redemptionStartData).getTime(),new Date(redemptionEndDate).getTime())
           setError(true)
-          setMessage("Kyc not completed yet")
+          setMessage(t("KYC not completed yet"))
           setNavigateTo("Verification")
         }
         }
-        else{
+        else
+        {
+          console.log("correct redemption date",new Date().setUTCHours(0,0,0,0),new Date(redemptionStartData).getTime(),new Date(redemptionEndDate).getTime(),"hello")
+
           setError(true)
-        setMessage("Redemption window starts from "+ moment(redemptionStartData).format("DD-MMM-YYYY") + " and ends on " +  moment(redemptionEndDate).format("DD-MMM-YYYY"))
+        setMessage(`${t("Redemption window starts from ")} ${moment(redemptionStartData).format("DD-MMM-YYYY")}  ${t(" and ends on ")}  ${moment(redemptionEndDate).format("DD-MMM-YYYY")}`)
+        // setMessage("hello")
         // setNavigateTo("RedeemedHistory")
 
         }
@@ -553,7 +559,7 @@ const RedeemedHistory = ({ navigation }) => {
 
           // }) */}
      
-      {error && navigateTo && (
+      {error  && (
         <ErrorModal
           modalClose={modalClose}
           message={message}

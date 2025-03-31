@@ -44,10 +44,7 @@ import { useCashPerPointMutation } from '../../apiServices/workflow/rewards/GetP
 import { useVerifyBarDistributorMutation, useVerifyBarMutation } from '../../apiServices/barCodeApi/VerifyBarCodeApi';
 import { scannerType } from '../../utils/ScannerType';
 import { useCameraDevice } from 'react-native-vision-camera';
-// import {useScanBarcodes, BarcodeFormat} from 'vision-camera-code-scanner';
-import { Camera } from 'react-native-vision-camera';
-import { Gesture, GestureDetector } from 'react-native-gesture-handler'
-import { request, PERMISSIONS } from 'react-native-permissions';
+import { Camera,useCameraPermission } from 'react-native-vision-camera';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useIsFocused } from '@react-navigation/native';
 import scanDelay from '../../utils/ScanDelayUtil';
@@ -73,7 +70,7 @@ const QrCodeScanner = ({ navigation }) => {
   const [cameraEnabled, setCameraEnabled] = useState(true)
   const [proceedVisible, setProceedVisible] = useState(false)
   const [checkCount, setCheckCount] = useState(0)
-
+  const { hasPermission, requestPermission } = useCameraPermission()
   const userId = useSelector(state => state.appusersdata.userId);
   const userData = useSelector(state => state.appusersdata.userData)
   const userType = useSelector(state => state.appusersdata.userType);
@@ -93,93 +90,15 @@ const QrCodeScanner = ({ navigation }) => {
   const isDistributor = userData?.user_type_id == 3
   console.log("Selector state", userData)
 
-  const [hasPermission, setHasPermission] = useState(null);
-  const [manualPermissionModal, setManualPermissionModal] = useState(false);
-    
   const focused = useIsFocused()
   
 
   useEffect(() => {
-    checkCameraPermission();
-  }, []);
-
-  useEffect(() => {
-    console.log("check count", checkCount);
-
-    if (hasPermission == false ) {
-      
-      checkCameraPermission()
-  
+    if(!hasPermission)
+    {
+      requestPermission()
     }
-    
-    
-
-  }, [focused])
-
-  useEffect(()=>{
-  
-    if(hasPermission){
-      setManualPermissionModal(false)
-    }else if(!hasPermission){
-      setManualPermissionModal(true)
-    }
-  },[hasPermission])
-
-
-
-  const checkCameraPermission = async () => {
-    try {
-      const status = await requestCameraPermission();
-      const newCameraPermission = await Camera.requestCameraPermission()
-      console.log('Camera Permission Status:', status,newCameraPermission);
-      setHasPermission(status === 'granted');
-
-    } catch (error) {
-      console.error('Error checking camera permission:', error);
-      // setManualPermissionModal(true);
-    }
-  };
-
-  const openAppSettings = () => {
-    // setCheckCount(checkCount+1)
-
-    if (Platform.OS === 'ios') {
-      setTimeout(()=>{
-        navigation.navigate("Dashboard")
-      },1000)
-      Linking.openURL('app-settings:');
-    } else {
-      setTimeout(()=>{
-        navigation.navigate("Dashboard")
-      },1000)
-      Linking.openSettings();
-    }
-  };
-
-
-  const requestCameraPermission = async () => {
-
-    try {  
-      const result = Camera.getCameraPermissionStatus();
-      return result;
-    } catch (error) {
-      console.error('Error requesting camera permission:', error);
-      return 'denied';
-    }
-  };
-
-  // Render the camera component if permission is granted
-
-  // if (hasPermission === false) {
-  //   return (
-  //     <View style={{width:'100%', alignItems:'center'}}>
-  //       <Text style={{ alignSelf: 'center', justifyContent: 'center', color: 'black', marginTop: '90%', fontSize: 17 }}>No access to camera Please Give Permission</Text>
-  //       <TouchableOpacity style={{height:40, width:120, backgroundColor:ternaryThemeColor,alignItems:'center', justifyContent:'center', marginTop:30}} onPress={requestCameraPermission}>
-  //         <PoppinsTextMedium style={{ borderRadius:5,color:'white', fontWeight:'bold' }} content={"Give Permission"}></PoppinsTextMedium>
-  //       </TouchableOpacity>
-  //     </View>
-  //   )
-  // }
+  }, [focused,hasPermission]);
 
 
   // mutations ----------------------------------------
@@ -576,19 +495,19 @@ const QrCodeScanner = ({ navigation }) => {
       setMessage("Please scan a valid QR");
     } else {
       console.log("scannedCodes", scannedCodes)
-      if (scannedCodes.has(e.data)) {
-        // If the barcode has already been scanned, don't call verifyBarScannerFunc
-        console.log('Duplicate barcode scanned:', e.data);
-        ToastAndroid.show(`Bar code already added ${e.data}`, ToastAndroid.SHORT)
-        return;
-      }
-      else {
-        setScannedCodes(prevCodes => new Set(prevCodes).add(e.data));
+      // if (scannedCodes.has(e.data)) {
+      //   // If the barcode has already been scanned, don't call verifyBarScannerFunc
+      //   console.log('Duplicate barcode scanned:', e.data);
+      //   // ToastAndroid.show(`Bar code already added ${e.data}`, ToastAndroid.SHORT)
+      //   return;
+      // }
+      // else {
+      //   setScannedCodes(prevCodes => new Set(prevCodes).add(e.data));
 
-      }
+      // }
 
       // Add the new barcode to the set of scanned codes
-      setLastScanned(e.data)
+      // setLastScanned(e.data)
       Vibration.vibrate([1000, 500, 1000]);
       const requestData = { unique_code: e.data };
 
@@ -807,9 +726,13 @@ const QrCodeScanner = ({ navigation }) => {
 
     if (updatedWorkflowProgram[0] === 'Static Coupon') {
       console.log(updatedWorkflowProgram.slice(1));
-      navigation.navigate('CongratulateOnScan', {
-        workflowProgram: updatedWorkflowProgram.slice(1),
-        rewardType: updatedWorkflowProgram[0]
+      navigation.reset({
+        index: 0,
+        routes: [{name: 'CongratulateOnScan', params: {
+          workflowProgram: updatedWorkflowProgram.slice(1),
+          rewardType: updatedWorkflowProgram[0]
+  
+        }}],
       });
     } else if (updatedWorkflowProgram[0] === 'Warranty') {
       console.log(updatedWorkflowProgram.slice(1));
@@ -821,10 +744,13 @@ const QrCodeScanner = ({ navigation }) => {
     } else if (updatedWorkflowProgram[0] === 'Points On Product' || updatedWorkflowProgram[0] === 'Cashback' || updatedWorkflowProgram[0] === 'Wheel') {
       console.log("yaaa yaaa")
       console.log(updatedWorkflowProgram.slice(1));
-      navigation.navigate('CongratulateOnScan', {
-        workflowProgram: updatedWorkflowProgram.slice(1),
-        rewardType: updatedWorkflowProgram[0]
-
+      navigation.reset({
+        index: 0,
+        routes: [{name: 'CongratulateOnScan', params: {
+          workflowProgram: updatedWorkflowProgram.slice(1),
+          rewardType: updatedWorkflowProgram[0]
+  
+        }}],
       });
     } else if (updatedWorkflowProgram[0] === 'Genuinity+') {
       console.log(updatedWorkflowProgram.slice(1));
@@ -922,30 +848,28 @@ const QrCodeScanner = ({ navigation }) => {
   // --------------------------------------------------------
   useEffect(() => {
     if (verifyBarData) {
-      addQrDataToList(verifyBarData.body);
+      console.log("verifyBarData",verifyBarData)
+      if (verifyBarData.body?.qr_status === "1" ) {
 
+      addQrDataToList(verifyBarData.body);
+        
+      }
 
       console.log('Verify bar data', verifyBarData);
-      if (verifyBarData.body?.status === "1") {
-        addQrDataToList(verifyBarData.body);
-      }
-      if (verifyBarData.body?.status === "2" && verifyBarData.status === 201) {
+     
+      if (verifyBarData.body?.qr_status === "2"  && verifyBarData.status==200) {
 
         setError(true);
-        setMessage(verifyBarData.message);
+        setMessage("This QR is already scanned");
       }
-      if (verifyBarData.body?.status === "2" && verifyBarData.status === 202) {
+      if (verifyBarData.body?.qr_status === "2" && verifyBarData.status == 202) {
         setIsReportable(true)
         setError(true);
-        setMessage(verifyBarData.message);
+        setMessage("This QR is already scanned");
       }
     }
     else if (verifyBarError) {
-      setScannedCodes(prevCodes => {
-        const newCodes = new Set(prevCodes);
-        newCodes.delete(lastScanned);
-        return newCodes;
-      });
+     
 
       if (verifyBarError === undefined) {
 
@@ -1541,7 +1465,7 @@ const QrCodeScanner = ({ navigation }) => {
           // frameProcessorFps={5}
           style={{ height: '40%' }}
           device={device}
-          isActive={cameraEnabled}
+          isActive={hasPermission}
           torch={flash ? "on" : "off"}
         // format={}
         >
@@ -1661,26 +1585,9 @@ const QrCodeScanner = ({ navigation }) => {
               isReportable={isReportable}
               openModal={error}></ErrorModal>
           )}
-          {Platform.OS == "android" ?
-            <View>
-              {error && message == "Sorry This Barcode is already added to the list" ? showToast() :
-                <View>
-                  {
-                    error && (
-                      <ErrorModal
-                        modalClose={modalClose}
-                        isReportable={isReportable}
-                        message={message}
-                        openModal={error}></ErrorModal>
-                    )
-                  }
-                </View>
-
-
-              }
-            </View>
-            :
-            error && (
+         
+           
+            {error && (
               <ErrorModal
                 modalClose={modalClose}
                 isReportable={isReportable}
@@ -1763,34 +1670,7 @@ const QrCodeScanner = ({ navigation }) => {
           )}
 
         </View>
-          {
-          //   manualPermissionModal && !hasPermission &&
-          //   <Modal
-          //   transparent={true}
-          //   visible={manualPermissionModal}
-          //   onRequestClose={() => setManualPermissionModal(false)}
-          // >
-          //   <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0,0,0,0.5)' }}>
-          //     <View style={{ width: 300, padding: 20, backgroundColor: 'white', borderRadius: 10 }}>
-          //       <Text style={{color:'black', marginBottom: 20 }}>
-          //         Camera permission is required to use this feature. Please enable it in the app settings.
-          //       </Text>
-          //       <View>
-          //         <View style={{marginBottom:20}}>
-          //       <Button style={{color:'black'}} title="Open Settings" onPress={openAppSettings} />
-
-          //         </View>
-
-          //       </View>
-          //       <Button title="Cancel" onPress={() => {navigation.navigate("Dashboard")}} />
-          //     </View>
-          //   </View>
-          // </Modal>
-  
-  
-
-          }
-      
+        
 
         {helpModal && <ModalWithBorder
           modalClose={() => { setHelpModal(!helpModal) }}

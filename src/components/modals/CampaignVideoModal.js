@@ -15,7 +15,7 @@ import { useSelector } from 'react-redux';
 
 // create a component
 const CampaignVideoModal = ({ isVisible, onClose }) => {
-
+    const [visible, setVisible] = useState(isVisible)
     const [hide, setHide] = useState(true);
 
     const ternaryThemeColor = useSelector(
@@ -48,8 +48,15 @@ const CampaignVideoModal = ({ isVisible, onClose }) => {
 
     useEffect(() => {
         if (getAppCampaignData) {
-            console.log("getAppCampaignData", getAppCampaignData);
-            setHide(getAppCampaignData?.body?.data?.[0]?.image?.can_user_hide);
+            console.log("getAppCampaignData", JSON.stringify(getAppCampaignData));
+            if(getAppCampaignData?.body?.data.length ==0)
+            setVisible(false)
+            else
+            setVisible(true)
+
+
+            console.log("can user hide campaign",getAppCampaignData?.body?.data?.[0]?.can_user_hide)
+            setHide(!getAppCampaignData?.body?.data?.[0]?.can_user_hide);
         }
         else {
             console.log("getAppCampaignIsError", getAppCampaignIsError);
@@ -58,19 +65,19 @@ const CampaignVideoModal = ({ isVisible, onClose }) => {
 
     const touchedVideo = () => {
         Linking.openURL(`${getAppCampaignData?.body?.data?.[0]?.video_link}`)
-        setHide(false);
+        // setHide(false);
     }
 
 
     const touchedKnowMore = () => {
         Linking.openURL(`${getAppCampaignData?.body?.data?.[0]?.web_link}`)
-        setHide(false);
+        // setHide(false);
     }
 
     return (
         <Modal
             transparent={true}
-            visible={isVisible}
+            visible={visible}
             onRequestClose={onClose}
             animationType="slide"
         >
@@ -99,7 +106,9 @@ const CampaignVideoModal = ({ isVisible, onClose }) => {
                         !hide &&
                         <TouchableOpacity style={[{
                             backgroundColor: ternaryThemeColor, padding: 6, borderRadius: 5, position: 'absolute', top: -10, right: -10,
-                        }]} onPress={() => { onClose() }}>
+                        }]} onPress={() => {
+                            setVisible(false)
+                            onClose() }}>
                             <Close name="close" size={17} color="#ffffff" />
                         </TouchableOpacity>
                     }

@@ -25,6 +25,7 @@ import termsPolicySlice from './slices/termsPolicySlice';
 import dashboardDataSlice from './slices/dashboardDataSlice';
 import drawerDataSlice from './slices/drawerDataSlice';
 import salesBoosterSlice from './slices/salesBoosterSlice';
+import campaignSlice from './slices/campaignSlice';
 
 
 export const store = configureStore({
@@ -52,7 +53,8 @@ export const store = configureStore({
     termsPolicy:termsPolicySlice,
     dashboardData:dashboardDataSlice,
     drawerData:drawerDataSlice,
-    salesBooster:salesBoosterSlice
+    salesBooster:salesBoosterSlice,
+    campaign:campaignSlice
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

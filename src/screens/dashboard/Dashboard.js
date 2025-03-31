@@ -45,7 +45,7 @@ import SalesBoosterTriggerButton from '../../components/organisms/SalesBoosterTr
 const Dashboard = ({ navigation }) => {
   const [showKyc, setShowKyc] = useState(true)
   const [locationEnabled, setLocationEnabled] = useState(false)
-  const [CampainVideoVisible, setCmpainVideoVisible] = useState(true);
+  const [CampainVideoVisible, setCmpainVideoVisible] = useState(false);
   const [isSuccessModalVisible, setIsSuccessModalVisible] = useState(false)
   const [membership, setMembership] = useState()
   const [scanningDetails, seScanningDetails] = useState()
@@ -66,7 +66,7 @@ const Dashboard = ({ navigation }) => {
   const isConnected = useSelector(state => state.internet.isConnected);
   const pointSharingData = useSelector(state => state.pointSharing.pointSharing)
   const bannerArray = useSelector(state => state.dashboardData.banner)
-
+  const showCampaign = useSelector(state => state.campaign.showCampaign)
   
   const ternaryThemeColor = useSelector(
     state => state.apptheme.ternaryThemeColor,
@@ -584,9 +584,9 @@ const Dashboard = ({ navigation }) => {
               <Banner images={bannerArray}></Banner>
             }
 
-            <CampaignVideoModal isVisible={CampainVideoVisible} onClose={()=>{
+            {showCampaign && <CampaignVideoModal isVisible={CampainVideoVisible} onClose={()=>{
               setCmpainVideoVisible(false)
-            }} />
+            }} />}
 
           </View>
           {/* Ozone specific change do not show for sales */}

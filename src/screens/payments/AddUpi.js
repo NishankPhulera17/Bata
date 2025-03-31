@@ -61,7 +61,7 @@ const AddUpi = ({navigation}) => {
   useEffect(() => {
     if (addBankDetailsData) {
       console.log('addBankDetailsData', addBankDetailsData);
-      if (addBankDetailsData.message === 'Bank Account Created') {
+      if (addBankDetailsData.success == true) {
         addBankDetailsData.body.bene_name == null &&
           getInitials(addBankDetailsData.body.bene_details.bene_name);
         setName(addBankDetailsData.body.bene_details.bene_name);
