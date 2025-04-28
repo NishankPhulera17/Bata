@@ -350,18 +350,26 @@ const QrCodeScanner = ({ navigation }) => {
       let e = {
         data: codes[0].value
       }
-      if (isDistributor) {
-        scanDelay(e,()=>{
-        OnReturedCheck(e)
-        })
+      if(codes[0]?.value?.length==23)
+      {
+        if (isDistributor) {
+          scanDelay(e,()=>{
+          OnReturedCheck(e)
+          })
+        }
+        else {
+          setCameraEnabled(false)
+          scanDelay(e,()=>{
+          onSuccessBar(e)
+          })
+  
+        }
       }
-      else {
-        setCameraEnabled(false)
-        scanDelay(e,()=>{
-        onSuccessBar(e)
-        })
-
+      else{
+        setError(true)
+        setMessage("Please scan a correct bar code to proceed")
       }
+      
     }
   }
 
